@@ -1,0 +1,77 @@
+type Dict = Record<string, string>;
+type LocaleMap = Record<string, Dict>;
+
+export const locales: LocaleMap = {
+  zh: {
+    'game.title': '打工人康复指南',
+    'game.levelTitle': 'Lv.1 键盘侠的觉醒',
+    'ui.hint': '提示',
+    'ui.health': '体态健康',
+    'ui.tool.fasciaBall': '筋膜球',
+    'ui.tool.elasticBand': '弹力带',
+    'ui.zone.chest': '胸大肌 (紧张)',
+    'ui.zone.back': '菱形肌 (无力)',
+    'feedback.correctRelax': '正确：前胸放松成功，健康 +50%',
+    'feedback.correctStrength': '正确：后背强化成功，健康 +50%',
+    'feedback.wrongTool': '错误：工具不匹配，已弹回',
+    'feedback.invalidDrop': '无效操作：请拖到发光区域',
+    'feedback.shareUnavailable': '当前运行环境不支持分享接口',
+    'hint.text':
+      '上交叉综合征：长期伏案常见胸前紧、背后弱。先松前侧，再强后侧。',
+    'settlement.title': '治疗成功！',
+    'settlement.desc': '胸肌松一松，背肌紧一紧，告别猥琐颈！',
+    'settlement.tip':
+      '科普：长期伏案会让胸前肌群紧张、背后肌群无力。康复关键是松前侧，强后侧。',
+    'settlement.share': '分享给受苦的群友',
+    'settlement.next': '下一位病人',
+    'settlement.more': '更多疑难杂症正在送医途中，敬请期待...',
+  },
+  ar: {
+    'game.title': 'دليل تعافي العامل',
+    'game.levelTitle': 'المستوى 1: صحوة عامل لوحة المفاتيح',
+    'ui.hint': 'تلميح',
+    'ui.health': 'صحة الوضعية',
+    'ui.tool.fasciaBall': 'كرة اللفافة',
+    'ui.tool.elasticBand': 'شريط مطاطي',
+    'ui.zone.chest': 'عضلة الصدر (توتر)',
+    'ui.zone.back': 'عضلات الظهر (ضعف)',
+    'feedback.correctRelax': 'صحيح: تم إرخاء الصدر، +50%',
+    'feedback.correctStrength': 'صحيح: تم تقوية الظهر، +50%',
+    'feedback.wrongTool': 'خطأ: الأداة غير مناسبة، تمت الإعادة',
+    'feedback.invalidDrop': 'محاولة غير صالحة: اسحب إلى المنطقة المضيئة',
+    'feedback.shareUnavailable': 'بيئة التشغيل الحالية لا تدعم واجهة المشاركة',
+    'hint.text':
+      'متلازمة التقاطع العلوي: الجلوس الطويل يسبب شد الصدر وضعف الظهر. أرخِ الأمام ثم قوِ الخلف.',
+    'settlement.title': 'نجح العلاج!',
+    'settlement.desc': 'أرخِ الصدر وقوِ الظهر للتخلص من وضعية الرقبة المنحنية!',
+    'settlement.tip':
+      'معلومة: الجلوس الطويل يشد عضلات الصدر ويضعف عضلات الظهر. التعافي = إرخاء الأمام + تقوية الخلف.',
+    'settlement.share': 'شاركها مع أصدقائك المتعبين',
+    'settlement.next': 'المريض التالي',
+    'settlement.more': 'حالات أكثر قادمة قريبًا...',
+  },
+  tr: {
+    'game.title': 'Çalışan İyileşme Rehberi',
+    'game.levelTitle': 'Seviye 1: Klavye Kahramanı Uyanışı',
+    'ui.hint': 'İpucu',
+    'ui.health': 'Duruş Sağlığı',
+    'ui.tool.fasciaBall': 'Fasya Topu',
+    'ui.tool.elasticBand': 'Direnç Bandı',
+    'ui.zone.chest': 'Göğüs kası (gergin)',
+    'ui.zone.back': 'Sırt kası (zayıf)',
+    'feedback.correctRelax': 'Doğru: Göğüs gevşedi, +50%',
+    'feedback.correctStrength': 'Doğru: Sırt güçlendi, +50%',
+    'feedback.wrongTool': 'Hatalı: Araç eşleşmiyor, geri döndü',
+    'feedback.invalidDrop': 'Geçersiz: Parlayan bölgeye bırak',
+    'feedback.shareUnavailable': 'Bu çalışma ortamı paylaşım API desteği sunmuyor',
+    'hint.text':
+      'Üst çapraz sendromu: uzun süre oturmak göğsü gerer, sırtı zayıflatır. Önce ön tarafı gevşet, sonra arka tarafı güçlendir.',
+    'settlement.title': 'Tedavi Başarılı!',
+    'settlement.desc': 'Göğsü gevşet, sırtı güçlendir, kamburluğa veda et!',
+    'settlement.tip':
+      'Bilgi: Uzun süre masa başı çalışma göğsü gerer ve sırtı zayıflatır. Çözüm: ön tarafı gevşet, arka tarafı güçlendir.',
+    'settlement.share': 'Acı çeken arkadaşlarınla paylaş',
+    'settlement.next': 'Sonraki hasta',
+    'settlement.more': 'Daha fazla vaka yolda, yakında...',
+  },
+};
