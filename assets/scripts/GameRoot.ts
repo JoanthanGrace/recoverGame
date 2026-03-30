@@ -4,12 +4,14 @@ import {
   Component,
   EventTouch,
   Graphics,
+  HorizontalTextAlignment,
   Label,
   Node,
   UITransform,
   UIOpacity,
   Vec2,
   Vec3,
+  VerticalTextAlignment,
   Tween,
   tween,
 } from 'cc';
@@ -67,31 +69,31 @@ export class GameRoot extends Component {
     this.draggingTool = null;
     this.locked = false;
 
-    const root = this.createSizedNode('Root', 720, 1280);
+    const root = this.createSizedNode('Root', 750, 1334);
     this.node.addChild(root);
 
-    const pageBg = this.createRectNode('PageBg', 720, 1280, new Color(240, 243, 247, 255), 0);
+    const pageBg = this.createRectNode('PageBg', 750, 1334, new Color(240, 243, 247, 255), 0);
     root.addChild(pageBg);
 
     const topBar = this.createTopBar();
     root.addChild(topBar);
-    topBar.setPosition(0, 548, 0);
+    topBar.setPosition(0, 580, 0);
 
     const statusBar = this.createStatusBar();
     root.addChild(statusBar);
-    statusBar.setPosition(0, 438, 0);
+    statusBar.setPosition(0, 470, 0);
 
     const treatmentPanel = this.createTreatmentPanel();
     root.addChild(treatmentPanel);
-    treatmentPanel.setPosition(0, 110, 0);
+    treatmentPanel.setPosition(0, 115, 0);
 
     const diagnosisPanel = this.createDiagnosisPanel();
     root.addChild(diagnosisPanel);
-    diagnosisPanel.setPosition(0, -258, 0);
+    diagnosisPanel.setPosition(0, -285, 0);
 
     const toolDock = this.createToolDock();
     root.addChild(toolDock);
-    toolDock.setPosition(0, -500, 0);
+    toolDock.setPosition(0, -555, 0);
 
     this.hintPanel = this.createHintPanel();
     root.addChild(this.hintPanel);
@@ -105,18 +107,18 @@ export class GameRoot extends Component {
   }
 
   private createTopBar(): Node {
-    const top = this.createSizedNode('TopBar', 680, 108);
+    const top = this.createSizedNode('TopBar', 700, 116);
 
-    const bg = this.createRectNode('TopBarBg', 680, 108, new Color(92, 107, 126, 255), 18);
+    const bg = this.createRectNode('TopBarBg', 700, 116, new Color(92, 107, 126, 255), 18);
     top.addChild(bg);
 
-    const title = this.createLabelNode('CaseTitle', level1Config.title, 34, new Color(255, 255, 255, 255), 420, 70);
+    const title = this.createLabelNode('CaseTitle', level1Config.title, 38, new Color(255, 255, 255, 255), 470, 74);
     top.addChild(title.node);
-    title.node.setPosition(-115, 0, 0);
+    title.node.setPosition(-105, 0, 0);
 
-    const hintBtn = this.createButtonNode('HintBtn', i18n.t('ui.hint'), 120, 60, new Color(227, 231, 238, 255), new Color(65, 73, 88, 255), 16);
+    const hintBtn = this.createButtonNode('HintBtn', i18n.t('ui.hint'), 126, 62, new Color(227, 231, 238, 255), new Color(65, 73, 88, 255), 16);
     top.addChild(hintBtn);
-    hintBtn.setPosition(245, 0, 0);
+    hintBtn.setPosition(252, 0, 0);
     hintBtn.on(Node.EventType.TOUCH_END, () => {
       this.hintPanel.active = !this.hintPanel.active;
     });
@@ -125,114 +127,114 @@ export class GameRoot extends Component {
   }
 
   private createStatusBar(): Node {
-    const bar = this.createSizedNode('StatusBar', 680, 90);
+    const bar = this.createSizedNode('StatusBar', 700, 96);
 
-    const bg = this.createRectNode('StatusBg', 680, 90, new Color(224, 229, 236, 255), 18);
+    const bg = this.createRectNode('StatusBg', 700, 96, new Color(224, 229, 236, 255), 18);
     bar.addChild(bg);
 
-    const patientTag = this.createRectNode('PatientTagBg', 190, 44, new Color(97, 111, 132, 255), 12);
+    const patientTag = this.createRectNode('PatientTagBg', 210, 46, new Color(97, 111, 132, 255), 12);
     bar.addChild(patientTag);
-    patientTag.setPosition(-220, 0, 0);
+    patientTag.setPosition(-225, 0, 0);
 
     const patientTagLabel = this.createLabelNode(
       'PatientTagLabel',
       level1Config.patientTag || i18n.t('game.patientTag'),
-      22,
+      23,
       new Color(255, 255, 255, 255),
-      170,
-      44,
+      186,
+      46,
     );
     patientTag.addChild(patientTagLabel.node);
 
-    this.percentLabel = this.createLabelNode('PercentLabel', '0%', 26, new Color(63, 72, 89, 255), 80, 40);
+    this.percentLabel = this.createLabelNode('PercentLabel', '0%', 30, new Color(63, 72, 89, 255), 90, 44);
     bar.addChild(this.percentLabel.node);
-    this.percentLabel.node.setPosition(-80, 0, 0);
+    this.percentLabel.node.setPosition(-85, 0, 0);
 
-    const progressBg = this.createRectNode('ProgressBg', 250, 34, new Color(84, 96, 113, 255), 10);
+    const progressBg = this.createRectNode('ProgressBg', 280, 36, new Color(84, 96, 113, 255), 10);
     bar.addChild(progressBg);
-    progressBg.setPosition(145, 0, 0);
+    progressBg.setPosition(155, 0, 0);
 
-    const progressNode = this.createSizedNode('ProgressNode', 226, 22);
+    const progressNode = this.createSizedNode('ProgressNode', 254, 24);
     progressBg.addChild(progressNode);
     progressNode.setPosition(0, 0, 0);
 
-    this.healthFill = this.createRectNode('ProgressFill', 226, 22, new Color(95, 190, 124, 255), 8);
+    this.healthFill = this.createRectNode('ProgressFill', 254, 24, new Color(95, 190, 124, 255), 8);
     progressNode.addChild(this.healthFill);
     const trans = this.healthFill.getComponent(UITransform)!;
     trans.setAnchorPoint(0, 0.5);
-    this.healthFill.setPosition(-113, 0, 0);
+    this.healthFill.setPosition(-127, 0, 0);
     this.healthFill.setScale(0, 1, 1);
 
-    this.healthLabel = this.createLabelNode('HealthLabel', `${i18n.t('ui.health')} 0%`, 20, new Color(63, 72, 89, 255), 180, 36);
+    this.healthLabel = this.createLabelNode('HealthLabel', `${i18n.t('ui.health')} 0%`, 22, new Color(63, 72, 89, 255), 210, 38);
     bar.addChild(this.healthLabel.node);
-    this.healthLabel.node.setPosition(0, -28, 0);
+    this.healthLabel.node.setPosition(0, -30, 0);
 
     return bar;
   }
 
   private createTreatmentPanel(): Node {
-    const panel = this.createSizedNode('TreatmentPanel', 680, 560);
+    const panel = this.createSizedNode('TreatmentPanel', 700, 610);
 
-    const bg = this.createRectNode('TreatmentBg', 680, 560, new Color(233, 237, 242, 255), 18);
+    const bg = this.createRectNode('TreatmentBg', 700, 610, new Color(233, 237, 242, 255), 18);
     panel.addChild(bg);
 
-    const bed = this.createRectNode('Bed', 520, 300, new Color(214, 221, 230, 255), 22);
+    const bed = this.createRectNode('Bed', 560, 332, new Color(214, 221, 230, 255), 22);
     panel.addChild(bed);
-    bed.setPosition(0, -10, 0);
+    bed.setPosition(0, -5, 0);
 
-    const pillow = this.createRectNode('Pillow', 120, 42, new Color(191, 201, 214, 255), 16);
+    const pillow = this.createRectNode('Pillow', 134, 46, new Color(191, 201, 214, 255), 16);
     panel.addChild(pillow);
-    pillow.setPosition(-165, 105, 0);
+    pillow.setPosition(-182, 120, 0);
 
-    const body = this.createRectNode('PatientBody', 340, 130, new Color(252, 252, 252, 255), 40);
+    const body = this.createRectNode('PatientBody', 376, 144, new Color(252, 252, 252, 255), 44);
     panel.addChild(body);
-    body.setPosition(20, 20, 0);
+    body.setPosition(24, 26, 0);
     body.angle = -8;
 
-    const head = this.createCircleNode('PatientHead', 56, new Color(252, 230, 202, 255));
+    const head = this.createCircleNode('PatientHead', 62, new Color(252, 230, 202, 255));
     panel.addChild(head);
-    head.setPosition(-165, 70, 0);
+    head.setPosition(-188, 80, 0);
 
-    const hair = this.createCircleNode('Hair', 56, new Color(48, 62, 82, 255));
+    const hair = this.createCircleNode('Hair', 62, new Color(48, 62, 82, 255));
     head.addChild(hair);
     hair.setScale(1.05, 0.75, 1);
     hair.setPosition(0, 18, 0);
 
-    const glasses = this.createRectNode('Glasses', 76, 22, new Color(78, 88, 103, 255), 8);
+    const glasses = this.createRectNode('Glasses', 84, 24, new Color(78, 88, 103, 255), 8);
     head.addChild(glasses);
     glasses.setPosition(8, -2, 0);
 
-    const arm = this.createRectNode('Arm', 116, 24, new Color(252, 230, 202, 255), 12);
+    const arm = this.createRectNode('Arm', 126, 26, new Color(252, 230, 202, 255), 12);
     panel.addChild(arm);
-    arm.setPosition(-90, 0, 0);
+    arm.setPosition(-98, 6, 0);
     arm.angle = -20;
 
-    const legs = this.createRectNode('Legs', 130, 48, new Color(84, 98, 122, 255), 22);
+    const legs = this.createRectNode('Legs', 146, 54, new Color(84, 98, 122, 255), 24);
     panel.addChild(legs);
-    legs.setPosition(185, -18, 0);
+    legs.setPosition(205, -14, 0);
     legs.angle = -8;
 
-    const desk = this.createRectNode('Desk', 610, 32, new Color(155, 166, 180, 255), 14);
+    const desk = this.createRectNode('Desk', 640, 34, new Color(155, 166, 180, 255), 14);
     panel.addChild(desk);
-    desk.setPosition(0, 168, 0);
+    desk.setPosition(0, 188, 0);
 
-    const chestZone = this.createRectNode('ChestZone', 120, 120, new Color(255, 98, 98, 165), 60);
+    const chestZone = this.createRectNode('ChestZone', 130, 130, new Color(255, 98, 98, 165), 65);
     panel.addChild(chestZone);
-    chestZone.setPosition(10, 48, 0);
+    chestZone.setPosition(12, 55, 0);
     const chestLabel = this.addZoneLabel(chestZone, i18n.t('ui.zone.chest'));
 
     const chestOpacity = chestZone.addComponent(UIOpacity);
     chestOpacity.opacity = 180;
     tween(chestOpacity).to(0.45, { opacity: 90 }).to(0.45, { opacity: 205 }).union().repeatForever().start();
 
-    const backZone = this.createRectNode('BackZone', 126, 126, new Color(90, 155, 255, 150), 60);
+    const backZone = this.createRectNode('BackZone', 136, 136, new Color(90, 155, 255, 150), 68);
     panel.addChild(backZone);
-    backZone.setPosition(118, 66, 0);
+    backZone.setPosition(132, 74, 0);
     const backLabel = this.addZoneLabel(backZone, i18n.t('ui.zone.back'));
 
-    const patientCaption = this.createLabelNode('PatientCaption', level1Config.patientName, 24, new Color(77, 88, 106, 255), 280, 40);
+    const patientCaption = this.createLabelNode('PatientCaption', level1Config.patientName, 28, new Color(77, 88, 106, 255), 320, 44);
     panel.addChild(patientCaption.node);
-    patientCaption.node.setPosition(0, -210, 0);
+    patientCaption.node.setPosition(0, -238, 0);
 
     this.patientNode = body;
     this.zoneMap.set(ZoneType.Chest, {
@@ -256,38 +258,38 @@ export class GameRoot extends Component {
   }
 
   private createDiagnosisPanel(): Node {
-    const panel = this.createSizedNode('DiagnosisPanel', 680, 130);
+    const panel = this.createSizedNode('DiagnosisPanel', 700, 140);
 
-    const bg = this.createRectNode('DiagnosisBg', 680, 130, new Color(246, 248, 251, 255), 18);
+    const bg = this.createRectNode('DiagnosisBg', 700, 140, new Color(246, 248, 251, 255), 18);
     panel.addChild(bg);
 
     this.diagnosisLabel = this.createLabelNode(
       'DiagnosisLabel',
       `${i18n.t('ui.diagnosisLabel')}：${level1Config.diagnosis || i18n.t('game.diagnosis')}`,
-      28,
+      32,
       new Color(58, 67, 82, 255),
-      620,
-      48,
+      650,
+      54,
     );
     panel.addChild(this.diagnosisLabel.node);
-    this.diagnosisLabel.node.setPosition(0, 28, 0);
+    this.diagnosisLabel.node.setPosition(0, 34, 0);
 
-    this.feedbackLabel = this.createLabelNode('FeedbackLabel', i18n.t('feedback.default'), 22, new Color(109, 119, 135, 255), 620, 52);
+    this.feedbackLabel = this.createLabelNode('FeedbackLabel', i18n.t('feedback.default'), 24, new Color(109, 119, 135, 255), 650, 58);
     panel.addChild(this.feedbackLabel.node);
-    this.feedbackLabel.node.setPosition(0, -28, 0);
+    this.feedbackLabel.node.setPosition(0, -30, 0);
 
     return panel;
   }
 
   private createToolDock(): Node {
-    const dock = this.createSizedNode('ToolDock', 680, 228);
+    const dock = this.createSizedNode('ToolDock', 700, 248);
 
-    const bg = this.createRectNode('DockBg', 680, 228, new Color(78, 90, 109, 255), 20);
+    const bg = this.createRectNode('DockBg', 700, 248, new Color(78, 90, 109, 255), 20);
     dock.addChild(bg);
 
-    const dockTitle = this.createLabelNode('DockTitle', i18n.t('ui.toolDock'), 28, new Color(255, 255, 255, 255), 320, 40);
+    const dockTitle = this.createLabelNode('DockTitle', i18n.t('ui.toolDock'), 30, new Color(255, 255, 255, 255), 340, 42);
     dock.addChild(dockTitle.node);
-    dockTitle.node.setPosition(0, 74, 0);
+    dockTitle.node.setPosition(0, 84, 0);
 
     const fascia = this.createToolNode(
       ToolType.FasciaBall,
@@ -298,7 +300,7 @@ export class GameRoot extends Component {
       new Color(108, 120, 140, 255),
     );
     dock.addChild(fascia.node);
-    fascia.node.setPosition(-170, -25, 0);
+    fascia.node.setPosition(-176, -28, 0);
     fascia.origin = fascia.node.getPosition().clone();
 
     const band = this.createToolNode(
@@ -310,7 +312,7 @@ export class GameRoot extends Component {
       new Color(108, 120, 140, 255),
     );
     dock.addChild(band.node);
-    band.node.setPosition(170, -25, 0);
+    band.node.setPosition(176, -28, 0);
     band.origin = band.node.getPosition().clone();
 
     this.toolMap.set(ToolType.FasciaBall, fascia);
@@ -326,20 +328,20 @@ export class GameRoot extends Component {
     titleColor: Color,
     descColor: Color,
   ): ToolRuntime {
-    const node = this.createRectNode(`Tool-${id}`, 208, 126, cardColor, 22);
+    const node = this.createRectNode(`Tool-${id}`, 220, 136, cardColor, 22);
     const icon = id === ToolType.FasciaBall
       ? this.createCircleNode(`${id}-Icon`, 28, new Color(143, 154, 173, 255))
       : this.createBandIcon(`${id}-Icon`, new Color(143, 154, 173, 255));
     node.addChild(icon);
-    icon.setPosition(0, 20, 0);
+    icon.setPosition(0, 22, 0);
 
-    const label = this.createLabelNode(`${id}-Title`, text, 30, titleColor, 170, 44);
+    const label = this.createLabelNode(`${id}-Title`, text, 32, titleColor, 182, 46);
     node.addChild(label.node);
-    label.node.setPosition(0, -16, 0);
+    label.node.setPosition(0, -18, 0);
 
-    const descLabel = this.createLabelNode(`${id}-Desc`, desc, 22, descColor, 170, 34);
+    const descLabel = this.createLabelNode(`${id}-Desc`, desc, 24, descColor, 182, 36);
     node.addChild(descLabel.node);
-    descLabel.node.setPosition(0, -48, 0);
+    descLabel.node.setPosition(0, -52, 0);
 
     const runtime: ToolRuntime = {
       id,
@@ -516,7 +518,9 @@ export class GameRoot extends Component {
     if (!target) {
       return;
     }
-    this.drawRoundedRect(target.graphics, 120, 120, target.doneColor, 60);
+    const width = target.id === ZoneType.Chest ? 130 : 136;
+    const radius = target.id === ZoneType.Chest ? 65 : 68;
+    this.drawRoundedRect(target.graphics, width, width, target.doneColor, radius);
     target.label.color = new Color(255, 255, 255, 255);
   }
 
@@ -566,7 +570,9 @@ export class GameRoot extends Component {
     });
 
     this.zoneMap.forEach((zone) => {
-      this.drawRoundedRect(zone.graphics, 120, 120, zone.idleColor, 60);
+      const width = zone.id === ZoneType.Chest ? 130 : 136;
+      const radius = zone.id === ZoneType.Chest ? 65 : 68;
+      this.drawRoundedRect(zone.graphics, width, width, zone.idleColor, radius);
       zone.label.color = new Color(255, 255, 255, 255);
     });
   }
@@ -611,13 +617,13 @@ export class GameRoot extends Component {
   }
 
   private addZoneLabel(zoneNode: Node, text: string): Label {
-    const label = this.createLabelNode(`${zoneNode.name}-Label`, text, 20, new Color(255, 255, 255, 255), 90, 90);
+    const label = this.createLabelNode(`${zoneNode.name}-Label`, text, 22, new Color(255, 255, 255, 255), 100, 100);
     zoneNode.addChild(label.node);
     return label;
   }
 
   private createBandIcon(name: string, color: Color): Node {
-    const node = this.createSizedNode(name, 80, 60);
+    const node = this.createSizedNode(name, 88, 66);
     const g = node.addComponent(Graphics);
     g.strokeColor = color;
     g.lineWidth = 8;
@@ -665,12 +671,15 @@ export class GameRoot extends Component {
     height = 160,
   ): Label {
     const node = new Node(name);
+    node.layer = this.node.layer;
     const label = node.addComponent(Label);
     label.string = text;
     label.fontSize = fontSize;
     label.lineHeight = Math.round(fontSize * 1.4);
     label.color = color;
     label.overflow = Label.Overflow.SHRINK;
+    label.horizontalAlign = HorizontalTextAlignment.CENTER;
+    label.verticalAlign = VerticalTextAlignment.CENTER;
     const trans = node.addComponent(UITransform);
     trans.setContentSize(width, height);
     return label;
@@ -678,6 +687,7 @@ export class GameRoot extends Component {
 
   private createSizedNode(name: string, width: number, height: number): Node {
     const node = new Node(name);
+    node.layer = this.node.layer;
     const trans = node.addComponent(UITransform);
     trans.setContentSize(width, height);
     return node;
