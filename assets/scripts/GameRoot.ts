@@ -1,3 +1,18 @@
+/**
+ * GameRoot.ts — 整页 UI 由代码动态拼出来（未用 Prefab）。
+ *
+ * 【怎么改「整页容器 / 布局」】
+ * 1) 设计分辨率：在 Cocos 编辑器里选 Canvas，看「设计分辨率」(如 750×1334)。
+ *    本脚本里 Root / PageBg 的宽高应与之接近，否则会出现裁切或留白。
+ * 2) 改「整页大小」：改 buildScene() 里 createSizedNode('Root', 宽, 高) 与 pageBg 的宽高，二者保持一致。
+ * 3) 改「上下分区位置」：改 root.addChild 之后各块的 setPosition(0, Y, 0)。
+ *    - 父节点是 Root，子节点坐标原点在父节点中心；Y 越大越靠上（屏幕上方）。
+ *    - 典型改法：整体往上移 → 所有块的 Y 同时加一个常数；或只调某一块的 Y 拉大间距。
+ * 4) 改「某一区域内的控件」：进对应的 createTopBar / createTreatmentPanel 等函数，
+ *    改里面子节点的 setPosition / createSizedNode 尺寸即可（相对该面板中心）。
+ * 5) 进阶：若要在编辑器里拖布局，可把 Root 下各块改成 Prefab + Widget 组件；
+ *    本文件仍可只保留逻辑，通过 @property 引用节点（此处未做，保持单文件可跑）。
+ */
 import {
   _decorator,
   Color,
@@ -38,6 +53,7 @@ type ZoneRuntime = {
   doneColor: Color;
 };
 
+/** 挂在 Canvas（或其子节点）上；start 时清空子节点并 buildScene 搭 UI。 */
 @ccclass('GameRoot')
 export class GameRoot extends Component {
   private health = 0;
@@ -61,6 +77,11 @@ export class GameRoot extends Component {
     this.buildScene();
   }
 
+  /**
+   * 页面骨架：唯一「整页容器」是 root（逻辑尺寸 750×1334，与常见竖屏设计稿一致）。
+   * pageBg 铺满 root；其下各块自上而下为：顶栏 → 状态条 → 治疗区 → 诊断条 → 工具栏。
+   * 提示层、结算层最后挂上，覆盖在最上（同坐标系下后 addChild 的通常更靠上绘制，且全屏半透明）。
+   */
   private buildScene() {
     this.node.removeAllChildren();
     this.zoneMap.clear();
@@ -69,12 +90,15 @@ export class GameRoot extends Component {
     this.draggingTool = null;
     this.locked = false;
 
+    // 整页逻辑尺寸（宽, 高）。改分辨率时同步改这里 + 下面 PageBg + 编辑器 Canvas 设计分辨率。
     const root = this.createSizedNode('Root', 750, 1334);
     this.node.addChild(root);
 
+    // 整页底色，与 root 同尺寸，位置默认 (0,0) 即铺满 root。
     const pageBg = this.createRectNode('PageBg', 750, 1334, new Color(240, 243, 247, 255), 0);
     root.addChild(pageBg);
 
+    // —— 以下 Y 均为相对 root 中心；数值越大越靠屏幕上方 ——
     const topBar = this.createTopBar();
     root.addChild(topBar);
     topBar.setPosition(0, 580, 0);
@@ -106,19 +130,20 @@ export class GameRoot extends Component {
     this.resetState();
   }
 
+  /** 顶部标题栏：内部子元素位置相对 TopBar 中心。 */
   private createTopBar(): Node {
-    const top = this.createSizedNode('TopBar', 700, 116);
+    const top = this.createSizedNode('TopBar', 726, 116);
 
-    const bg = this.createRectNode('TopBarBg', 700, 116, new Color(92, 107, 126, 255), 18);
+    const bg = this.createRectNode('TopBarBg', 726, 116, new Color(92, 107, 126, 255), 18);
     top.addChild(bg);
 
-    const title = this.createLabelNode('CaseTitle', level1Config.title, 38, new Color(255, 255, 255, 255), 470, 74);
+    const title = this.createLabelNode('CaseTitle', level1Config.title, 38, new Color(255, 255, 255, 255), 520, 74);
     top.addChild(title.node);
-    title.node.setPosition(-105, 0, 0);
+    title.node.setPosition(-95, 0, 0);
 
     const hintBtn = this.createButtonNode('HintBtn', i18n.t('ui.hint'), 126, 62, new Color(227, 231, 238, 255), new Color(65, 73, 88, 255), 16);
     top.addChild(hintBtn);
-    hintBtn.setPosition(252, 0, 0);
+    hintBtn.setPosition(270, 0, 0);
     hintBtn.on(Node.EventType.TOUCH_END, () => {
       this.hintPanel.active = !this.hintPanel.active;
     });
@@ -126,15 +151,16 @@ export class GameRoot extends Component {
     return top;
   }
 
+  /** 病人标签 + 健康条区域。 */
   private createStatusBar(): Node {
-    const bar = this.createSizedNode('StatusBar', 700, 96);
+    const bar = this.createSizedNode('StatusBar', 726, 96);
 
-    const bg = this.createRectNode('StatusBg', 700, 96, new Color(224, 229, 236, 255), 18);
+    const bg = this.createRectNode('StatusBg', 726, 96, new Color(224, 229, 236, 255), 18);
     bar.addChild(bg);
 
     const patientTag = this.createRectNode('PatientTagBg', 210, 46, new Color(97, 111, 132, 255), 12);
     bar.addChild(patientTag);
-    patientTag.setPosition(-225, 0, 0);
+    patientTag.setPosition(-238, 0, 0);
 
     const patientTagLabel = this.createLabelNode(
       'PatientTagLabel',
@@ -148,11 +174,11 @@ export class GameRoot extends Component {
 
     this.percentLabel = this.createLabelNode('PercentLabel', '0%', 30, new Color(63, 72, 89, 255), 90, 44);
     bar.addChild(this.percentLabel.node);
-    this.percentLabel.node.setPosition(-85, 0, 0);
+    this.percentLabel.node.setPosition(-92, 0, 0);
 
     const progressBg = this.createRectNode('ProgressBg', 280, 36, new Color(84, 96, 113, 255), 10);
     bar.addChild(progressBg);
-    progressBg.setPosition(155, 0, 0);
+    progressBg.setPosition(168, 0, 0);
 
     const progressNode = this.createSizedNode('ProgressNode', 254, 24);
     progressBg.addChild(progressNode);
@@ -172,13 +198,14 @@ export class GameRoot extends Component {
     return bar;
   }
 
+  /** 中部主操作区：床、人物、肌肉热区 chestZone/backZone 的坐标都在这里，改拖拽判定区域时同步改 pickZone 依赖的 node 位置/尺寸。 */
   private createTreatmentPanel(): Node {
-    const panel = this.createSizedNode('TreatmentPanel', 700, 610);
+    const panel = this.createSizedNode('TreatmentPanel', 726, 630);
 
-    const bg = this.createRectNode('TreatmentBg', 700, 610, new Color(233, 237, 242, 255), 18);
+    const bg = this.createRectNode('TreatmentBg', 726, 630, new Color(233, 237, 242, 255), 18);
     panel.addChild(bg);
 
-    const bed = this.createRectNode('Bed', 560, 332, new Color(214, 221, 230, 255), 22);
+    const bed = this.createRectNode('Bed', 586, 346, new Color(214, 221, 230, 255), 22);
     panel.addChild(bed);
     bed.setPosition(0, -5, 0);
 
@@ -214,7 +241,7 @@ export class GameRoot extends Component {
     legs.setPosition(205, -14, 0);
     legs.angle = -8;
 
-    const desk = this.createRectNode('Desk', 640, 34, new Color(155, 166, 180, 255), 14);
+    const desk = this.createRectNode('Desk', 666, 34, new Color(155, 166, 180, 255), 14);
     panel.addChild(desk);
     desk.setPosition(0, 188, 0);
 
@@ -234,7 +261,7 @@ export class GameRoot extends Component {
 
     const patientCaption = this.createLabelNode('PatientCaption', level1Config.patientName, 28, new Color(77, 88, 106, 255), 320, 44);
     panel.addChild(patientCaption.node);
-    patientCaption.node.setPosition(0, -238, 0);
+    patientCaption.node.setPosition(0, -248, 0);
 
     this.patientNode = body;
     this.zoneMap.set(ZoneType.Chest, {
@@ -257,10 +284,11 @@ export class GameRoot extends Component {
     return panel;
   }
 
+  /** 诊断文案 + 操作反馈文案。 */
   private createDiagnosisPanel(): Node {
-    const panel = this.createSizedNode('DiagnosisPanel', 700, 140);
+    const panel = this.createSizedNode('DiagnosisPanel', 726, 144);
 
-    const bg = this.createRectNode('DiagnosisBg', 700, 140, new Color(246, 248, 251, 255), 18);
+    const bg = this.createRectNode('DiagnosisBg', 726, 144, new Color(246, 248, 251, 255), 18);
     panel.addChild(bg);
 
     this.diagnosisLabel = this.createLabelNode(
@@ -268,23 +296,24 @@ export class GameRoot extends Component {
       `${i18n.t('ui.diagnosisLabel')}：${level1Config.diagnosis || i18n.t('game.diagnosis')}`,
       32,
       new Color(58, 67, 82, 255),
-      650,
+      676,
       54,
     );
     panel.addChild(this.diagnosisLabel.node);
     this.diagnosisLabel.node.setPosition(0, 34, 0);
 
-    this.feedbackLabel = this.createLabelNode('FeedbackLabel', i18n.t('feedback.default'), 24, new Color(109, 119, 135, 255), 650, 58);
+    this.feedbackLabel = this.createLabelNode('FeedbackLabel', i18n.t('feedback.default'), 24, new Color(109, 119, 135, 255), 676, 58);
     panel.addChild(this.feedbackLabel.node);
     this.feedbackLabel.node.setPosition(0, -30, 0);
 
     return panel;
   }
 
+  /** 底部工具槽；fascia/band 的 origin 用于拖拽结束弹回原位。 */
   private createToolDock(): Node {
-    const dock = this.createSizedNode('ToolDock', 700, 248);
+    const dock = this.createSizedNode('ToolDock', 726, 252);
 
-    const bg = this.createRectNode('DockBg', 700, 248, new Color(78, 90, 109, 255), 20);
+    const bg = this.createRectNode('DockBg', 726, 252, new Color(78, 90, 109, 255), 20);
     dock.addChild(bg);
 
     const dockTitle = this.createLabelNode('DockTitle', i18n.t('ui.toolDock'), 30, new Color(255, 255, 255, 255), 340, 42);
@@ -300,7 +329,7 @@ export class GameRoot extends Component {
       new Color(108, 120, 140, 255),
     );
     dock.addChild(fascia.node);
-    fascia.node.setPosition(-176, -28, 0);
+    fascia.node.setPosition(-182, -28, 0);
     fascia.origin = fascia.node.getPosition().clone();
 
     const band = this.createToolNode(
@@ -312,7 +341,7 @@ export class GameRoot extends Component {
       new Color(108, 120, 140, 255),
     );
     dock.addChild(band.node);
-    band.node.setPosition(176, -28, 0);
+    band.node.setPosition(182, -28, 0);
     band.origin = band.node.getPosition().clone();
 
     this.toolMap.set(ToolType.FasciaBall, fascia);
@@ -328,7 +357,7 @@ export class GameRoot extends Component {
     titleColor: Color,
     descColor: Color,
   ): ToolRuntime {
-    const node = this.createRectNode(`Tool-${id}`, 220, 136, cardColor, 22);
+    const node = this.createRectNode(`Tool-${id}`, 230, 140, cardColor, 22);
     const icon = id === ToolType.FasciaBall
       ? this.createCircleNode(`${id}-Icon`, 28, new Color(143, 154, 173, 255))
       : this.createBandIcon(`${id}-Icon`, new Color(143, 154, 173, 255));
@@ -358,8 +387,9 @@ export class GameRoot extends Component {
     return runtime;
   }
 
+  /** 全屏半透明遮罩 + 中间弹框；尺寸与 Root 一致，避免与 Canvas 设计分辨率错位时露边。 */
   private createHintPanel(): Node {
-    const panel = this.createRectNode('HintOverlay', 720, 1280, new Color(20, 24, 32, 145), 0);
+    const panel = this.createRectNode('HintOverlay', 750, 1334, new Color(20, 24, 32, 145), 0);
 
     const box = this.createRectNode('HintBox', 560, 360, new Color(248, 250, 252, 255), 24);
     panel.addChild(box);
@@ -387,8 +417,9 @@ export class GameRoot extends Component {
     return panel;
   }
 
+  /** 通关全屏层；布局与 Hint 类似，改 box.setPosition 可整体上移/下移弹窗。 */
   private createSettlementPanel(): Node {
-    const panel = this.createRectNode('SettlementPanel', 720, 1280, new Color(10, 14, 20, 180), 0);
+    const panel = this.createRectNode('SettlementPanel', 750, 1334, new Color(10, 14, 20, 180), 0);
 
     const box = this.createRectNode('SettlementBox', 600, 560, new Color(246, 248, 251, 255), 28);
     panel.addChild(box);
@@ -685,6 +716,7 @@ export class GameRoot extends Component {
     return label;
   }
 
+  /** 空容器节点：只有 UITransform 尺寸，无图；子节点用 setPosition 相对此节点中心布局。 */
   private createSizedNode(name: string, width: number, height: number): Node {
     const node = new Node(name);
     node.layer = this.node.layer;
