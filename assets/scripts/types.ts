@@ -17,7 +17,9 @@ export interface LevelTarget {
 export interface LevelConfig {
   id: number;
   title: string;
+  patientTag: string;
   patientName: string;
+  diagnosis: string;
   stageTip: string;
   targets: LevelTarget[];
 }
