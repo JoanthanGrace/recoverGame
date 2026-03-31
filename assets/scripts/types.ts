@@ -1,11 +1,15 @@
 export enum ToolType {
   FasciaBall = 'fasciaBall',
   ElasticBand = 'elasticBand',
+  FoamRoller = 'foamRoller',
+  ResistanceBand = 'resistanceBand',
 }
 
 export enum ZoneType {
   Chest = 'chest',
   Back = 'back',
+  Hip = 'hip',
+  Glute = 'glute',
 }
 
 export interface LevelTarget {
