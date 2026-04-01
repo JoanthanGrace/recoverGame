@@ -28,6 +28,7 @@ import {
   Vec3,
   VerticalTextAlignment,
   Tween,
+  log,
   tween,
 } from 'cc';
 import { level1Config } from './config/level1';
@@ -57,6 +58,12 @@ type ZoneRuntime = {
 /** 挂在 Canvas（或其子节点）上；start 时清空子节点并 buildScene 搭 UI。 */
 @ccclass('GameRoot')
 export class GameRoot extends Component {
+  // Fixed portrait design size used by this scene. These are logical units, not CSS pixels.
+  private readonly designWidth = 750;
+  private readonly designHeight = 1334;
+  // Fill the full design width to avoid the previous "narrow card in the middle" feeling.
+  private readonly sideInset = 0;
+
   private health = 0;
   private currentLevel = 1;
   private healthFill!: Node;
@@ -83,10 +90,16 @@ export class GameRoot extends Component {
     return this.currentLevel === 2 ? level2Config : level1Config;
   }
 
+  private get panelWidth() {
+    return this.designWidth - this.sideInset * 2;
+  }
+
   /**
    * 页面骨架：唯一「整页容器」是 root（逻辑尺寸 750×1334，与常见竖屏设计稿一致）。
-   * pageBg 铺满 root；其下各块自上而下为：顶栏 → 状态条 → 治疗区 → 诊断条 → 工具栏。
-   * 提示层、结算层最后挂上，覆盖在最上（同坐标系下后 addChild 的通常更靠上绘制，且全屏半透明）。
+   * 这里采用“整屏式主界面”：
+   * - pageBg 先铺满整页
+   * - 顶栏 / 状态条 / 治疗区 / 诊断条 / 工具栏 也都使用接近整页宽度的满宽布局
+   * 这样视觉上不会再像一张窄卡片悬在中间。
    */
   private buildScene() {
     this.node.removeAllChildren();
@@ -97,12 +110,20 @@ export class GameRoot extends Component {
     this.locked = false;
 
     // 整页逻辑尺寸（宽, 高）。改分辨率时同步改这里 + 下面 PageBg + 编辑器 Canvas 设计分辨率。
-    const root = this.createSizedNode('Root', 750, 1334);
+    const root = this.createSizedNode('Root', this.designWidth, this.designHeight);
     this.node.addChild(root);
 
-    // 整页底色：深夜蓝科技感
-    const pageBg = this.createRectNode('PageBg', 750, 1334, new Color(18, 22, 34, 255), 0);
+    // Full-screen background. If this is not full-width visually, the preview is still using stale bundles.
+    const pageBg = this.createRectNode('PageBg', this.designWidth, this.designHeight, new Color(8, 18, 38, 255), 0);
     root.addChild(pageBg);
+
+    // Runtime sanity log for width debugging.
+    log(`[GameRoot] design=${this.designWidth}x${this.designHeight}, panelWidth=${this.panelWidth}, sideInset=${this.sideInset}`);
+
+    // Tiny build marker to verify the latest script is actually running.
+    const buildTag = this.createLabelNode('BuildTag', 'build: fullwidth-2026-03-31-b', 14, new Color(90, 140, 210, 255), 300, 24);
+    root.addChild(buildTag.node);
+    buildTag.node.setPosition(-210, 650, 0);
 
     // —— 以下 Y 均为相对 root 中心；数值越大越靠屏幕上方 ——
     const topBar = this.createTopBar();
@@ -138,18 +159,18 @@ export class GameRoot extends Component {
 
   /** 顶部标题栏：内部子元素位置相对 TopBar 中心。 */
   private createTopBar(): Node {
-    const top = this.createSizedNode('TopBar', 726, 116);
+    const top = this.createSizedNode('TopBar', this.panelWidth, 116);
 
-    const bg = this.createRectNode('TopBarBg', 726, 116, new Color(30, 36, 52, 255), 18);
+    const bg = this.createRectNode('TopBarBg', this.panelWidth, 116, new Color(24, 30, 44, 255), 8);
     top.addChild(bg);
 
-    const title = this.createLabelNode('CaseTitle', this.getCurrentConfig().title, 38, new Color(200, 220, 255, 255), 520, 74);
+    const title = this.createLabelNode('CaseTitle', this.getCurrentConfig().title, 38, new Color(200, 220, 255, 255), 590, 74);
     top.addChild(title.node);
-    title.node.setPosition(-95, 0, 0);
+    title.node.setPosition(-72, 0, 0);
 
     const hintBtn = this.createButtonNode('HintBtn', i18n.t('ui.hint'), 126, 62, new Color(0, 160, 255, 255), new Color(255, 255, 255, 255), 16);
     top.addChild(hintBtn);
-    hintBtn.setPosition(270, 0, 0);
+    hintBtn.setPosition(286, 0, 0);
     hintBtn.on(Node.EventType.TOUCH_END, () => {
       this.hintPanel.active = !this.hintPanel.active;
     });
@@ -159,14 +180,14 @@ export class GameRoot extends Component {
 
   /** 病人标签 + 健康条区域。 */
   private createStatusBar(): Node {
-    const bar = this.createSizedNode('StatusBar', 726, 96);
+    const bar = this.createSizedNode('StatusBar', this.panelWidth, 96);
 
-    const bg = this.createRectNode('StatusBg', 726, 96, new Color(24, 30, 44, 255), 18);
+    const bg = this.createRectNode('StatusBg', this.panelWidth, 96, new Color(22, 28, 42, 255), 8);
     bar.addChild(bg);
 
     const patientTag = this.createRectNode('PatientTagBg', 210, 46, new Color(0, 120, 200, 255), 12);
     bar.addChild(patientTag);
-    patientTag.setPosition(-238, 0, 0);
+    patientTag.setPosition(-248, 0, 0);
 
     const patientTagLabel = this.createLabelNode(
       'PatientTagLabel',
@@ -180,11 +201,11 @@ export class GameRoot extends Component {
 
     this.percentLabel = this.createLabelNode('PercentLabel', '0%', 30, new Color(0, 220, 130, 255), 90, 44);
     bar.addChild(this.percentLabel.node);
-    this.percentLabel.node.setPosition(-92, 0, 0);
+    this.percentLabel.node.setPosition(-108, 0, 0);
 
     const progressBg = this.createRectNode('ProgressBg', 280, 36, new Color(40, 48, 68, 255), 10);
     bar.addChild(progressBg);
-    progressBg.setPosition(168, 0, 0);
+    progressBg.setPosition(196, 0, 0);
 
     const progressNode = this.createSizedNode('ProgressNode', 254, 24);
     progressBg.addChild(progressNode);
@@ -206,17 +227,18 @@ export class GameRoot extends Component {
 
   /** 中部主操作区：床、人物、肌肉热区 chestZone/backZone 的坐标都在这里，改拖拽判定区域时同步改 pickZone 依赖的 node 位置/尺寸。 */
   private createTreatmentPanel(): Node {
-    const panel = this.createSizedNode('TreatmentPanel', 726, 630);
+    const panel = this.createSizedNode('TreatmentPanel', this.panelWidth, 630);
     const cfg = this.getCurrentConfig();
 
-    const bg = this.createRectNode('TreatmentBg', 726, 630, new Color(26, 32, 48, 255), 18);
+    // 主操作区直接整宽展开，让中部真正成为“游戏主体画面”。
+    const bg = this.createRectNode('TreatmentBg', this.panelWidth, 630, new Color(26, 32, 48, 255), 0);
     panel.addChild(bg);
 
-    const bed = this.createRectNode('Bed', 586, 346, new Color(34, 42, 62, 255), 22);
+    const bed = this.createRectNode('Bed', 650, 368, new Color(34, 42, 62, 255), 18);
     panel.addChild(bed);
     bed.setPosition(0, -5, 0);
 
-    const pillow = this.createRectNode('Pillow', 134, 46, new Color(50, 60, 85, 255), 16);
+    const pillow = this.createRectNode('Pillow', 142, 48, new Color(50, 60, 85, 255), 14);
     panel.addChild(pillow);
     pillow.setPosition(-182, 120, 0);
 
@@ -248,7 +270,7 @@ export class GameRoot extends Component {
     legs.setPosition(205, -14, 0);
     legs.angle = -8;
 
-    const desk = this.createRectNode('Desk', 666, 34, new Color(40, 50, 72, 255), 14);
+    const desk = this.createRectNode('Desk', 720, 34, new Color(40, 50, 72, 255), 12);
     panel.addChild(desk);
     desk.setPosition(0, 188, 0);
 
@@ -303,9 +325,9 @@ export class GameRoot extends Component {
 
   /** 诊断文案 + 操作反馈文案。 */
   private createDiagnosisPanel(): Node {
-    const panel = this.createSizedNode('DiagnosisPanel', 726, 144);
+    const panel = this.createSizedNode('DiagnosisPanel', this.panelWidth, 144);
 
-    const bg = this.createRectNode('DiagnosisBg', 726, 144, new Color(22, 28, 42, 255), 18);
+    const bg = this.createRectNode('DiagnosisBg', this.panelWidth, 144, new Color(20, 26, 40, 255), 0);
     panel.addChild(bg);
 
     this.diagnosisLabel = this.createLabelNode(
@@ -313,13 +335,13 @@ export class GameRoot extends Component {
       `${i18n.t('ui.diagnosisLabel')}：${this.getCurrentConfig().diagnosis || i18n.t('game.diagnosis')}`,
       32,
       new Color(200, 220, 255, 255),
-      676,
+      724,
       54,
     );
     panel.addChild(this.diagnosisLabel.node);
     this.diagnosisLabel.node.setPosition(0, 34, 0);
 
-    this.feedbackLabel = this.createLabelNode('FeedbackLabel', i18n.t('feedback.default'), 24, new Color(120, 140, 180, 255), 676, 58);
+    this.feedbackLabel = this.createLabelNode('FeedbackLabel', i18n.t('feedback.default'), 24, new Color(120, 140, 180, 255), 724, 58);
     panel.addChild(this.feedbackLabel.node);
     this.feedbackLabel.node.setPosition(0, -30, 0);
 
@@ -328,10 +350,10 @@ export class GameRoot extends Component {
 
   /** 底部工具槽；fascia/band 的 origin 用于拖拽结束弹回原位。 */
   private createToolDock(): Node {
-    const dock = this.createSizedNode('ToolDock', 726, 252);
+    const dock = this.createSizedNode('ToolDock', this.panelWidth, 252);
     const cfg = this.getCurrentConfig();
 
-    const bg = this.createRectNode('DockBg', 726, 252, new Color(16, 20, 32, 255), 20);
+    const bg = this.createRectNode('DockBg', this.panelWidth, 252, new Color(16, 20, 32, 255), 0);
     dock.addChild(bg);
 
     const dockTitle = this.createLabelNode('DockTitle', i18n.t('ui.toolDock'), 30, new Color(140, 160, 200, 255), 340, 42);
@@ -354,7 +376,7 @@ export class GameRoot extends Component {
       new Color(120, 140, 180, 255),
     );
     dock.addChild(tool1.node);
-    tool1.node.setPosition(-182, -28, 0);
+    tool1.node.setPosition(-194, -28, 0);
     tool1.origin = tool1.node.getPosition().clone();
 
     const tool2 = this.createToolNode(
@@ -366,7 +388,7 @@ export class GameRoot extends Component {
       new Color(120, 140, 180, 255),
     );
     dock.addChild(tool2.node);
-    tool2.node.setPosition(182, -28, 0);
+    tool2.node.setPosition(194, -28, 0);
     tool2.origin = tool2.node.getPosition().clone();
 
     this.toolMap.set(tool1Id, tool1);
@@ -422,7 +444,7 @@ export class GameRoot extends Component {
 
   /** 全屏半透明遮罩 + 中间弹框；尺寸与 Root 一致，避免与 Canvas 设计分辨率错位时露边。 */
   private createHintPanel(): Node {
-    const panel = this.createRectNode('HintOverlay', 750, 1334, new Color(10, 14, 24, 180), 0);
+    const panel = this.createRectNode('HintOverlay', this.designWidth, this.designHeight, new Color(10, 14, 24, 180), 0);
 
     const box = this.createRectNode('HintBox', 560, 360, new Color(22, 28, 44, 255), 24);
     panel.addChild(box);
@@ -452,7 +474,7 @@ export class GameRoot extends Component {
 
   /** 通关全屏层；布局与 Hint 类似，改 box.setPosition 可整体上移/下移弹窗。 */
   private createSettlementPanel(): Node {
-    const panel = this.createRectNode('SettlementPanel', 750, 1334, new Color(10, 14, 20, 200), 0);
+    const panel = this.createRectNode('SettlementPanel', this.designWidth, this.designHeight, new Color(10, 14, 20, 200), 0);
     const cfg = this.getCurrentConfig();
 
     const box = this.createRectNode('SettlementBox', 600, 560, new Color(22, 28, 44, 255), 28);
