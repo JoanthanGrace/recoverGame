@@ -78,6 +78,7 @@ export class GameRoot extends Component {
   private diagnosisLabel!: Label;
   private feedbackLabel!: Label;
   private patientNode!: Node;
+  private startPanel!: Node;
   private hintPanel!: Node;
   private settlementPanel!: Node;
 
@@ -156,6 +157,10 @@ export class GameRoot extends Component {
     root.addChild(toolDock);
     toolDock.setPosition(0, -555, 0);
 
+    this.startPanel = this.createStartPanel();
+    root.addChild(this.startPanel);
+    this.startPanel.active = true;
+
     this.hintPanel = this.createHintPanel();
     root.addChild(this.hintPanel);
     this.hintPanel.active = false;
@@ -165,6 +170,7 @@ export class GameRoot extends Component {
     this.settlementPanel.active = false;
 
     this.resetState();
+    this.locked = true;
   }
 
   /** 顶部标题栏：内部子元素位置相对 TopBar 中心。 */
@@ -408,6 +414,65 @@ export class GameRoot extends Component {
     return dock;
   }
 
+  /** 启动页：用于正式演示与备案截图，避免直接跳到关卡内。 */
+  private createStartPanel(): Node {
+    const panel = this.createRectNode('StartPanel', this.designWidth, this.designHeight, new Color(7, 12, 22, 225), 0);
+
+    const title = this.createLabelNode('StartTitle', i18n.t('game.title'), 56, new Color(196, 220, 255, 255), 660, 90);
+    panel.addChild(title.node);
+    title.node.setPosition(0, 280, 0);
+
+    const subtitle = this.createLabelNode('StartSubtitle', i18n.t('game.start.subtitle'), 28, new Color(108, 176, 255, 255), 620, 48);
+    panel.addChild(subtitle.node);
+    subtitle.node.setPosition(0, 220, 0);
+
+    const desc = this.createLabelNode(
+      'StartDesc',
+      '观察异常热区，拖拽工具完成康复挑战',
+      24,
+      new Color(138, 168, 210, 255),
+      620,
+      60,
+    );
+    panel.addChild(desc.node);
+    desc.node.setPosition(0, 165, 0);
+
+    const startBtn = this.createButtonNode('StartBtn', i18n.t('ui.start'), 360, 78, new Color(0, 168, 255, 255), new Color(255, 255, 255, 255), 20);
+    panel.addChild(startBtn);
+    startBtn.setPosition(0, 40, 0);
+    startBtn.on(Node.EventType.TOUCH_END, () => {
+      this.currentLevel = 1;
+      this.startPanel.active = false;
+      this.hintPanel.active = false;
+      this.settlementPanel.active = false;
+      this.resetState();
+      this.locked = false;
+    });
+
+    const testBtn = this.createButtonNode(
+      'StartLevel2Btn',
+      i18n.t('ui.start.level2'),
+      360,
+      64,
+      new Color(30, 46, 74, 255),
+      new Color(145, 176, 220, 255),
+      18,
+    );
+    panel.addChild(testBtn);
+    testBtn.setPosition(0, -50, 0);
+    testBtn.on(Node.EventType.TOUCH_END, () => {
+      this.currentLevel = 2;
+      this.startPanel.active = false;
+      this.hintPanel.active = false;
+      this.settlementPanel.active = false;
+      this.buildScene();
+      this.startPanel.active = false;
+      this.locked = false;
+    });
+
+    return panel;
+  }
+
   private createToolNode(
     id: ToolType,
     text: string,
@@ -530,6 +595,8 @@ export class GameRoot extends Component {
       if (this.currentLevel === 1) {
         this.currentLevel = 2;
         this.buildScene();
+        this.startPanel.active = false;
+        this.locked = false;
       } else {
         this.showFeedback(i18n.t('settlement.more'), new Color(255, 200, 80, 255));
         this.settlementPanel.active = false;

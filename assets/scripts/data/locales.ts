@@ -5,9 +5,12 @@ export const locales: LocaleMap = {
   zh: {
     'game.title': '打工人康复指南',
     'game.levelTitle': '病例01：键盘侠的觉醒',
+    'game.start.subtitle': '康复闯关 · 先松后强',
     'game.patientTag': '键盘侠衰衰',
     'game.diagnosis': '胸紧背弱',
     'ui.hint': '提示',
+    'ui.start': '开始康复',
+    'ui.start.level2': '直接挑战第2关（测试）',
     'ui.health': '恢复值',
     'ui.restart': '再来一次',
     'ui.diagnosisLabel': '当前判断',
