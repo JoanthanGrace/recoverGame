@@ -28,7 +28,6 @@ import {
   Vec3,
   VerticalTextAlignment,
   Tween,
-  log,
   tween,
 } from 'cc';
 import { level1Config } from './config/level1';
@@ -67,6 +66,11 @@ export class GameRoot extends Component {
   private health = 0;
   private currentLevel = 1;
   private healthFill!: Node;
+  private healthFillGraphics!: Graphics;
+  private readonly healthFillMaxWidth = 254;
+  private readonly healthFillHeight = 24;
+  private readonly healthFillRadius = 8;
+  private readonly healthFillLeftX = -127;
   private healthLabel!: Label;
   private percentLabel!: Label;
   private diagnosisLabel!: Label;
@@ -116,14 +120,6 @@ export class GameRoot extends Component {
     // Full-screen background. If this is not full-width visually, the preview is still using stale bundles.
     const pageBg = this.createRectNode('PageBg', this.designWidth, this.designHeight, new Color(8, 18, 38, 255), 0);
     root.addChild(pageBg);
-
-    // Runtime sanity log for width debugging.
-    log(`[GameRoot] design=${this.designWidth}x${this.designHeight}, panelWidth=${this.panelWidth}, sideInset=${this.sideInset}`);
-
-    // Tiny build marker to verify the latest script is actually running.
-    const buildTag = this.createLabelNode('BuildTag', 'build: fullwidth-2026-03-31-b', 14, new Color(90, 140, 210, 255), 300, 24);
-    root.addChild(buildTag.node);
-    buildTag.node.setPosition(-210, 650, 0);
 
     // —— 以下 Y 均为相对 root 中心；数值越大越靠屏幕上方 ——
     const topBar = this.createTopBar();
@@ -211,12 +207,12 @@ export class GameRoot extends Component {
     progressBg.addChild(progressNode);
     progressNode.setPosition(0, 0, 0);
 
-    this.healthFill = this.createRectNode('ProgressFill', 254, 24, new Color(0, 220, 130, 255), 8);
+    // Progress fill is updated by width redraw, not node scale, to avoid visual drifting.
+    this.healthFill = this.createSizedNode('ProgressFill', this.healthFillMaxWidth, this.healthFillHeight);
+    this.healthFillGraphics = this.healthFill.addComponent(Graphics);
     progressNode.addChild(this.healthFill);
-    const trans = this.healthFill.getComponent(UITransform)!;
-    trans.setAnchorPoint(0, 0.5);
-    this.healthFill.setPosition(-127, 0, 0);
-    this.healthFill.setScale(0, 1, 1);
+    this.healthFill.setPosition(this.healthFillLeftX, 0, 0);
+    this.drawHealthFill(0);
 
     this.healthLabel = this.createLabelNode('HealthLabel', `${i18n.t('ui.health')} 0%`, 22, new Color(140, 160, 200, 255), 210, 38);
     bar.addChild(this.healthLabel.node);
@@ -242,14 +238,16 @@ export class GameRoot extends Component {
     panel.addChild(pillow);
     pillow.setPosition(-182, 120, 0);
 
-    const body = this.createRectNode('PatientBody', 376, 144, new Color(255, 220, 185, 255), 44);
+    const isLevel2 = cfg.id === 2;
+    const bodyColor = isLevel2 ? new Color(235, 215, 190, 255) : new Color(255, 220, 185, 255);
+    const body = this.createRectNode('PatientBody', 376, 144, bodyColor, 44);
     panel.addChild(body);
-    body.setPosition(24, 26, 0);
-    body.angle = -8;
+    body.setPosition(isLevel2 ? 8 : 24, isLevel2 ? 18 : 26, 0);
+    body.angle = isLevel2 ? -4 : -8;
 
-    const head = this.createCircleNode('PatientHead', 62, new Color(255, 220, 185, 255));
+    const head = this.createCircleNode('PatientHead', 62, bodyColor);
     panel.addChild(head);
-    head.setPosition(-188, 80, 0);
+    head.setPosition(isLevel2 ? -168 : -188, isLevel2 ? 66 : 80, 0);
 
     const hair = this.createCircleNode('Hair', 62, new Color(30, 20, 10, 255));
     head.addChild(hair);
@@ -260,15 +258,15 @@ export class GameRoot extends Component {
     head.addChild(glasses);
     glasses.setPosition(8, -2, 0);
 
-    const arm = this.createRectNode('Arm', 126, 26, new Color(255, 220, 185, 255), 12);
+    const arm = this.createRectNode('Arm', 126, 26, bodyColor, 12);
     panel.addChild(arm);
-    arm.setPosition(-98, 6, 0);
-    arm.angle = -20;
+    arm.setPosition(isLevel2 ? -88 : -98, isLevel2 ? -2 : 6, 0);
+    arm.angle = isLevel2 ? -8 : -20;
 
     const legs = this.createRectNode('Legs', 146, 54, new Color(60, 80, 120, 255), 24);
     panel.addChild(legs);
-    legs.setPosition(205, -14, 0);
-    legs.angle = -8;
+    legs.setPosition(isLevel2 ? 190 : 205, isLevel2 ? -6 : -14, 0);
+    legs.angle = isLevel2 ? -2 : -8;
 
     const desk = this.createRectNode('Desk', 720, 34, new Color(40, 50, 72, 255), 12);
     panel.addChild(desk);
@@ -279,7 +277,7 @@ export class GameRoot extends Component {
     const zone1DoneColor = new Color(0, 220, 130, 220);
     const chestZone = this.createRectNode('ChestZone', 130, 130, zone1Color, 65);
     panel.addChild(chestZone);
-    chestZone.setPosition(12, 55, 0);
+    chestZone.setPosition(isLevel2 ? -4 : 12, isLevel2 ? 42 : 55, 0);
     const zone1Id = cfg.targets[0].zone;
     const zone1LabelKey = `ui.zone.${zone1Id}`;
     const chestLabel = this.addZoneLabel(chestZone, i18n.t(zone1LabelKey) || zone1Id);
@@ -293,12 +291,12 @@ export class GameRoot extends Component {
     const zone2DoneColor = new Color(255, 200, 0, 220);
     const backZone = this.createRectNode('BackZone', 136, 136, zone2Color, 68);
     panel.addChild(backZone);
-    backZone.setPosition(132, 74, 0);
+    backZone.setPosition(isLevel2 ? 116 : 132, isLevel2 ? 52 : 74, 0);
     const zone2Id = cfg.targets[1].zone;
     const zone2LabelKey = `ui.zone.${zone2Id}`;
     const backLabel = this.addZoneLabel(backZone, i18n.t(zone2LabelKey) || zone2Id);
 
-    const patientCaption = this.createLabelNode('PatientCaption', cfg.patientName, 28, new Color(140, 160, 200, 255), 320, 44);
+    const patientCaption = this.createLabelNode('PatientCaption', cfg.patientName, 28, new Color(140, 160, 200, 255), 420, 44);
     panel.addChild(patientCaption.node);
     patientCaption.node.setPosition(0, -248, 0);
 
@@ -625,9 +623,28 @@ export class GameRoot extends Component {
 
   private updateHealth(delta: number) {
     this.health = Math.min(100, Math.max(0, this.health + delta));
-    this.healthFill.setScale(this.health / 100, 1, 1);
+    this.drawHealthFill(this.health / 100);
     this.healthLabel.string = `${i18n.t('ui.health')} ${this.health}%`;
     this.percentLabel.string = `${this.health}%`;
+  }
+
+  // Keep the left edge fixed and redraw width to prevent fill bar misalignment while progressing.
+  private drawHealthFill(progress: number) {
+    const clamped = Math.max(0, Math.min(1, progress));
+    const width = this.healthFillMaxWidth * clamped;
+    this.healthFillGraphics.clear();
+    if (width <= 0.5) {
+      this.healthFill.setPosition(this.healthFillLeftX, 0, 0);
+      return;
+    }
+    this.drawRoundedRect(
+      this.healthFillGraphics,
+      width,
+      this.healthFillHeight,
+      new Color(0, 220, 130, 255),
+      Math.min(this.healthFillRadius, width / 2),
+    );
+    this.healthFill.setPosition(this.healthFillLeftX + width / 2, 0, 0);
   }
 
   private showFeedback(text: string, color: Color) {
