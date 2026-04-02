@@ -22,6 +22,7 @@ import {
   HorizontalTextAlignment,
   Label,
   Node,
+  ResolutionPolicy,
   UITransform,
   UIOpacity,
   Vec2,
@@ -29,6 +30,7 @@ import {
   VerticalTextAlignment,
   Tween,
   tween,
+  view,
 } from 'cc';
 import { level1Config } from './config/level1';
 import { level2Config } from './config/level2';
@@ -86,6 +88,14 @@ export class GameRoot extends Component {
   private locked = false;
 
   start() {
+    // 把 750×1334 的设计稿映射到屏幕：宽度铺满，高度按设备比例自适应。
+    // FIXED_WIDTH = 宽度始终 750 设计单位，高度随屏幕高宽比动态变化。
+    view.setDesignResolutionSize(
+      this.designWidth,
+      this.designHeight,
+      ResolutionPolicy.FIXED_WIDTH,
+    );
+
     i18n.init();
     this.buildScene();
   }
@@ -113,12 +123,16 @@ export class GameRoot extends Component {
     this.draggingTool = null;
     this.locked = false;
 
-    // 整页逻辑尺寸（宽, 高）。改分辨率时同步改这里 + 下面 PageBg + 编辑器 Canvas 设计分辨率。
-    const root = this.createSizedNode('Root', this.designWidth, this.designHeight);
+    // FIXED_WIDTH 下宽度固定 750，高度由设备比例决定（比 1334 大或小都有可能）。
+    // 用 view.getVisibleSize() 拿到真实可见区域，Root / 背景 / 全屏遮罩都用这个尺寸铺满。
+    const vs = view.getVisibleSize();
+    const rootW = vs.width;
+    const rootH = vs.height;
+
+    const root = this.createSizedNode('Root', rootW, rootH);
     this.node.addChild(root);
 
-    // Full-screen background. If this is not full-width visually, the preview is still using stale bundles.
-    const pageBg = this.createRectNode('PageBg', this.designWidth, this.designHeight, new Color(8, 18, 38, 255), 0);
+    const pageBg = this.createRectNode('PageBg', rootW, rootH, new Color(8, 18, 38, 255), 0);
     root.addChild(pageBg);
 
     // —— 以下 Y 均为相对 root 中心；数值越大越靠屏幕上方 ——
@@ -442,7 +456,8 @@ export class GameRoot extends Component {
 
   /** 全屏半透明遮罩 + 中间弹框；尺寸与 Root 一致，避免与 Canvas 设计分辨率错位时露边。 */
   private createHintPanel(): Node {
-    const panel = this.createRectNode('HintOverlay', this.designWidth, this.designHeight, new Color(10, 14, 24, 180), 0);
+    const vs = view.getVisibleSize();
+    const panel = this.createRectNode('HintOverlay', vs.width, vs.height, new Color(10, 14, 24, 180), 0);
 
     const box = this.createRectNode('HintBox', 560, 360, new Color(22, 28, 44, 255), 24);
     panel.addChild(box);
@@ -472,7 +487,8 @@ export class GameRoot extends Component {
 
   /** 通关全屏层；布局与 Hint 类似，改 box.setPosition 可整体上移/下移弹窗。 */
   private createSettlementPanel(): Node {
-    const panel = this.createRectNode('SettlementPanel', this.designWidth, this.designHeight, new Color(10, 14, 20, 200), 0);
+    const vs = view.getVisibleSize();
+    const panel = this.createRectNode('SettlementPanel', vs.width, vs.height, new Color(10, 14, 20, 200), 0);
     const cfg = this.getCurrentConfig();
 
     const box = this.createRectNode('SettlementBox', 600, 560, new Color(22, 28, 44, 255), 28);
