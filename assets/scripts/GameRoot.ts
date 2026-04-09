@@ -15,6 +15,7 @@
  */
 import {
   _decorator,
+  assetManager,
   Color,
   Component,
   EventTouch,
@@ -23,6 +24,10 @@ import {
   Label,
   Node,
   ResolutionPolicy,
+  resources,
+  Sprite,
+  SpriteFrame,
+  Texture2D,
   UITransform,
   UIOpacity,
   Vec2,
@@ -38,6 +43,36 @@ import { i18n } from './core/I18n';
 import { ToolType, ZoneType, LevelConfig } from './types';
 
 const { ccclass } = _decorator;
+
+const COVER_BG_ASSET = {
+  path: 'cover/cover-bg.png',
+  uuid: 'd154fbf7-df94-4a93-bbde-fb0d5fe8977f@6c48a',
+};
+
+const START_BTN_ASSET = {
+  path: 'cover/btn-start.png',
+  uuid: '910d77e0-1a34-4da3-aab4-1f6a24be769b@6c48a',
+};
+
+const START_BTN_CLICKED_ASSET = {
+  path: 'cover/btn-start-clicked.png',
+  uuid: '0dbed48b-a6c6-4557-a34c-71acabd703d1@6c48a',
+};
+
+const TOOL_ASSETS: Partial<Record<ToolType, { path: string; uuid: string }>> = {
+  [ToolType.FasciaBall]: {
+    path: 'levels/common/ball.png',
+    uuid: '7f348c43-c2d4-4388-bd70-09637f43cb7a@6c48a',
+  },
+  [ToolType.FoamRoller]: {
+    path: 'levels/common/Gemini_Generated_Image_3tklw13tklw13tkl.png',
+    uuid: 'e7c88ef5-bb1a-4012-bdf6-f3d02b9775ff@6c48a',
+  },
+  [ToolType.ResistanceBand]: {
+    path: 'levels/common/Gemini_Generated_Image_cehnrycehnrycehn.png',
+    uuid: 'e7c0a3dc-efc7-4628-a333-1da16a347b89@6c48a',
+  },
+};
 
 type ToolRuntime = {
   id: ToolType;
@@ -416,31 +451,45 @@ export class GameRoot extends Component {
 
   /** 启动页：用于正式演示与备案截图，避免直接跳到关卡内。 */
   private createStartPanel(): Node {
-    const panel = this.createRectNode('StartPanel', this.designWidth, this.designHeight, new Color(7, 12, 22, 225), 0);
+    const vs = view.getVisibleSize();
+    const panel = this.createSizedNode('StartPanel', vs.width, vs.height);
 
-    const title = this.createLabelNode('StartTitle', i18n.t('game.title'), 56, new Color(196, 220, 255, 255), 660, 90);
-    panel.addChild(title.node);
-    title.node.setPosition(0, 280, 0);
+    const bg = this.createImageNode('StartBg', vs.width, vs.height);
+    panel.addChild(bg);
+    this.loadSpriteFrame(COVER_BG_ASSET, (spriteFrame) => {
+      const sprite = bg.getComponent(Sprite);
+      if (sprite) {
+        sprite.spriteFrame = spriteFrame;
+        this.fitSpriteCover(bg, spriteFrame, vs.width, vs.height);
+      }
+    });
 
-    const subtitle = this.createLabelNode('StartSubtitle', i18n.t('game.start.subtitle'), 28, new Color(108, 176, 255, 255), 620, 48);
-    panel.addChild(subtitle.node);
-    subtitle.node.setPosition(0, 220, 0);
-
-    const desc = this.createLabelNode(
-      'StartDesc',
-      '观察异常热区，拖拽工具完成康复挑战',
-      24,
-      new Color(138, 168, 210, 255),
-      620,
-      60,
-    );
-    panel.addChild(desc.node);
-    desc.node.setPosition(0, 165, 0);
-
-    const startBtn = this.createButtonNode('StartBtn', i18n.t('ui.start'), 360, 78, new Color(0, 168, 255, 255), new Color(255, 255, 255, 255), 20);
+    const startBtn = this.createImageNode('StartBtn', 360, 196);
     panel.addChild(startBtn);
-    startBtn.setPosition(0, 40, 0);
+    startBtn.setPosition(0, -430, 0);
+
+    let normalFrame: SpriteFrame | null = null;
+    let pressedFrame: SpriteFrame | null = null;
+    const applyButtonFrame = (frame: SpriteFrame | null) => {
+      const sprite = startBtn.getComponent(Sprite);
+      if (sprite && frame) {
+        sprite.spriteFrame = frame;
+      }
+    };
+
+    this.loadSpriteFrame(START_BTN_ASSET, (spriteFrame) => {
+      normalFrame = spriteFrame;
+      applyButtonFrame(normalFrame);
+    });
+    this.loadSpriteFrame(START_BTN_CLICKED_ASSET, (spriteFrame) => {
+      pressedFrame = spriteFrame;
+    });
+
+    startBtn.on(Node.EventType.TOUCH_START, () => {
+      applyButtonFrame(pressedFrame ?? normalFrame);
+    });
     startBtn.on(Node.EventType.TOUCH_END, () => {
+      applyButtonFrame(normalFrame);
       this.currentLevel = 1;
       this.startPanel.active = false;
       this.hintPanel.active = false;
@@ -448,26 +497,8 @@ export class GameRoot extends Component {
       this.resetState();
       this.locked = false;
     });
-
-    const testBtn = this.createButtonNode(
-      'StartLevel2Btn',
-      i18n.t('ui.start.level2'),
-      360,
-      64,
-      new Color(30, 46, 74, 255),
-      new Color(145, 176, 220, 255),
-      18,
-    );
-    panel.addChild(testBtn);
-    testBtn.setPosition(0, -50, 0);
-    testBtn.on(Node.EventType.TOUCH_END, () => {
-      this.currentLevel = 2;
-      this.startPanel.active = false;
-      this.hintPanel.active = false;
-      this.settlementPanel.active = false;
-      this.buildScene();
-      this.startPanel.active = false;
-      this.locked = false;
+    startBtn.on(Node.EventType.TOUCH_CANCEL, () => {
+      applyButtonFrame(normalFrame);
     });
 
     return panel;
@@ -483,22 +514,13 @@ export class GameRoot extends Component {
   ): ToolRuntime {
     const node = this.createRectNode(`Tool-${id}`, 230, 140, cardColor, 22);
 
-    let icon: Node;
-    if (id === ToolType.FasciaBall) {
-      icon = this.createCircleNode(`${id}-Icon`, 28, new Color(0, 180, 120, 255));
-    } else if (id === ToolType.FoamRoller) {
-      icon = this.createRectNode(`${id}-Icon`, 60, 28, new Color(0, 180, 120, 255), 14);
-    } else if (id === ToolType.ResistanceBand) {
-      icon = this.createBandIcon(`${id}-Icon`, new Color(0, 200, 120, 255));
-    } else {
-      icon = this.createBandIcon(`${id}-Icon`, new Color(143, 154, 173, 255));
-    }
+    const icon = this.createToolIconNode(id);
     node.addChild(icon);
-    icon.setPosition(0, 22, 0);
+    icon.setPosition(0, 28, 0);
 
     const label = this.createLabelNode(`${id}-Title`, text, 32, titleColor, 182, 46);
     node.addChild(label.node);
-    label.node.setPosition(0, -18, 0);
+    label.node.setPosition(0, -16, 0);
 
     const descLabel = this.createLabelNode(`${id}-Desc`, desc, 24, descColor, 182, 36);
     node.addChild(descLabel.node);
@@ -517,6 +539,24 @@ export class GameRoot extends Component {
     node.on(Node.EventType.TOUCH_END, (event: EventTouch) => this.onToolEnd(runtime, event));
     node.on(Node.EventType.TOUCH_CANCEL, (event: EventTouch) => this.onToolEnd(runtime, event));
     return runtime;
+  }
+
+  private createToolIconNode(id: ToolType): Node {
+    const icon = this.createImageNode(`${id}-Icon`, 110, 70);
+    const assetInfo = TOOL_ASSETS[id];
+    if (!assetInfo) {
+      return icon;
+    }
+
+    this.loadSpriteFrame(assetInfo, (spriteFrame) => {
+      const sprite = icon.getComponent(Sprite);
+      if (sprite) {
+        sprite.spriteFrame = spriteFrame;
+        this.fitSpriteContain(icon, spriteFrame, 110, 70);
+      }
+    });
+
+    return icon;
   }
 
   /** 全屏半透明遮罩 + 中间弹框；尺寸与 Root 一致，避免与 Canvas 设计分辨率错位时露边。 */
@@ -851,6 +891,62 @@ export class GameRoot extends Component {
     const graphics = node.addComponent(Graphics);
     this.drawRoundedRect(graphics, width, height, color, radius);
     return node;
+  }
+
+  private createImageNode(name: string, width: number, height: number): Node {
+    const node = this.createSizedNode(name, width, height);
+    const sprite = node.addComponent(Sprite);
+    sprite.sizeMode = Sprite.SizeMode.CUSTOM;
+    return node;
+  }
+
+  private fitSpriteContain(node: Node, spriteFrame: SpriteFrame, maxWidth: number, maxHeight: number) {
+    const rect = spriteFrame.rect;
+    const sourceWidth = rect.width || maxWidth;
+    const sourceHeight = rect.height || maxHeight;
+    const scale = Math.min(maxWidth / sourceWidth, maxHeight / sourceHeight);
+    const targetWidth = sourceWidth * scale;
+    const targetHeight = sourceHeight * scale;
+    node.getComponent(UITransform)?.setContentSize(targetWidth, targetHeight);
+  }
+
+  private fitSpriteCover(node: Node, spriteFrame: SpriteFrame, minWidth: number, minHeight: number) {
+    const rect = spriteFrame.rect;
+    const sourceWidth = rect.width || minWidth;
+    const sourceHeight = rect.height || minHeight;
+    const scale = Math.max(minWidth / sourceWidth, minHeight / sourceHeight);
+    const targetWidth = sourceWidth * scale;
+    const targetHeight = sourceHeight * scale;
+    node.getComponent(UITransform)?.setContentSize(targetWidth, targetHeight);
+  }
+
+  private loadSpriteFrame(
+    assetInfo: { path: string; uuid: string },
+    onLoaded: (spriteFrame: SpriteFrame) => void,
+  ) {
+    const finish = (texture: Texture2D) => {
+      const spriteFrame = new SpriteFrame();
+      spriteFrame.texture = texture;
+      onLoaded(spriteFrame);
+    };
+
+    resources.load(assetInfo.path, Texture2D, (error, texture) => {
+      if (!error && texture) {
+        finish(texture);
+        return;
+      }
+
+      assetManager.loadAny(assetInfo.uuid, (uuidError, uuidAsset) => {
+        if (uuidError || !(uuidAsset instanceof Texture2D)) {
+          console.warn(
+            `[GameRoot] Failed to load texture: ${assetInfo.path} (${assetInfo.uuid})`,
+            error || uuidError,
+          );
+          return;
+        }
+        finish(uuidAsset);
+      });
+    });
   }
 
   private drawRoundedRect(graphics: Graphics, width: number, height: number, color: Color, radius: number) {
