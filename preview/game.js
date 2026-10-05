@@ -199,7 +199,29 @@ function showScience(level = current()) {
   endDrag(true); select(null);
   const data = level.education;
   setText('#science-title', level.shortTitle + (level.fitness ? ' · 肌肉与健身' : ' · 工作与肌肉'));
+  setText('#science-question', data.question || '为什么会酸累？');
   setText('#science-summary', data.summary); setText('#science-cause', data.cause); setText('#science-boundary', data.boundary);
+  const mythContainer = document.querySelector('#science-myths'); mythContainer.replaceChildren();
+  document.querySelector('#science-myth-section').hidden = !data.myths?.length;
+  (data.myths || []).forEach((item, index) => {
+    const card = document.createElement('article'); card.className = 'myth-card';
+    const number = document.createElement('span'); number.className = 'myth-number'; number.textContent = '判断 ' + String(index + 1).padStart(2, '0');
+    const claim = document.createElement('h4'); claim.textContent = item.claim;
+    const choices = document.createElement('div'); choices.className = 'myth-choices';
+    choices.setAttribute('role', 'group'); choices.setAttribute('aria-label', item.claim);
+    const explanation = document.createElement('p'); explanation.className = 'myth-explanation'; explanation.setAttribute('role', 'status');
+    for (const [value, label] of [[true, '更接近事实'], [false, '需要纠正']]) {
+      const button = document.createElement('button'); button.textContent = label; button.dataset.verdict = String(value); button.setAttribute('aria-pressed', 'false');
+      button.addEventListener('click', () => {
+        choices.querySelectorAll('button').forEach(choice => { const active = choice === button; choice.classList.toggle('selected', active); choice.setAttribute('aria-pressed', String(active)); });
+        const correct = value === item.verdict;
+        explanation.textContent = (correct ? '判断对了。' : '换个角度想：') + item.explanation;
+        explanation.classList.toggle('correct', correct); card.classList.add('answered');
+      });
+      choices.append(button);
+    }
+    card.append(number, claim, choices, explanation); mythContainer.append(card);
+  });
   for (const [selector, rows, title, description] of [
     ['#science-muscles', data.muscles, item => item.name, item => `${item.location}。${item.function}`],
     ['#science-actions', data.actions, item => item.title, item => item.description],

@@ -29,3 +29,15 @@ dialog::-webkit-scrollbar-thumb:hover{background:#7c9679}
 dialog::-webkit-scrollbar-button{display:none;width:0;height:0}
 dialog::-webkit-scrollbar-corner{background:transparent}
 @media(forced-colors:active){dialog{scrollbar-color:auto}}
+
+/* Short myth checks extend the field notebook without becoming body scores. */
+#science .myth-card{background:linear-gradient(125deg,#ececdb,#f7f1e4);border:1px solid #d9dec9;padding:16px}
+.myth-number{display:block;font:10px Georgia,"Songti SC",serif;letter-spacing:2px;color:var(--green);margin-bottom:9px}
+#science .myth-card h4{font-size:15px;font-weight:500;line-height:1.7}
+.myth-choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}
+.myth-choices button{background:#faf8f0;border:1px solid #cbd5c3;border-radius:999px;padding:9px 5px;font-size:11px}
+.myth-choices button.selected{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+#science .myth-explanation{display:none;margin-top:13px;padding-top:12px;border-top:1px dashed #cbd5c3;color:#99593f;font-size:12px}
+#science .answered .myth-explanation{display:block}
+#science .myth-explanation.correct{color:var(--green)}
+#science .quiz-note{font-size:11px;color:var(--muted)}

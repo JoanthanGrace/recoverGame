@@ -80,18 +80,22 @@ export class GameRoot extends Component {
       if (this.locked || this.drag) return;
       this.hintPanel.active = true;
     });
-    const navWidth = 600 / this.levels.length;
+    const navColumns = Math.min(5, this.levels.length);
+    const navRows = Math.ceil(this.levels.length / navColumns);
+    const headerShift = (navRows - 1) * 46;
+    const navWidth = 600 / navColumns;
     this.levels.forEach((item, index) => {
-      this.button(this.root, '关 ' + String(item.id).padStart(2, '0'), navWidth - 12, 42, index === this.levelIndex ? '#dce7d5' : PAPER, -300 + navWidth * (index + 0.5), 505, () => this.showLevel(index));
+      this.button(this.root, '关 ' + String(item.id).padStart(2, '0'), navWidth - 12, 42, index === this.levelIndex ? '#dce7d5' : PAPER, -300 + navWidth * (index % navColumns + 0.5), 505 - Math.floor(index / navColumns) * 46, () => this.showLevel(index));
     });
-    this.label(this.root, 'CASE ' + String(level.id).padStart(3, '0') + ' / ' + level.room, 19, GREEN, 620, 35, 0, 458);
-    this.label(this.root, level.title, 43, INK, 620, 65, 0, 408);
-    this.label(this.root, level.subtitle, 26, MUTED, 620, 45, 0, 360);
-    this.rect(this.root, 'ProgressTrack', 600, 10, '#dce2d5', 0, 307);
-    this.healthFill = this.rect(this.root, 'ProgressFill', 600, 10, GREEN, 0, 307);
-    this.healthLabel = this.label(this.root, '', 21, INK, 600, 35, 0, 333);
-    const stage = this.rect(this.root, 'ObservationRoom', 660, 510, '#e9eddf', 0, 30, 40);
-    this.label(stage, level.patientName + ' · 侧面示意', 19, MUTED, 580, 34, 0, -230);
+    this.label(this.root, 'CASE ' + String(level.id).padStart(3, '0') + ' / ' + level.room, 19, GREEN, 620, 35, 0, 458 - headerShift);
+    this.label(this.root, level.title, 43, INK, 620, 65, 0, 408 - headerShift);
+    this.label(this.root, level.subtitle, 26, MUTED, 620, 45, 0, 360 - headerShift);
+    this.rect(this.root, 'ProgressTrack', 600, 10, '#dce2d5', 0, 307 - headerShift);
+    this.healthFill = this.rect(this.root, 'ProgressFill', 600, 10, GREEN, 0, 307 - headerShift);
+    this.healthLabel = this.label(this.root, '', 21, INK, 600, 35, 0, 333 - headerShift);
+    const stageHeight = 510 - headerShift;
+    const stage = this.rect(this.root, 'ObservationRoom', 660, stageHeight, '#e9eddf', 0, 30 - headerShift / 2, 40);
+    this.label(stage, level.patientName + ' · 动作示意', 19, MUTED, 580, 34, 0, -stageHeight / 2 + 25);
     const beforeNode = this.art(stage, level.beforeArt, level.artWidth, 400, 0, 0);
     const afterNode = this.art(stage, level.afterArt, level.artWidth, 400, 0, 0);
     this.before = beforeNode.addComponent(UIOpacity); this.after = afterNode.addComponent(UIOpacity); this.after.opacity = 0;
@@ -212,7 +216,8 @@ export class GameRoot extends Component {
   }
 
   private updateProgress() {
-    const ratio = this.session.health / 100; this.healthFill.setScale(ratio, 1, 1); this.healthFill.setPosition(-300 * (1 - ratio), 307, 0);
+    const ratio = this.session.health / 100; this.healthFill.setScale(ratio, 1, 1);
+    this.healthFill.setPosition(-300 * (1 - ratio), this.healthFill.position.y, 0);
     this.healthLabel.string = '关卡进度  ' + this.session.health + '% · ' + this.session.completedCount + ' / ' + this.level.targets.length;
   }
   private say(text: string, color = MUTED) { this.feedback.string = text; this.feedback.color = this.color(color); }
@@ -254,7 +259,8 @@ export class GameRoot extends Component {
     const heading = this.label(box, '', 27, GREEN, 540, 55, 0, 355);
     const body = this.label(box, '', 24, INK, 540, 590, 0, 25);
     const pages: { title: string; text: string; art?: string; sources?: { title: string; url: string }[] }[] = [
-      { title: '为什么会累？', text: data.summary + '\n\n' + data.cause },
+      { title: data.question || '为什么会累？', text: data.summary + '\n\n' + data.cause },
+      ...(data.myths || []).map(item => ({ title: '误区辨别 · ' + (item.verdict ? '更接近事实' : '需要纠正'), text: item.claim + '\n\n' + item.explanation })),
       ...data.muscles.map(item => ({ title: item.name, art: item.anatomy?.art, text: item.location + '\n' + item.function + (item.anatomy ? '\n\n' + item.anatomy.view + '\n' + item.anatomy.legend.map(legend => (legend.color === '#6195ab' ? '蓝色：' : '橙色：') + legend.name).join(' / ') + '\n' + item.anatomy.caption + '\n\n简化解剖位置示意，非精准医学图谱。' : '') })),
       ...data.actions.map(item => ({ title: item.title, art: item.art, text: item.description + '\n\n' + (item.steps || []).map((step, index) => (index + 1) + '. ' + step).join('\n') + (item.principle ? '\n\n小知识：' + item.principle : '') + (item.caution ? '\n\n注意：' + item.caution : '') })),
       { title: '适用边界', text: data.boundary },

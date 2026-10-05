@@ -71,8 +71,16 @@ for (const level of levels) {
     session.reset(); assert.equal(session.health, 0); assert.equal(session.finished, false); assert.equal(session.isObserved(sequence[0].zone), false);
   }
 }
-console.log('PASS: all five levels, education schema, clue gates, either order, wrong/outside/duplicate drops, reset, assets, TS syntax.');
-assert.equal(new Set(levels.slice(2).map(level => level.status)).size, 3);
+assert.equal(levels.length, 10);
+for (const level of levels.filter(level => level.chapter === 'myths')) {
+  assert.equal(level.education.myths.length, 2);
+  assert.ok(level.education.question);
+  assert.deepEqual(level.education.myths.map(item => item.verdict).sort(), [false, true]);
+  assert.ok(level.education.myths.every(item => item.claim && item.explanation));
+  assert.ok(fs.readdirSync(path.join(root, 'docs/levels')).some(name => name.startsWith(String(level.id).padStart(2, '0') + '-')));
+}
+console.log('PASS: all ten levels, education/myth schema, records, either order, wrong/outside/duplicate drops, reset, assets, TS syntax.');
+assert.equal(new Set(levels.slice(2).map(level => level.status)).size, levels.length - 2);
 if (!process.argv.includes('--browser')) process.exit(0);
 
 (async () => {
@@ -93,6 +101,17 @@ if (!process.argv.includes('--browser')) process.exit(0);
     const url = `http://127.0.0.1:${server.address().port}/preview/`;
     const imagesReady = () => page.waitForFunction(() => [...document.images].every(img => img.hidden || (img.complete && img.naturalWidth > 0)));
     const pick = async (tool, zone) => { await page.locator(`[data-tool="${tool}"]`).click(); await page.locator(`[data-zone="${zone}"]`).click(); };
+    const dragTo = async (tool, zone) => {
+      await page.locator(`[data-tool="${tool}"]`).scrollIntoViewIfNeeded();
+      const toolBox = await page.locator(`[data-tool="${tool}"]`).boundingBox();
+      const zoneBox = await page.locator(`[data-zone="${zone}"]`).boundingBox();
+      const viewport = page.viewportSize();
+      for (const box of [toolBox, zoneBox]) {
+        assert.ok(box.y + box.height / 2 > 0 && box.y + box.height / 2 < viewport.height, 'drag endpoint is visible');
+      }
+      await page.mouse.move(toolBox.x + toolBox.width / 2, toolBox.y + toolBox.height / 2); await page.mouse.down();
+      await page.mouse.move(zoneBox.x + zoneBox.width / 2, zoneBox.y + zoneBox.height / 2, { steps: 12 }); await page.mouse.up();
+    };
     await page.goto(url); await page.locator('[data-tool="fasciaBall"]').waitFor(); await imagesReady();
     await pick('elasticBand', 'chest'); assert.equal(await page.locator('#score').textContent(), '0 / 2');
     await page.locator('#sound').click(); assert.equal(await page.locator('#sound').getAttribute('aria-pressed'), 'true');
@@ -108,9 +127,7 @@ if (!process.argv.includes('--browser')) process.exit(0);
     assert.equal(await page.locator('.tool').count(), 3); assert.equal(await page.locator('.zone.unobserved').count(), 2);
     await page.screenshot({ path: path.join(scratch, 'level2-mobile.png'), fullPage: true });
     // Dragging to a hidden clue cannot bypass observation.
-    const toolBox = await page.locator('[data-tool="walkBreak"]').boundingBox(); const zoneBox = await page.locator('[data-zone="sitting"]').boundingBox();
-    await page.mouse.move(toolBox.x + toolBox.width / 2, toolBox.y + toolBox.height / 2); await page.mouse.down();
-    await page.mouse.move(zoneBox.x + zoneBox.width / 2, zoneBox.y + zoneBox.height / 2, { steps: 12 }); await page.mouse.up();
+    await dragTo('walkBreak', 'sitting');
     assert.equal(await page.locator('#score').textContent(), '0 / 2'); assert.equal(await page.locator('.zone.unobserved').count(), 2);
     await page.locator('#hint').click(); assert.equal(await page.locator('#hint-dialog').evaluate(el => el.open), true); await page.locator('#hint-dialog .primary').click();
     await page.locator('[data-zone="sitting"]').click(); await page.locator('[data-zone="screen"]').click();
@@ -135,6 +152,19 @@ if (!process.argv.includes('--browser')) process.exit(0);
       await page.locator('[data-level="' + (level.id - 1) + '"]').click(); await imagesReady();
       await page.locator('#learn').click();
       assert.equal(await page.locator('#science').evaluate(el => el.open), true);
+      assert.equal(await page.locator('#science-myths .myth-card').count(), level.education.myths?.length || 0);
+      if (level.education.myths) {
+        assert.equal(await page.locator('#science-question').textContent(), level.education.question);
+        for (const [index, item] of level.education.myths.entries()) {
+          const card = page.locator('#science-myths .myth-card').nth(index);
+          await card.locator('[data-verdict="' + !item.verdict + '"]').click();
+          assert.ok((await card.locator('.myth-explanation').textContent()).includes('换个角度想：'));
+          await card.locator('[data-verdict="' + item.verdict + '"]').click();
+          assert.equal(await card.locator('.myth-explanation.correct').count(), 1);
+          assert.ok((await card.locator('.myth-explanation').textContent()).includes(item.explanation));
+          assert.equal(await page.locator('#score').textContent(), '0 / 2');
+        }
+      }
       assert.equal(await page.locator('#science').evaluate(el => getComputedStyle(el).scrollbarWidth), 'thin');
       assert.equal(await page.locator('#science').evaluate(el => {
         el.scrollTop = 80;
@@ -186,10 +216,9 @@ if (!process.argv.includes('--browser')) process.exit(0);
       }
       // A dragged action must not solve an unobserved clue.
       const first = level.targets[0];
+      await page.locator('[data-tool="' + first.tool + '"]').scrollIntoViewIfNeeded();
       const box = await page.locator('[data-tool="' + first.tool + '"]').boundingBox();
-      const targetBox = await page.locator('[data-zone="' + first.zone + '"]').boundingBox();
-      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2); await page.mouse.down();
-      await page.mouse.move(targetBox.x + targetBox.width / 2, targetBox.y + targetBox.height / 2, { steps: 10 }); await page.mouse.up();
+      await dragTo(first.tool, first.zone);
       assert.equal(await page.locator('#score').textContent(), '0 / 2');
       for (const zone of level.zones) await page.locator('[data-zone="' + zone.id + '"]').click();
       await pick('keepWorking', first.zone); assert.equal(await page.locator('#score').textContent(), '0 / 2');
@@ -212,25 +241,30 @@ if (!process.argv.includes('--browser')) process.exit(0);
       await page.locator('#science .primary').click(); assert.equal(await page.locator('#result').evaluate(el => el.open), true);
       await page.screenshot({ path: path.join(scratch, 'level' + level.id + '-result.png'), fullPage: true });
       await page.locator('#next').click();
-      if (level.id === 5) {
+      if (level.id === levels.at(-1).id) {
         assert.equal(await page.locator('#collection').evaluate(el => el.open), true);
-        assert.equal(await page.locator('#collection-cards .note-card').count(), 5);
-        assert.ok((await page.locator('#collection-count').textContent()).includes('5 / 5'));
+        assert.equal(await page.locator('#collection-cards .note-card').count(), levels.length);
+        assert.ok((await page.locator('#collection-count').textContent()).includes(levels.length + ' / ' + levels.length));
         await page.locator('#collection .primary').click();
       }
     }
-    for (const id of [3,4,5]) {
+    for (const id of levels.map(level => level.id)) {
       await page.goto(url + '?level=' + id); await page.locator('[data-tool="' + levels[id - 1].tools[0].id + '"]').waitFor();
       assert.equal(await page.locator('#level-title').textContent(), levels[id - 1].title);
     }
-    const future = [...levels, { ...levels[0], id: 6, title: '配置扩展测试', shortTitle: '扩展测试' }];
+    await page.goto(url + '?level=6'); await page.locator('[data-tool="wallPush"]').waitFor();
+    await page.locator('[data-zone="scapularForward"]').click();
+    await dragTo('wallPush', 'scapularForward');
+    assert.equal(await page.locator('#score').textContent(), '1 / 2', 'correct new-level drag solves target');
+    const futureId = levels.at(-1).id + 1;
+    const future = [...levels, { ...levels[0], id: futureId, title: '配置扩展测试', shortTitle: '扩展测试' }];
     await page.route('**/assets/resources/data/levels.json', route => route.fulfill({ contentType: 'application/json', body: JSON.stringify(future) }));
-    await page.goto(url + '?level=6'); await page.locator('[data-level="5"]').waitFor();
-    assert.equal(await page.locator('.level-nav button').count(), 6);
+    await page.goto(url + '?level=' + futureId); await page.locator('[data-level="' + levels.length + '"]').waitFor();
+    assert.equal(await page.locator('.level-nav button').count(), levels.length + 1);
     assert.equal(await page.locator('#level-title').textContent(), '配置扩展测试');
     await page.unroute('**/assets/resources/data/levels.json');
     assert.deepEqual(errors, []);
-    console.log('PASS: browser five levels, learning cards, final collection, cancellation, images, hidden-clue drag gate, hint, distractor, wrong/correct choices, replay, switch during reveal, deep link, 320/390/1440px layouts, no script errors.');
+    console.log('PASS: browser ten levels, myth checks, learning cards, final collection, cancellation, images, clue gates, distractor feedback, replay, deep links, 320/390/933/1440px layouts, no script errors.');
     console.log('Screenshots: ' + scratch);
   } finally { if (browser) await browser.close(); await new Promise(resolve => server.close(resolve)); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
