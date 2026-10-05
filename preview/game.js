@@ -52,6 +52,12 @@ function drop(tool, zoneId) {
   }
   window.recoveryAudio.play(target.successSound || 'strengthen');
   completed.add(zoneId);
+  if (target.demoArt) {
+    const preview = document.querySelector('.progress-art');
+    preview.src = artPath(target.demoArt); preview.alt = zone.title + ' · 动作示意'; preview.hidden = false;
+    stage.classList.add('has-progress');
+    const after = document.querySelector('.patient.after'); after.src = artPath(target.demoArt); after.alt = preview.alt;
+  }
   updateZone(zones.find(button => button.dataset.zone === zoneId));
   const toolButton = tools.find(button => button.dataset.tool === tool);
   // Disable a tool only when every target using it has been completed.
@@ -120,6 +126,7 @@ function showLevel(index, scroll = true) {
   stage.classList.remove('half', 'recovered', 'shake'); stage.classList.toggle('habits', level.observeFirst);
   stage.classList.toggle('has-progress', Boolean(level.progressArt));
   stage.classList.toggle('work-scene', level.id >= 3);
+  stage.classList.toggle('fitness-scene', Boolean(level.fitness));
   const progressImage = document.querySelector('.progress-art');
   progressImage.hidden = !level.progressArt;
   if (level.progressArt) { progressImage.src = artPath(level.progressArt); progressImage.alt = level.progressAlt || '完成第一项目标'; } else progressImage.removeAttribute('src');
@@ -156,6 +163,12 @@ function showLevel(index, scroll = true) {
   tools = [...toolContainer.children];
   setText('#hint-title', level.hintTitle); setText('#hint-text', level.hintText);
   setText('#result-title', level.resultTitle); setText('#result-text', level.resultText); setText('#result-note', level.resultNote);
+  result.classList.toggle('fitness-result', Boolean(level.fitness));
+  const demos = document.querySelector('#result-demos'); demos.replaceChildren();
+  if (level.fitness) level.education.actions.forEach(action => {
+    const card = document.createElement('figure'); const img = document.createElement('img'); img.src = artPath(action.art); img.alt = action.title + '示意';
+    const caption = document.createElement('figcaption'); caption.textContent = action.title; card.append(img, caption); demos.append(card);
+  });
   setText('#replay', '再玩本关'); setText('#score', `0 / ${level.targets.length}`); setText('#share-feedback', '');
   document.querySelector('#fill').style.width = '0%'; setText('#percent', '0%'); say(level.instruction);
   const next = document.querySelector('#next'); next.textContent = index < levels.length - 1 ? `下一关 · ${levels[index + 1].title}` : '查看我的学习总结';
@@ -184,25 +197,32 @@ function showScience(level = current()) {
   if (!level) return;
   endDrag(true); select(null);
   const data = level.education;
-  setText('#science-title', level.shortTitle + ' · 工作与肌肉');
+  setText('#science-title', level.shortTitle + (level.fitness ? ' · 肌肉与健身' : ' · 工作与肌肉'));
   setText('#science-summary', data.summary); setText('#science-cause', data.cause); setText('#science-boundary', data.boundary);
   for (const [selector, rows, title, description] of [
     ['#science-muscles', data.muscles, item => item.name, item => `${item.location}。${item.function}`],
     ['#science-actions', data.actions, item => item.title, item => item.description],
   ]) {
     const container = document.querySelector(selector); container.replaceChildren();
-    rows.forEach(item => { const card = document.createElement('article'); const heading = document.createElement('h4'); heading.textContent = title(item); const copy = document.createElement('p'); copy.textContent = description(item); card.append(heading, copy); container.append(card); });
+    rows.forEach(item => {
+      const card = document.createElement('article'); const heading = document.createElement('h4'); heading.textContent = title(item); const copy = document.createElement('p'); copy.textContent = description(item); card.append(heading, copy);
+      if (item.art) { const img = document.createElement('img'); img.className = 'action-demo'; img.src = artPath(item.art); img.alt = item.title + '动作示意'; card.append(img); }
+      if (item.steps) { const list = document.createElement('ol'); item.steps.forEach(step => { const li = document.createElement('li'); li.textContent = step; list.append(li); }); card.append(list); }
+      for (const [key, label] of [['principle', '小知识'], ['caution', '注意']]) if (item[key]) { const p = document.createElement('p'); p.className = key; p.textContent = label + '：' + item[key]; card.append(p); }
+      container.append(card);
+    });
   }
   const container = document.querySelector('#science-sources'); container.replaceChildren();
+  const workTip = document.querySelector('#science-work-tip'); workTip.hidden = !level.workTip; workTip.closest('details').hidden = !level.workTip; workTip.textContent = level.workTip || '';
   data.sources.forEach(source => {
     if (!/^https:\/\//.test(source.url)) return;
     const link = document.createElement('a'); link.href = source.url; link.textContent = source.title + ' ↗'; link.target = '_blank'; link.rel = 'noopener noreferrer'; container.append(link);
   });
-  science.querySelector('details').open = false; science.showModal(); science.scrollTop = 0;
+  science.querySelectorAll('details').forEach(detail => { detail.open = false; }); science.showModal(); science.scrollTop = 0;
 }
 function showCollection() {
   endDrag(true);
-  setText('#collection-count', `你已完成 ${finishedLevels.size} / ${levels.length} 个工作场景。没有“完美姿势”，先找可以改变的一件事。`);
+  setText('#collection-count', `你已完成 ${finishedLevels.size} / ${levels.length} 个工作场景。放松、拉伸与主动练习各有作用；认识肌肉，不追痛、不硬撑。`);
   const container = document.querySelector('#collection-cards'); container.replaceChildren();
   levels.forEach(level => {
     const button = document.createElement('button'); button.className = 'note-card';

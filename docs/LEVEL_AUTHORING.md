@@ -54,3 +54,9 @@
 每关设计表追加：工种与具体任务、持续/重复/负荷线索、肌肉名称与白话位置/作用、可能机制及对应资料、改善路径、操作反馈、通关摘要、展开科普卡、来源与适用边界。
 
 来源标记中，用户明确补充的内容可沿用运行配置的 `extension`；文档须注明用户方向。当前 JSON 已有 `education` 字段（summary、cause、muscles、actions、boundary、sources），浏览器与 Cocos 学习卡读取同一份内容。每条 muscle 必须包含 name、location、function；每条 source 包含 title 和 HTTPS url。
+
+## 健身主线修订（2026-10-06）
+
+后三关使用 `fitness: true`；目标增加 `demoArt`，每次正确配对显示该动作，不显示工位改善或瞬间治愈。`education.actions` 增加 `art`、`steps`、`principle`、`caution`，和目标的示意图一一对应。`workTip` 仅作职业补充提示，不计分。规范优先遵循 `CONTENT_RULES.md` v1.1。
+
+两个“正确方法”可能有生理作用重叠，错配解释必须说明当前学习的是哪种方法/部位，不能为了唯一答案谎称其他活动绝无帮助。图像只展示动作，不证明疗效；检查支撑点、器械接触部位、关节位置与文字是否一致。

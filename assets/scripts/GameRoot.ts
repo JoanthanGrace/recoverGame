@@ -33,6 +33,7 @@ export class GameRoot extends Component {
   private before!: UIOpacity;
   private after!: UIOpacity;
   private progress: UIOpacity | null = null;
+  private actionPreview: Node | null = null;
   private audio!: AudioSource;
   private clips = new Map<string, AudioClip>();
   private muted = false;
@@ -95,6 +96,7 @@ export class GameRoot extends Component {
     const afterNode = this.art(stage, level.afterArt, level.artWidth, 400, 0, 0);
     this.before = beforeNode.addComponent(UIOpacity); this.after = afterNode.addComponent(UIOpacity); this.after.opacity = 0;
     this.progress = null;
+    this.actionPreview = null;
     if (level.progressArt) {
       this.progress = this.art(stage, level.progressArt, level.artWidth, 400, 0, 0).addComponent(UIOpacity); this.progress.opacity = 0;
     }
@@ -188,6 +190,12 @@ export class GameRoot extends Component {
       runtime.used = true; const opacity = runtime.node.getComponent(UIOpacity) || runtime.node.addComponent(UIOpacity); opacity.opacity = 120;
     }
     this.say(config.correct, GREEN); this.updateProgress();
+    const demo = this.level.targets.find(item => item.zone === zone)!.demoArt;
+    if (demo) {
+      if (this.actionPreview) this.actionPreview.destroy();
+      this.before.opacity = 0; this.after.opacity = 0;
+      this.actionPreview = this.art(this.before.node.parent!, demo, 390, 400, 0, 0);
+    }
     if (this.session.completedCount === 1 && this.progress) {
       Tween.stopAllByTarget(this.before); Tween.stopAllByTarget(this.progress);
       tween(this.before).to(0.35, { opacity: 0 }).start(); tween(this.progress).to(0.35, { opacity: 255 }).start();
@@ -197,7 +205,8 @@ export class GameRoot extends Component {
       if (this.progress) { Tween.stopAllByTarget(this.progress); tween(this.progress).to(0.65, { opacity: 0 }).start(); }
       this.scheduleOnce(() => this.playSound('complete'), 0.45);
       this.locked = true; this.hintPanel.active = false;
-      tween(this.before).to(0.65, { opacity: 0 }).start(); tween(this.after).to(0.65, { opacity: 255 }).start();
+      tween(this.before).to(0.65, { opacity: 0 }).start();
+      if (!demo) tween(this.after).to(0.65, { opacity: 255 }).start();
       this.scheduleOnce(() => { this.resultPanel.active = true; }, 1.3);
     }
   }
@@ -221,8 +230,15 @@ export class GameRoot extends Component {
     const { panel, box } = this.modal('Result', 960);
     this.label(box, this.level.resultTitle, 36, INK, 550, 65, 0, 395);
     const w = this.level.artWidth * 0.625;
-    this.art(box, this.level.beforeArt, w, 250, -120, 215); this.art(box, this.level.afterArt, w, 250, 120, 215);
-    this.label(box, '→', 32, GREEN, 60, 60, 0, 215);
+    if (this.level.fitness) {
+      this.level.education.actions.forEach((action, index) => {
+        this.art(box, action.art!, 245, 240, index ? 145 : -145, 230);
+        this.label(box, action.title, 20, GREEN, 255, 40, index ? 145 : -145, 85);
+      });
+    } else {
+      this.art(box, this.level.beforeArt, w, 250, -120, 215); this.art(box, this.level.afterArt, w, 250, 120, 215);
+      this.label(box, '→', 32, GREEN, 60, 60, 0, 215);
+    }
     this.label(box, this.level.resultText, 24, INK, 560, 100, 0, 25);
     this.label(box, this.level.resultNote, 19, MUTED, 550, 70, 0, -60);
     this.button(box, this.levelIndex < this.levels.length - 1 ? '下一关 · ' + this.levels[this.levelIndex + 1].title : '回到第一关继续探索', 510, 70, '#dce7d5', 0, -150, () => this.showLevel((this.levelIndex + 1) % this.levels.length));
@@ -234,19 +250,29 @@ export class GameRoot extends Component {
   private makeScience(): Node {
     const { panel, box } = this.modal('Science', 1040);
     const data = this.level.education;
-    this.label(box, this.level.shortTitle + ' · 工作与肌肉', 32, INK, 540, 65, 0, 440);
+    this.label(box, this.level.shortTitle + (this.level.fitness ? ' · 肌肉与健身' : ' · 工作与肌肉'), 32, INK, 540, 65, 0, 440);
     const heading = this.label(box, '', 27, GREEN, 540, 55, 0, 355);
     const body = this.label(box, '', 24, INK, 540, 590, 0, 25);
-    const pages = [
+    const pages: { title: string; text: string; art?: string; sources?: { title: string; url: string }[] }[] = [
       { title: '为什么会累？', text: data.summary + '\n\n' + data.cause },
       { title: '认识这些肌肉', text: data.muscles.map(item => item.name + '\n' + item.location + '\n' + item.function).join('\n\n') },
-      { title: '从工作方式开始', text: data.actions.map(item => item.title + '\n' + item.description).join('\n\n') + '\n\n' + data.boundary },
-      { title: '科普依据 · 继续阅读', text: '资料用于支持肌肉功能与工效学原则，不是对玩家的诊断。部分资料为英文；外部链接需平台支持。' },
+      ...data.actions.map(item => ({ title: item.title, art: item.art, text: item.description + '\n\n' + (item.steps || []).map((step, index) => (index + 1) + '. ' + step).join('\n') + (item.principle ? '\n\n小知识：' + item.principle : '') + (item.caution ? '\n\n注意：' + item.caution : '') })),
+      { title: '适用边界', text: data.boundary },
     ];
-    const links = data.sources.map((source, index) => this.button(box, source.title, 530, 75, '#e8e4d7', 0, 105 - index * 100, () => { if (/^https:\/\//.test(source.url)) sys.openURL(source.url); }));
+    if (this.level.workTip) pages.push({ title: '工作补充 · 非核心玩法', text: this.level.workTip });
+    for (let index = 0; index < data.sources.length; index += 3) pages.push({ title: '科普依据 · 继续阅读', text: '资料支持肌肉功能与健身原理，不是对玩家的诊断。部分资料为英文；外部链接需平台支持。', sources: data.sources.slice(index, index + 3) });
+    const links = [0, 1, 2].map(index => this.button(box, '', 530, 75, '#e8e4d7', 0, 105 - index * 100, () => { const source = pages[page].sources?.[index]; if (source && /^https:\/\//.test(source.url)) sys.openURL(source.url); }));
+    const demoNodes = pages.map(item => item.art ? this.art(box, item.art, 480, 200, 0, 230) : null);
     let page = 0;
     const number = this.label(box, '', 20, MUTED, 90, 45, 0, -342);
-    const render = () => { heading.string = pages[page].title; body.string = pages[page].text; body.node.setPosition(0, page === 3 ? 230 : 25, 0); body.node.getComponent(UITransform)!.setContentSize(540, page === 3 ? 160 : 590); number.string = (page + 1) + ' / ' + pages.length; links.forEach(link => { link.active = page === 3; }); };
+    const render = () => {
+      const item = pages[page]; heading.string = item.title; body.string = item.text;
+      body.node.setPosition(0, item.sources ? 230 : item.art ? -70 : 25, 0);
+      body.node.getComponent(UITransform)!.setContentSize(540, item.sources ? 160 : item.art ? 435 : 590);
+      number.string = (page + 1) + ' / ' + pages.length;
+      demoNodes.forEach((node, index) => { if (node) node.active = index === page; });
+      links.forEach((link, index) => { const source = item.sources?.[index]; link.active = Boolean(source); if (source) link.getComponentInChildren(Label)!.string = source.title; });
+    };
     this.button(box, '上一页', 190, 62, '#e5ebdc', -175, -342, () => { page = (page + pages.length - 1) % pages.length; render(); });
     this.button(box, '下一页', 190, 62, '#e5ebdc', 175, -342, () => { page = (page + 1) % pages.length; render(); });
     this.button(box, '回到游戏', 530, 65, '#dce7d5', 0, -440, () => { panel.active = false; });
@@ -274,6 +300,8 @@ export class GameRoot extends Component {
       if (error) { this.label(node, '图片待导入', 18, MUTED, w, h, 0, 0); return; }
       const frame = new SpriteFrame(); frame.texture = texture;
       this.generatedFrames.push(frame); sprite.spriteFrame = frame;
+      const fit = Math.min(w / texture.width, h / texture.height);
+      node.getComponent(UITransform)!.setContentSize(texture.width * fit, texture.height * fit);
     });
     return node;
   }

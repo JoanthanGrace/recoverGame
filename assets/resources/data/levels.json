@@ -255,375 +255,467 @@
   },
   {
     "id": 3,
-    "title": "理发师的抬手日常",
+    "title": "理发师的肩颈松一松",
     "shortTitle": "理发师",
     "patientName": "阿哲 / 一位接着一位剪",
-    "stageTip": "让顾客靠近合适的操作高度，也给抬起的双臂安排间歇。",
+    "stageTip": "轻柔伸展认识颈侧活动；软球放松认识位置与压力。舒适，不是忍痛，才是入门尺度。",
     "observeFirst": true,
-    "subtitle": "先读懂工作，再给身体减负。",
-    "story": "顾客坐得低，阿哲越剪越往前探。\n看看工作高度和持续抬手这两条线索。",
-    "room": "理发师观察室",
-    "status": "不靠硬撑，换个办法",
-    "dockTitle": "选择更省力的工作方式",
-    "instruction": "先点开两条线索，再拖动行动；也可以点选行动后点击线索。",
+    "subtitle": "下班后的肌肉小课堂。",
+    "story": "连续抬手、低头剪发，阿哲肩颈有些酸累。\n认识肩颈与肩胛周围，再选一个舒适的放松方向。",
+    "room": "职业健身观察室",
+    "status": "先认识，再舒适地练",
+    "dockTitle": "选择合适的器械或动作",
+    "instruction": "先点身体线索，再把器械或动作配到对应目标；动作细节见学习卡。",
     "beforeArt": "barber-before",
-    "afterArt": "barber-after",
+    "afterArt": "fitness-neck-stretch",
     "beforeAlt": "理发师调整前的工作场景",
-    "afterAlt": "理发师改善任务安排后的示意场景",
-    "artWidth": 371,
-    "hintTitle": "先改工作方式，再谈练哪块肌肉。",
-    "hintText": "工位太低 → 调整座椅\n持续抬手 → 短歇换任务\n第三种行动不能减少本关对应的负担。",
-    "resultTitle": "工作继续，负担少一点。",
-    "resultText": "让顾客靠近合适的操作高度，也给抬起的双臂安排间歇。",
-    "resultNote": "插画是理想化工作调整示意，不代表两次选择就能改善现实症状。",
+    "afterAlt": "本关健身动作示意，不表示症状已治愈",
+    "artWidth": 372,
+    "hintTitle": "选的是健身知识，不是工作工具。",
+    "hintText": "肩颈 · 紧绷 → 轻柔颈侧伸展\n肩胛旁 · 酸累 → 靠墙球放松\n拖对后会显示动作示意。不要把动画当作疼痛诊断或治疗。",
+    "resultTitle": "把两个健身知识点带走。",
+    "resultText": "轻柔伸展认识颈侧活动；软球放松认识位置与压力。舒适，不是忍痛，才是入门尺度。",
+    "resultNote": "完成的是游戏学习目标，不代表身体已得到放松。请先读动作步骤与注意事项，再决定是否尝试。",
     "shareTitle": "打工人康复指南：理发师的抬手日常",
     "tools": [
       {
-        "id": "adjustChair",
-        "title": "调整座椅",
-        "detail": "高度与距离适合",
-        "art": "adjust-chair",
-        "action": "调"
+        "id": "neckStretch",
+        "title": "轻柔颈侧伸展",
+        "detail": "徒手 · 舒适牵伸",
+        "art": "neck-stretch-tool",
+        "action": "伸"
       },
       {
-        "id": "microBreak",
-        "title": "短歇换任务",
-        "detail": "让手臂放下一会",
-        "art": "micro-break",
-        "action": "歇"
+        "id": "wallBall",
+        "title": "靠墙球放松",
+        "detail": "软球 · 肩胛周围",
+        "art": "wall-ball-tool",
+        "action": "松"
       },
       {
         "id": "keepWorking",
-        "title": "继续硬撑",
-        "detail": "只加速不减负",
+        "title": "越痛越用力",
+        "detail": "痛不等于有效",
         "art": null,
-        "action": "忙"
+        "action": "误"
       }
     ],
     "zones": [
       {
-        "id": "workHeight",
-        "title": "工位太低",
-        "detail": "身体往前探",
+        "id": "upperTrap",
+        "title": "肩颈 · 紧绷",
+        "detail": "上斜方肌区域",
         "side": "back",
         "color": "#b27c49",
-        "clue": "顾客的座椅偏低，阿哲需要低头前探才能看清操作位置。",
-        "wrong": "短歇有帮助，但这条线索需要调整工作高度与距离。",
-        "correct": "调整座椅和站位，让操作位置更易接近，减少持续前探。"
+        "clue": "长时间抬手和低头后，阿哲描述肩颈连接处紧绷。本关练习认识上斜方肌区域，不据此诊断它一定缩短。",
+        "wrong": "这条目标是颈侧舒适活动；不要把球顶在颈部或靠疼痛加大力度。",
+        "correct": "轻柔颈侧伸展：肩膀自然下沉，头缓慢侧倾，不用手扳头。先看步骤，不追求拉得越远越好。"
       },
       {
-        "id": "heldArms",
-        "title": "持续抬手",
-        "detail": "双臂很久没放下",
+        "id": "scapular",
+        "title": "肩胛旁 · 酸累",
+        "detail": "菱形肌 / 斜方肌",
         "side": "chest",
         "color": "#6195ab",
-        "clue": "阿哲连续操作，手臂一直举着，几乎没有改变任务。",
-        "wrong": "调整椅子并不能替代休息；连续抬手还需要间歇。",
-        "correct": "安排短休息或交替任务，让手臂暂时放下，而不是越累越硬撑。"
+        "clue": "阿哲还感觉肩胛骨附近酸累。这里有菱形肌和斜方肌等参与肩胛控制；酸累不等于一定无力。",
+        "wrong": "颈侧拉伸也可作为一般活动，但本关这条目标是在学球放松的位置和压力；不是证明其他方法没用。",
+        "correct": "靠墙球放松：选软球，轻压肩胛周围软组织，避开颈部、脊柱和骨头，不憋气也不追痛。"
       }
     ],
     "targets": [
       {
-        "tool": "adjustChair",
-        "zone": "workHeight",
+        "tool": "neckStretch",
+        "zone": "upperTrap",
         "score": 50,
-        "successSound": "relax"
+        "successSound": "relax",
+        "demoArt": "fitness-neck-stretch"
       },
       {
-        "tool": "microBreak",
-        "zone": "heldArms",
+        "tool": "wallBall",
+        "zone": "scapular",
         "score": 50,
-        "successSound": "strengthen"
+        "successSound": "strengthen",
+        "demoArt": "fitness-wall-ball"
       }
     ],
     "designSource": "extension",
-    "knowledge": "让顾客靠近合适的操作高度，也给抬起的双臂安排间歇。",
+    "knowledge": "轻柔伸展认识颈侧活动；软球放松认识位置与压力。舒适，不是忍痛，才是入门尺度。",
     "education": {
-      "summary": "让顾客靠近合适的操作高度，也给抬起的双臂安排间歇。",
-      "cause": "手臂抬起时，肩部肌肉需要持续参与支撑；操作位置太低或太远，又可能增加颈部前探和躯干倾斜。任务持续多久、重复多少次和休息安排，都会影响负担。这里的职业场景是依据通用工效学原则设计，不是理发师疾病诊断。",
+      "summary": "轻柔伸展认识颈侧活动；软球放松认识位置与压力。舒适，不是忍痛，才是入门尺度。",
+      "cause": "连续低头与抬手会让颈肩、肩胛周围反复维持负荷，酸累还与时长、休息和个人状态有关。本关把常见主诉用于认识肌肉和方法，并不宣称每个理发师都有相同肌肉问题。拉伸改变活动位置；球放松提供可调压力；两者目的与操作方式不同，也可能都是一般舒适活动的选择。 放松后的活动感受变化可能与牵伸耐受、感觉调节等有关；研究并未证明滚压必然把某种粘连压开，也不是优于一切活动的万能方法。",
       "muscles": [
         {
-          "name": "三角肌",
-          "location": "肩关节外侧",
-          "function": "帮助抬起、前伸手臂；持续抬手时需要持续参与。"
+          "name": "上斜方肌",
+          "location": "颈肩连接处及上背",
+          "function": "参与肩胛上提和上旋，和其他肌肉协作支撑抬手；并不是越“放松到没力”越好。"
         },
         {
-          "name": "斜方肌 / 前锯肌",
-          "location": "上背部与胸廓侧面",
-          "function": "共同参与肩胛运动与支撑，让抬手不只靠肩关节单独完成。"
+          "name": "菱形肌 / 中斜方肌",
+          "location": "肩胛骨之间及脊柱旁上背",
+          "function": "参与肩胛位置控制，持续工作时可能感到酸累，但感受本身不能判定紧或弱。"
         }
       ],
       "actions": [
         {
-          "title": "按任务调高度",
-          "description": "调整顾客座椅并移动自己的站位，让视线、手臂和操作位置更舒适；不要为了放低肘部而看不清。"
+          "title": "轻柔颈侧伸展",
+          "art": "fitness-neck-stretch",
+          "description": "认识轻柔牵伸，不把脖子硬扳到极限。",
+          "steps": [
+            "坐或站稳，目视前方，双肩自然放松。",
+            "头缓慢向一侧倾斜，到舒适的轻微牵拉处即可。",
+            "自然呼吸，再回正；不弹震，不用手加力扳头。"
+          ],
+          "principle": "改变头与肩的相对位置，让颈侧软组织经历温和的长度变化；这不是把颈椎“掰正”。",
+          "caution": "出现眩晕、麻木、放射痛或颈部明显疼痛时停止；不要边拉边按压颈前或颈侧。"
         },
         {
-          "title": "把休息放进流程",
-          "description": "在安全的操作间隙放下手臂，交替做不同任务；持续不适时不要靠加速硬撑。"
+          "title": "靠墙软球放松",
+          "art": "fitness-wall-ball",
+          "description": "用墙面控制压力，比把全部体重压在硬球上更容易调节。",
+          "steps": [
+            "软球放在墙与上背软组织之间，位置在脊柱旁而非脊柱上。",
+            "脚稍向前，轻轻靠墙，找到舒适的接触压力。",
+            "小范围慢慢移动；绕开骨头与颈部，不在一点硬顶。"
+          ],
+          "principle": "可调的轻压力可能帮助暂时改善紧绷感和活动舒适度；并不证明“筋膜粘连被压开”。",
+          "caution": "不压脊柱、肩胛骨尖、颈前颈侧或急性受伤处；不追求疼痛，症状持续时需评估。"
         }
       ],
-      "boundary": "肌肉名称用于认识身体，不代表已判断你哪里紧、哪里弱。游戏不提供诊断或治疗；出现持续或加重的疼痛、麻木、明显无力，请停止诱发不适的活动并寻求专业评估。",
+      "boundary": "仅面向没有急性损伤、愿意尝试轻柔活动的普通成年人。紧绷感不等于诊断，器械不负责“压开粘连”或把肌肉压回正常。只做舒适范围，出现刺痛、麻木、放射痛或明显不适就停止；持续或加重的症状请找专业人员评估。",
       "sources": [
         {
-          "title": "HSE：工作姿势与工位调整",
-          "url": "https://www.hse.gov.uk/msd/uld/art/posture.htm"
+          "title": "NHS：温和的颈部与柔韧性练习",
+          "url": "https://www.nhs.uk/live-well/exercise/flexibility-exercises/"
         },
         {
-          "title": "Cleveland Clinic：三角肌的功能",
-          "url": "https://my.clevelandclinic.org/health/body/21875-deltoid-muscles"
+          "title": "ACE：泡沫轴与自我放松的使用边界",
+          "url": "https://www.acefitness.org/resources/everyone/blog/5624/foam-rolling-101/"
+        },
+        {
+          "title": "Cleveland Clinic：背部肌肉",
+          "url": "https://my.clevelandclinic.org/health/body/21632-back-muscles"
+        },
+        {
+          "title": "研究综述：滚压与拉伸的短期效果和证据边界",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/38244921/"
         }
       ]
-    }
+    },
+    "fitness": true,
+    "workTip": "工作补充：操作高度与休息安排也会影响负担，但本关核心是认识肩颈肌肉与放松方法。"
   },
   {
     "id": 4,
-    "title": "收银员的站立班次",
+    "title": "收银员的小腿与足底",
     "shortTitle": "收银员",
     "patientName": "小陈 / 高峰期一直站着",
-    "stageTip": "能坐能站，也能轻松够到商品；比要求一直挺直站着更实际。",
+    "stageTip": "轴轻滚小腿肌腹，软球轻触足弓；认识组织和压力，比追求痛点更重要。",
     "observeFirst": true,
-    "subtitle": "先读懂工作，再给身体减负。",
-    "story": "站着扫完一车，又伸手去够下一件。\n找到“姿势不变”和“物品太远”的区别。",
-    "room": "收银员观察室",
-    "status": "不靠硬撑，换个办法",
-    "dockTitle": "选择更省力的工作方式",
-    "instruction": "先点开两条线索，再拖动行动；也可以点选行动后点击线索。",
+    "subtitle": "下班后的肌肉小课堂。",
+    "story": "一班站下来，小陈的小腿和足底都有点紧。\n泡沫轴与软球，看起来都能滚，该放在哪里？",
+    "room": "职业健身观察室",
+    "status": "先认识，再舒适地练",
+    "dockTitle": "选择合适的器械或动作",
+    "instruction": "先点身体线索，再把器械或动作配到对应目标；动作细节见学习卡。",
     "beforeArt": "cashier-before",
-    "afterArt": "cashier-after",
+    "afterArt": "fitness-calf-roll",
     "beforeAlt": "收银员调整前的工作场景",
-    "afterAlt": "收银员改善任务安排后的示意场景",
+    "afterAlt": "本关健身动作示意，不表示症状已治愈",
     "artWidth": 364,
-    "hintTitle": "先改工作方式，再谈练哪块肌肉。",
-    "hintText": "持续站立 → 坐站交替\n伸手太远 → 物品靠近\n第三种行动不能减少本关对应的负担。",
-    "resultTitle": "工作继续，负担少一点。",
-    "resultText": "能坐能站，也能轻松够到商品；比要求一直挺直站着更实际。",
-    "resultNote": "插画是理想化工作调整示意，不代表两次选择就能改善现实症状。",
+    "hintTitle": "选的是健身知识，不是工作工具。",
+    "hintText": "小腿后侧 → 小腿泡沫轴\n足弓 · 紧绷 → 足底软球\n拖对后会显示动作示意。不要把动画当作疼痛诊断或治疗。",
+    "resultTitle": "把两个健身知识点带走。",
+    "resultText": "轴轻滚小腿肌腹，软球轻触足弓；认识组织和压力，比追求痛点更重要。",
+    "resultNote": "完成的是游戏学习目标，不代表身体已得到放松。请先读动作步骤与注意事项，再决定是否尝试。",
     "shareTitle": "打工人康复指南：收银员的站立班次",
     "tools": [
       {
-        "id": "alternatePosture",
-        "title": "坐站交替",
-        "detail": "换姿势有支撑",
-        "art": "alternate-posture",
-        "action": "换"
+        "id": "calfRoll",
+        "title": "小腿泡沫轴",
+        "detail": "肌腹 · 温和滚动",
+        "art": "calf-roll-tool",
+        "action": "滚"
       },
       {
-        "id": "bringCloser",
-        "title": "物品靠近",
-        "detail": "减少伸手够取",
-        "art": "bring-closer",
-        "action": "近"
+        "id": "footBall",
+        "title": "足底软球",
+        "detail": "坐姿 · 轻压足弓",
+        "art": "foot-ball-tool",
+        "action": "松"
       },
       {
         "id": "keepWorking",
-        "title": "站着不动",
-        "detail": "坚持同一种姿势",
+        "title": "猛压痛点",
+        "detail": "力度大不等于好",
         "art": null,
-        "action": "撑"
+        "action": "误"
       }
     ],
     "zones": [
       {
-        "id": "staticStanding",
-        "title": "持续站立",
-        "detail": "一班很少换姿势",
+        "id": "calf",
+        "title": "小腿后侧",
+        "detail": "腓肠肌 / 比目鱼肌",
         "side": "back",
         "color": "#b27c49",
-        "clue": "小陈长时间站在一个位置，很少坐下或走动。",
-        "wrong": "把物品拉近不等于改变持续站立，先找能换姿势的行动。",
-        "correct": "安排有支撑的坐站交替和任务变化；不是从一直站换成一直坐。"
+        "clue": "久站后，小陈描述小腿后侧酸紧。本关关注腓肠肌、比目鱼肌所在区域，不把感受自动判断为疾病或肌肉短缩。",
+        "wrong": "本关小腿目标是在学泡沫轴轻滚肌腹；足底球动作关注足弓，不要把球顶在膝后或跟腱处。",
+        "correct": "小腿轻滚：轴放在小腿后侧肌腹，用手和另一只脚分担体重，避开膝后、跟腱与骨头。"
       },
       {
-        "id": "farReach",
-        "title": "伸手太远",
-        "detail": "商品不在近处",
+        "id": "footArch",
+        "title": "足弓 · 紧绷",
+        "detail": "足底软组织",
         "side": "chest",
         "color": "#6195ab",
-        "clue": "待扫商品离身体偏远，小陈需要反复伸手去够。",
-        "wrong": "坐下也可能要够远处商品；这条线索要改善取物距离。",
-        "correct": "把常用物品和扫码位置安排在舒适可及的范围，减少反复远伸。"
+        "clue": "小陈还描述脚底足弓有紧绷感。足底既有小肌肉，也有筋膜；筋膜不是一块肌肉，更不能仅凭久站诊断足底筋膜炎。",
+        "wrong": "小腿泡沫轴可以影响舒适度，但本关足弓目标是在学坐姿软球的压力控制，不是用硬物猛踩脚跟。",
+        "correct": "足底软球：坐稳后轻压足弓，小范围慢滚，不把全部体重踩上去，也不猛压疼痛脚跟。"
       }
     ],
     "targets": [
       {
-        "tool": "alternatePosture",
-        "zone": "staticStanding",
+        "tool": "calfRoll",
+        "zone": "calf",
         "score": 50,
-        "successSound": "relax"
+        "successSound": "relax",
+        "demoArt": "fitness-calf-roll"
       },
       {
-        "tool": "bringCloser",
-        "zone": "farReach",
+        "tool": "footBall",
+        "zone": "footArch",
         "score": 50,
-        "successSound": "strengthen"
+        "successSound": "strengthen",
+        "demoArt": "fitness-foot-ball"
       }
     ],
     "designSource": "extension",
-    "knowledge": "能坐能站，也能轻松够到商品；比要求一直挺直站着更实际。",
+    "knowledge": "轴轻滚小腿肌腹，软球轻触足弓；认识组织和压力，比追求痛点更重要。",
     "education": {
-      "summary": "能坐能站，也能轻松够到商品；比要求一直挺直站着更实际。",
-      "cause": "长时间固定站立和反复远距离伸手，是两种不同的工作负担。单靠“站直一点”不能解决任务布局。合理的座椅、脚部支撑、取物距离和交替任务，应一起考虑。",
+      "summary": "轴轻滚小腿肌腹，软球轻触足弓；认识组织和压力，比追求痛点更重要。",
+      "cause": "固定站立时，小腿与足部参与身体支撑，长时间负荷可能带来酸累感，但也可能有其他原因。泡沫轴和软球都是自我放松工具：接触区域、压力控制和边界比名字更重要。本关不是“久站一定得足底筋膜炎”的判断，也不是治疗方案。 放松后的活动感受变化可能与牵伸耐受、感觉调节等有关；研究并未证明滚压必然把某种粘连压开，也不是优于一切活动的万能方法。",
       "muscles": [
         {
           "name": "腓肠肌 / 比目鱼肌",
-          "location": "小腿后侧",
-          "function": "参与踝关节运动、站立支撑和走路时的蹬地。"
+          "location": "小腿后侧，分别较浅与较深",
+          "function": "共同参与踝关节跖屈，如踮脚与走路蹬地；直膝与屈膝会改变它们在伸展或训练中的相对参与。"
         },
         {
-          "name": "竖脊肌",
-          "location": "脊柱两侧",
-          "function": "参与躯干支撑；反复前探取物时，工作方式会影响其负担。"
+          "name": "趾短屈肌等足底小肌肉",
+          "location": "足底，参与脚趾运动",
+          "function": "帮助脚趾屈曲并参与足部控制。足底筋膜另属于结缔组织，也参与足弓支撑，不应称作肌肉。"
         }
       ],
       "actions": [
         {
-          "title": "提供真正可用的坐站条件",
-          "description": "座椅高度要配合工作台，坐下时脚部有支撑；在允许的流程中交替坐、站和短暂走动。"
+          "title": "小腿泡沫轴",
+          "art": "fitness-calf-roll",
+          "description": "先学会控制体重，再学会慢慢滚。",
+          "steps": [
+            "坐在垫上，一侧小腿肌腹放在泡沫轴上。",
+            "双手支撑，另一只脚踩地分担体重。",
+            "小范围慢滚，轻微压力即可；绕开膝后和跟腱。"
+          ],
+          "principle": "滚压是可调压力下的自我放松，可能短时改善活动感受；不是把乳酸“滚出去”或消除所有酸痛。",
+          "caution": "单侧小腿突然肿、热、红或不明原因疼痛时，不要自行滚压，应及时就医；有感觉减退、循环问题等情况先咨询专业人员。"
         },
         {
-          "title": "常用物品放近一点",
-          "description": "让商品、扫码设备及常用工具易于接近，必要时调整流程，而不是一直伸长手臂去够。"
+          "title": "坐姿足底软球",
+          "art": "fitness-foot-ball",
+          "description": "足底筋膜和小肌肉需要被正确认识，而不是踩得越痛越有效。",
+          "steps": [
+            "坐在稳固椅子上，一脚踩地保持稳定。",
+            "另一脚足弓轻放在软球上，球大小适合足底接触。",
+            "轻压并缓慢小范围来回，不在疼痛点硬顶。"
+          ],
+          "principle": "足底软组织接触轻压力可作为舒适活动的尝试；足底筋膜是支撑足弓的结缔组织，不是肌肉。",
+          "caution": "不压开放伤口、急性损伤或明显疼痛脚跟。糖尿病足、感觉减退、循环障碍等情况不宜未经评估自行尝试。"
         }
       ],
-      "boundary": "肌肉名称用于认识身体，不代表已判断你哪里紧、哪里弱。游戏不提供诊断或治疗；出现持续或加重的疼痛、麻木、明显无力，请停止诱发不适的活动并寻求专业评估。",
+      "boundary": "仅面向没有急性损伤、愿意尝试轻柔活动的普通成年人。紧绷感不等于诊断，器械不负责“压开粘连”或把肌肉压回正常。只做舒适范围，出现刺痛、麻木、放射痛或明显不适就停止；持续或加重的症状请找专业人员评估。",
       "sources": [
         {
-          "title": "HSE：收银工作的肌肉骨骼负担指南",
-          "url": "https://www.hse.gov.uk/pubns/indg269.pdf"
+          "title": "ACE：泡沫轴与自我放松的使用边界",
+          "url": "https://www.acefitness.org/resources/everyone/blog/5624/foam-rolling-101/"
         },
         {
-          "title": "Cleveland Clinic：小腿肌肉",
-          "url": "https://my.clevelandclinic.org/health/body/21662-calf-muscle"
+          "title": "NHS：足底组织与球滚动资料（并非玩家诊断）",
+          "url": "https://www.mskdorset.nhs.uk/foot-pain/foot-pain-plantar-fascia-pain/"
+        },
+        {
+          "title": "NHS：小腿伸展及腓肠肌、比目鱼肌区别",
+          "url": "https://www.cuh.nhs.uk/patient-information/stretches-back-pain-management-programme/"
+        },
+        {
+          "title": "NHS：小腿肿痛与血栓警示",
+          "url": "https://www.nhs.uk/conditions/deep-vein-thrombosis-dvt/"
+        },
+        {
+          "title": "NCBI：足底小肌肉的结构与作用",
+          "url": "https://www.ncbi.nlm.nih.gov/books/NBK539705/"
+        },
+        {
+          "title": "研究综述：滚压与拉伸的短期效果和证据边界",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/38244921/"
         }
       ]
-    }
+    },
+    "fitness": true,
+    "workTip": "工作补充：能改变站姿、短暂活动或获得合适支撑也有帮助；这里先学习器械放松与肌肉知识。"
   },
   {
     "id": 5,
-    "title": "搬运工的省力选择",
+    "title": "搬运工的臀髋小课堂",
     "shortTitle": "搬运工",
     "patientName": "阿杰 / 货到了，别急着全抱走",
-    "stageTip": "先用合适工具减少徒手搬运，再调整每批数量和节奏。",
+    "stageTip": "泡沫轴是放松尝试，髋铰链是动作控制学习；放松与练习，不是同一件事。",
     "observeFirst": true,
-    "subtitle": "先读懂工作，再给身体减负。",
-    "story": "箱子不好抱，阿杰却想一趟搬完。\n先看清负担，再选工具和分批方案。",
-    "room": "搬运工观察室",
-    "status": "不靠硬撑，换个办法",
-    "dockTitle": "选择更省力的工作方式",
-    "instruction": "先点开两条线索，再拖动行动；也可以点选行动后点击线索。",
+    "subtitle": "下班后的肌肉小课堂。",
+    "story": "搬了一天箱子，阿杰觉得臀部酸累，腰也很疲劳。\n这一关先卸下重量：认识臀部放松与髋部发力。",
+    "room": "职业健身观察室",
+    "status": "先认识，再舒适地练",
+    "dockTitle": "选择合适的器械或动作",
+    "instruction": "先点身体线索，再把器械或动作配到对应目标；动作细节见学习卡。",
     "beforeArt": "warehouse-before",
-    "afterArt": "warehouse-after",
+    "afterArt": "fitness-glute-roll",
     "beforeAlt": "搬运工调整前的工作场景",
-    "afterAlt": "搬运工改善任务安排后的示意场景",
-    "artWidth": 313,
-    "hintTitle": "先改工作方式，再谈练哪块肌肉。",
-    "hintText": "箱子难抱 → 使用推车\n一趟太多 → 拆分负荷\n第三种行动不能减少本关对应的负担。",
-    "resultTitle": "工作继续，负担少一点。",
-    "resultText": "先用合适工具减少徒手搬运，再调整每批数量和节奏。",
-    "resultNote": "插画是理想化工作调整示意，不代表两次选择就能改善现实症状。",
+    "afterAlt": "本关健身动作示意，不表示症状已治愈",
+    "artWidth": 312,
+    "hintTitle": "选的是健身知识，不是工作工具。",
+    "hintText": "臀部 · 酸累 → 臀部泡沫轴\n臀髋 · 发力 → 徒手髋铰链\n拖对后会显示动作示意。不要把动画当作疼痛诊断或治疗。",
+    "resultTitle": "把两个健身知识点带走。",
+    "resultText": "泡沫轴是放松尝试，髋铰链是动作控制学习；放松与练习，不是同一件事。",
+    "resultNote": "完成的是游戏学习目标，不代表身体已得到放松。请先读动作步骤与注意事项，再决定是否尝试。",
     "shareTitle": "打工人康复指南：搬运工的省力选择",
     "tools": [
       {
-        "id": "useTrolley",
-        "title": "使用推车",
-        "detail": "先减少徒手搬运",
-        "art": "use-trolley",
-        "action": "借"
+        "id": "gluteRoll",
+        "title": "臀部泡沫轴",
+        "detail": "软组织 · 轻压放松",
+        "art": "glute-roll-tool",
+        "action": "松"
       },
       {
-        "id": "splitLoad",
-        "title": "拆分负荷",
-        "detail": "少量分批安排",
-        "art": "split-load",
-        "action": "分"
+        "id": "hipHinge",
+        "title": "徒手髋铰链",
+        "detail": "不负重 · 学习控制",
+        "art": "hip-hinge-tool",
+        "action": "学"
       },
       {
         "id": "keepWorking",
-        "title": "一次抱走",
-        "detail": "省趟数但更费力",
+        "title": "直接滚腰椎",
+        "detail": "不作为入门选择",
         "art": null,
-        "action": "赶"
+        "action": "误"
       }
     ],
     "zones": [
       {
-        "id": "bulkyLoad",
-        "title": "箱子难抱",
-        "detail": "大件离身体远",
+        "id": "glute",
+        "title": "臀部 · 酸累",
+        "detail": "臀大肌等软组织",
         "side": "back",
         "color": "#b27c49",
-        "clue": "箱子体积大、抓握不方便，阿杰抱着走时很难靠近身体。",
-        "wrong": "只分批仍可能需要抱大件走远；先考虑合适的搬运辅助工具。",
-        "correct": "使用适合货物的推车，减少徒手抱运；推车也要检查载重和路线。"
+        "clue": "反复起身与搬运后，阿杰描述臀部酸累。本关认识臀肌所在区域，不把所有酸痛当成需要用轴压开的“结节”。",
+        "wrong": "本关臀部放松目标是轻压臀部软组织；髋铰链是动作控制学习，也不要把轴移到腰椎上直接滚。",
+        "correct": "臀部轻滚：先用双手和双脚分担体重，轻压臀部软组织；绕开尾骨与腰椎。"
       },
       {
-        "id": "heavyBatch",
-        "title": "一趟太多",
-        "detail": "想把负荷全揽下",
+        "id": "hipControl",
+        "title": "臀髋 · 发力",
+        "detail": "臀大肌 / 腘绳肌",
         "side": "chest",
         "color": "#6195ab",
-        "clue": "阿杰想把几份货一次搬完，单次负担超过舒适的处理能力。",
-        "wrong": "有推车也不能超载；要调整每批数量和工作节奏。",
-        "correct": "拆分每批数量，安排适合的频率与休息；不是越多趟越好。"
+        "clue": "阿杰想认识髋部参与起身的方式。本关不是继续搬重箱，也不以“腰累”来诊断臀肌无力，而是学习不负重的髋铰链。",
+        "wrong": "滚压是放松尝试，不能代替主动动作控制；这条目标要学髋部后移与起身，不是用轴直接滚腰。",
+        "correct": "徒手髋铰链：膝微屈、臀部向后，躯干和颈部保持舒适稳定，再站起；先学控制，不加重。"
       }
     ],
     "targets": [
       {
-        "tool": "useTrolley",
-        "zone": "bulkyLoad",
+        "tool": "gluteRoll",
+        "zone": "glute",
         "score": 50,
-        "successSound": "relax"
+        "successSound": "relax",
+        "demoArt": "fitness-glute-roll"
       },
       {
-        "tool": "splitLoad",
-        "zone": "heavyBatch",
+        "tool": "hipHinge",
+        "zone": "hipControl",
         "score": 50,
-        "successSound": "strengthen"
+        "successSound": "strengthen",
+        "demoArt": "fitness-hip-hinge"
       }
     ],
     "designSource": "extension",
-    "knowledge": "先用合适工具减少徒手搬运，再调整每批数量和节奏。",
+    "knowledge": "泡沫轴是放松尝试，髋铰链是动作控制学习；放松与练习，不是同一件事。",
     "education": {
-      "summary": "先用合适工具减少徒手搬运，再调整每批数量和节奏。",
-      "cause": "负担不仅取决于重量，还和箱子大小、抓握、离身体的距离、频率以及路线有关。反复靠远处抱取或带着负荷转身，会增加任务难度。先改工具与流程，不要把安全寄托在“腰练强就能硬搬”。",
+      "summary": "泡沫轴是放松尝试，髋铰链是动作控制学习；放松与练习，不是同一件事。",
+      "cause": "反复处理负荷时，臀髋肌群与躯干肌群一起参与。工作后的酸累不等于某块肌肉必然紧或弱。放松尝试关注舒适度；徒手髋铰链则学习髋部屈伸和躯干控制，不以加重量来“治腰”。 放松后的活动感受变化可能与牵伸耐受、感觉调节等有关；研究并未证明滚压必然把某种粘连压开，也不是优于一切活动的万能方法。",
       "muscles": [
+        {
+          "name": "臀大肌 / 腘绳肌",
+          "location": "臀部后侧与大腿后侧",
+          "function": "参与髋伸展；腘绳肌还参与屈膝。髋铰链用来认识髋部运动与起身的协调。"
+        },
         {
           "name": "竖脊肌",
           "location": "脊柱两侧",
-          "function": "参与躯干的支撑与伸展，但不能代替合理的负荷安排。"
-        },
-        {
-          "name": "臀大肌 / 股四头肌",
-          "location": "臀部后侧与大腿前侧",
-          "function": "分别参与髋伸展和膝伸展；起身、移动货物需要多部位协调。"
+          "function": "参与躯干支撑与伸展；髋铰链练习中关注舒适稳定，不等于要把它练到越紧越好。"
         }
       ],
       "actions": [
         {
-          "title": "先考虑搬运辅助",
-          "description": "选择适合货物的推车或其他工具，检查载重、稳定性、通道及地面；过重或不易控制的货物应寻求协助。"
+          "title": "臀部泡沫轴",
+          "art": "fitness-glute-roll",
+          "description": "放松臀部软组织，不直接滚压腰椎。",
+          "steps": [
+            "坐在垫上，把轴放在一侧臀部软组织下方。",
+            "双手支撑、双脚踩地，用支撑点调小压力。",
+            "舒适范围内缓慢小幅移动，避开尾骨、腰椎与骨头。"
+          ],
+          "principle": "轻压力与缓慢运动可能暂时改善局部紧绷感；这和训练肌肉发力能力不是一回事。",
+          "caution": "有臀腿放射痛、麻木、急性损伤或症状加重时停止。不要把“滚得疼”当作有效，更不要直接把轴放到腰椎下大力滚。"
         },
         {
-          "title": "减负要同时看频率",
-          "description": "拆分数量、改善抓握和取放位置，减少不必要的重复搬运；留出休息与任务交替，不规定人人通用的安全公斤数。"
+          "title": "徒手髋铰链",
+          "art": "fitness-hip-hinge",
+          "description": "先认识髋部屈伸，它是硬拉等训练的基础之一，不是腰痛治疗动作。",
+          "steps": [
+            "双脚站稳，膝微屈，先卸下所有重量。",
+            "臀部缓慢向后移动，躯干随髋部前倾，颈部和背部保持舒适稳定。",
+            "在能控制的范围返回站立，自然呼吸；不刻意过度挺腰。"
+          ],
+          "principle": "臀大肌和腘绳肌参与髋伸展，竖脊肌等参与躯干控制；学习让髋部运动，不是让腰部来回折叠。",
+          "caution": "只做徒手、无痛、可控的尝试。明显腰痛、急性损伤或无法控制动作时先评估；不把游戏动作当作负重训练处方。"
         }
       ],
-      "boundary": "肌肉名称用于认识身体，不代表已判断你哪里紧、哪里弱。游戏不提供诊断或治疗；出现持续或加重的疼痛、麻木、明显无力，请停止诱发不适的活动并寻求专业评估。",
+      "boundary": "仅面向没有急性损伤、愿意尝试轻柔活动的普通成年人。紧绷感不等于诊断，器械不负责“压开粘连”或把肌肉压回正常。只做舒适范围，出现刺痛、麻木、放射痛或明显不适就停止；持续或加重的症状请找专业人员评估。",
       "sources": [
         {
-          "title": "HSE：搬举任务的控制措施",
-          "url": "https://www.hse.gov.uk/Msd/Mac/guidance01a.htm"
+          "title": "ACE：泡沫轴与自我放松的使用边界",
+          "url": "https://www.acefitness.org/resources/everyone/blog/5624/foam-rolling-101/"
         },
         {
-          "title": "HSE：手工搬运风险管理",
-          "url": "https://www.hse.gov.uk/msd/manual-handling/index.htm"
+          "title": "ACE：徒手髋铰链动作基础",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/33/hip-hinge/"
         },
         {
-          "title": "Cleveland Clinic：腿部肌肉",
-          "url": "https://my.clevelandclinic.org/health/body/22220-leg-muscles"
+          "title": "ACE：从髋铰链学习罗马尼亚硬拉",
+          "url": "https://www.acefitness.org/continuing-education/certified/may-2025/8865/the-ace-do-it-better-series-the-romanian-deadlift/"
+        },
+        {
+          "title": "HSE：搬举技术只是风险控制的一部分",
+          "url": "https://www.hse.gov.uk/Msd/manual-handling/good-handling-technique.htm"
+        },
+        {
+          "title": "研究综述：滚压与拉伸的短期效果和证据边界",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/38244921/"
         }
       ]
-    }
+    },
+    "fitness": true,
+    "workTip": "搬箱小提示：可以借用硬拉基础中的髋部参与思路，但搬箱不等于硬拉。先判断重量与抓握，物品尽量靠近身体，髋膝配合，平稳起身，转向时移动脚步；过重或难控时寻求协助。没有一种姿势能保证不伤腰，技术不能替代减负与合适的辅助工具。"
   }
 ]

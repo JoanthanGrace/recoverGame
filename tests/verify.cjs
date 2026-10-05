@@ -23,6 +23,15 @@ for (const level of levels) {
   assert.ok(level.education.muscles.length >= 2);
   for (const muscle of level.education.muscles) assert.ok(muscle.name && muscle.location && muscle.function);
   assert.equal(level.education.actions.length, 2);
+  if (level.id >= 3) {
+    assert.equal(level.fitness, true); assert.ok(level.workTip);
+    assert.ok(level.tools.every(tool => !['adjustChair','microBreak','alternatePosture','bringCloser','useTrolley','splitLoad'].includes(tool.id)));
+    for (const action of level.education.actions) {
+      assert.ok(action.art && action.steps.length >= 3 && action.principle && action.caution);
+      assert.ok(fs.existsSync(path.join(root, 'assets/resources/art/' + action.art + '.png')));
+    }
+    for (const target of level.targets) assert.ok(level.education.actions.some(action => action.art === target.demoArt));
+  }
   assert.ok(level.education.sources.length >= 2);
   for (const source of level.education.sources) assert.ok(source.title && /^https:\/\//.test(source.url));
   if (level.progressArt) assert.ok(fs.existsSync(path.join(root, `assets/resources/art/${level.progressArt}.png`)));
@@ -117,8 +126,15 @@ if (!process.argv.includes('--browser')) process.exit(0);
       await page.locator('#learn').click();
       assert.equal(await page.locator('#science').evaluate(el => el.open), true);
       assert.equal(await page.locator('#science-muscles article').count(), level.education.muscles.length);
+      if (level.fitness) {
+        assert.equal(await page.locator('#science-actions .action-demo').count(), 2);
+        assert.equal(await page.locator('#science-actions ol li').count(), 6);
+        assert.equal(await page.locator('#science-actions .principle').count(), 2);
+        assert.equal(await page.locator('#science-actions .caution').count(), 2);
+        assert.equal(await page.locator('#science-work-tip').textContent(), level.workTip);
+      }
       assert.ok((await page.locator('#science-muscles').textContent()).includes(level.education.muscles[0].name));
-      await page.locator('#science details summary').click();
+      await page.locator('#science details:not(.work-tip) summary').click();
       assert.equal(await page.locator('#science-sources a').count(), level.education.sources.length);
       await page.locator('#science .primary').click();
       assert.equal(await page.locator('#score').textContent(), '0 / 2');
@@ -149,7 +165,12 @@ if (!process.argv.includes('--browser')) process.exit(0);
       await page.mouse.up();
       assert.equal(await page.locator('.drag-ghost').count(), 0); assert.equal(await page.locator('#score').textContent(), '0 / 2');
       await page.waitForTimeout(20);
-      for (const target of [...level.targets].reverse()) await pick(target.tool, target.zone);
+      for (const target of [...level.targets].reverse()) {
+        await pick(target.tool, target.zone);
+        const selector = (await page.locator('#percent').textContent()) === '50%' ? '.progress-art' : '.patient.after';
+        assert.ok((await page.locator(selector).getAttribute('src')).endsWith(target.demoArt + '.png'));
+      }
+      assert.equal(await page.locator('#result-demos figure').count(), 2);
       await page.waitForFunction(() => document.querySelector('#result').open);
       await page.locator('#result-learn').click(); assert.equal(await page.locator('#science').evaluate(el => el.open), true);
       await page.locator('#science .primary').click(); assert.equal(await page.locator('#result').evaluate(el => el.open), true);

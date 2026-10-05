@@ -10,6 +10,12 @@ export enum ToolType {
   BringCloser = 'bringCloser',
   UseTrolley = 'useTrolley',
   SplitLoad = 'splitLoad',
+  NeckStretch = 'neckStretch',
+  WallBall = 'wallBall',
+  CalfRoll = 'calfRoll',
+  FootBall = 'footBall',
+  GluteRoll = 'gluteRoll',
+  HipHinge = 'hipHinge',
 }
 export enum ZoneType {
   Chest = 'chest',
@@ -22,9 +28,15 @@ export enum ZoneType {
   FarReach = 'farReach',
   BulkyLoad = 'bulkyLoad',
   HeavyBatch = 'heavyBatch',
+  UpperTrap = 'upperTrap',
+  Scapular = 'scapular',
+  Calf = 'calf',
+  FootArch = 'footArch',
+  Glute = 'glute',
+  HipControl = 'hipControl',
 }
 export type SuccessSound = 'relax' | 'strengthen';
-export interface LevelTarget { tool: ToolType; zone: ZoneType; score: number; successSound?: SuccessSound; }
+export interface LevelTarget { tool: ToolType; zone: ZoneType; score: number; successSound?: SuccessSound; demoArt?: string; }
 export interface LevelConfig {
   id: number; title: string; patientName: string; stageTip: string;
   targets: LevelTarget[]; observeFirst?: boolean;
@@ -37,10 +49,11 @@ export interface ZoneConfig {
   clue: string; wrong: string; correct: string;
 }
 export interface PlayableLevel extends LevelConfig {
+  fitness?: boolean; workTip?: string;
   education: {
     summary: string; cause: string; boundary: string;
     muscles: { name: string; location: string; function: string }[];
-    actions: { title: string; description: string }[];
+    actions: { title: string; description: string; art?: string; steps?: string[]; principle?: string; caution?: string }[];
     sources: { title: string; url: string }[];
   };
   designSource: 'prd' | 'extension'; knowledge: string; shortTitle?: string;
