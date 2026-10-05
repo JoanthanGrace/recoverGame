@@ -343,9 +343,9 @@
     "subtitle": "下班后的肌肉小课堂。",
     "story": "连续抬手、低头剪发，阿哲肩颈有些酸累。\n认识肩颈与肩胛周围，再选一个舒适的放松方向。",
     "room": "职业健身观察室",
-    "status": "先认识，再舒适地练",
+    "status": "连续抬手 · 肩颈酸累",
     "dockTitle": "选择合适的器械或动作",
-    "instruction": "先点身体线索，再把器械或动作配到对应目标；动作细节见学习卡。",
+    "instruction": "先点身体线索，再匹配器械或动作；选项中也有健身误区，选后会解释。",
     "beforeArt": "barber-before",
     "afterArt": "fitness-neck-stretch",
     "beforeAlt": "理发师调整前的工作场景",
@@ -374,10 +374,11 @@
       },
       {
         "id": "keepWorking",
-        "title": "越痛越用力",
-        "detail": "痛不等于有效",
+        "title": "加大按压力度",
+        "detail": "判断：适合本关吗？",
         "art": null,
-        "action": "误"
+        "action": "辨",
+        "wrongFeedback": "这是本关的健身误区：疼痛不代表放松更有效。选择舒适、可控的力度，肩颈目标可尝试轻柔伸展；肩胛周围目标可尝试靠墙软球放松。"
       }
     ],
     "zones": [
@@ -530,9 +531,9 @@
     "subtitle": "下班后的肌肉小课堂。",
     "story": "一班站下来，小陈的小腿和足底都有点紧。\n泡沫轴与软球，看起来都能滚，该放在哪里？",
     "room": "职业健身观察室",
-    "status": "先认识，再舒适地练",
+    "status": "久站之后 · 小腿足底酸紧",
     "dockTitle": "选择合适的器械或动作",
-    "instruction": "先点身体线索，再把器械或动作配到对应目标；动作细节见学习卡。",
+    "instruction": "先点身体线索，再匹配器械或动作；选项中也有健身误区，选后会解释。",
     "beforeArt": "cashier-before",
     "afterArt": "fitness-calf-roll",
     "beforeAlt": "收银员调整前的工作场景",
@@ -561,10 +562,11 @@
       },
       {
         "id": "keepWorking",
-        "title": "猛压痛点",
-        "detail": "力度大不等于好",
+        "title": "集中猛压痛点",
+        "detail": "判断：适合本关吗？",
         "art": null,
-        "action": "误"
+        "action": "辨",
+        "wrongFeedback": "这是本关的健身误区：不需要追求疼痛，也不要直接猛压痛点。先分清小腿和足底目标，再选择轻滚小腿或坐姿足底球放松；注意学习卡中的禁忌。"
       }
     ],
     "zones": [
@@ -721,9 +723,9 @@
     "subtitle": "下班后的肌肉小课堂。",
     "story": "搬了一天箱子，阿杰觉得臀部酸累，腰也很疲劳。\n这一关先卸下重量：认识臀部放松与髋部发力。",
     "room": "职业健身观察室",
-    "status": "先认识，再舒适地练",
+    "status": "反复搬运 · 臀部酸累",
     "dockTitle": "选择合适的器械或动作",
-    "instruction": "先点身体线索，再把器械或动作配到对应目标；动作细节见学习卡。",
+    "instruction": "先点身体线索，再匹配器械或动作；选项中也有健身误区，选后会解释。",
     "beforeArt": "warehouse-before",
     "afterArt": "fitness-glute-roll",
     "beforeAlt": "搬运工调整前的工作场景",
@@ -752,10 +754,11 @@
       },
       {
         "id": "keepWorking",
-        "title": "直接滚腰椎",
-        "detail": "不作为入门选择",
+        "title": "泡沫轴滚腰部",
+        "detail": "判断：适合本关吗？",
         "art": null,
-        "action": "误"
+        "action": "辨",
+        "wrongFeedback": "这是本关的健身误区：不要把泡沫轴放到腰椎下大力滚。臀部目标选择轻压臀部软组织，动作控制目标选择徒手髋铰链；出现放射痛或麻木时停止。"
       }
     ],
     "zones": [

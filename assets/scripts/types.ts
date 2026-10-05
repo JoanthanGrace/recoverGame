@@ -42,7 +42,7 @@ export interface LevelConfig {
   targets: LevelTarget[]; observeFirst?: boolean;
 }
 export interface ToolConfig {
-  id: ToolType; title: string; detail: string; art: string | null; action: string;
+  id: ToolType; title: string; detail: string; art: string | null; action: string; wrongFeedback?: string;
 }
 export interface ZoneConfig {
   id: ZoneType; title: string; detail: string; color: string; side: 'back' | 'chest';

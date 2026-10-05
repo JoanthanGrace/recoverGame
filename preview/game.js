@@ -48,7 +48,7 @@ function drop(tool, zoneId) {
   const target = current().targets.find(item => item.zone === zoneId && item.tool === tool);
   if (!target) {
     window.recoveryAudio.play('wrong');
-    say(zone.wrong, 'wrong');
+    say(current().tools.find(item => item.id === tool)?.wrongFeedback || zone.wrong, 'wrong');
     stage.classList.remove('shake'); void stage.offsetWidth; stage.classList.add('shake'); return;
   }
   window.recoveryAudio.play(target.successSound || 'strengthen');
@@ -156,7 +156,7 @@ function showLevel(index, scroll = true) {
   for (const tool of level.tools) {
     const button = document.createElement('button'); button.className = 'tool'; button.dataset.tool = tool.id; button.setAttribute('aria-pressed', 'false');
     if (tool.art) { const img = document.createElement('img'); img.src = artPath(tool.art); img.alt = ''; button.append(img); }
-    else { const icon = document.createElement('span'); icon.className = level.id >= 3 ? 'work-icon repeat-icon' : 'work-icon'; icon.setAttribute('aria-hidden', 'true'); if (level.id >= 3) icon.textContent = '↻'; button.append(icon); }
+    else { const icon = document.createElement('span'); icon.className = level.id >= 3 ? 'work-icon repeat-icon' : 'work-icon'; icon.setAttribute('aria-hidden', 'true'); if (level.id >= 3) icon.textContent = '?'; button.append(icon); }
     const copy = document.createElement('div'); const title = document.createElement('b'); title.textContent = tool.title; const detail = document.createElement('small'); detail.textContent = tool.detail; copy.append(title, detail); button.append(copy);
     const badge = document.createElement('span'); badge.className = 'tool-action'; badge.textContent = tool.action; button.append(badge);
     toolContainer.append(button); bindTool(button);

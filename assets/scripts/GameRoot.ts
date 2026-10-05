@@ -139,7 +139,7 @@ export class GameRoot extends Component {
     const compact = this.level.tools.length === 3;
     const node = this.rect(parent, 'Tool-' + config.id, compact ? 190 : 290, 115, '#edf0e5', x, -12, 18);
     if (config.art) this.art(node, config.art, compact ? 46 : 82, compact ? 46 : 82, compact ? 0 : -90, compact ? 27 : 0);
-    else this.label(node, '▤', 40, MUTED, 60, 48, 0, 27);
+    else this.label(node, this.level.fitness ? '?' : '▤', 40, MUTED, 60, 48, 0, 27);
     this.label(node, config.title, compact ? 22 : 25, INK, compact ? 175 : 170, 35, compact ? 0 : 48, compact ? -12 : 20);
     this.label(node, config.detail, compact ? 16 : 18, MUTED, compact ? 175 : 170, 30, compact ? 0 : 48, compact ? -40 : -22);
     const tool: ToolRuntime = { id: config.id, node, origin: node.position.clone(), used: false };
@@ -175,7 +175,7 @@ export class GameRoot extends Component {
     const config = this.level.zones.find(item => item.id === zone)!;
     if (outcome === 'unobserved') { this.say('先点开这条线索，了解情况再选行动。'); return; }
     if (outcome === 'wrong') {
-      this.playSound('wrong'); this.say(config.wrong, '#ae593f'); Tween.stopAllByTarget(this.root); this.root.setPosition(0, 0, 0);
+      this.playSound('wrong'); this.say(this.level.tools.find(item => item.id === tool)?.wrongFeedback || config.wrong, '#ae593f'); Tween.stopAllByTarget(this.root); this.root.setPosition(0, 0, 0);
       tween(this.root).to(0.05, { position: new Vec3(-6, 0, 0) }).to(0.05, { position: new Vec3(6, 0, 0) }).to(0.05, { position: Vec3.ZERO.clone() }).start(); return;
     }
     if (outcome === 'completed') { this.say('这个目标已经完成了，试试另一个。'); return; }

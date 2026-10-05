@@ -13,3 +13,19 @@ header{gap:6px}.brand{margin-right:auto}.sound-toggle{font-size:10px;padding:9px
 .muscle-anatomy{margin:13px 0 0}.anatomy-preview{display:block;position:relative;width:100%;padding:12px 8px 33px;border:1px solid #d4dccb;background:radial-gradient(ellipse,#fffdf6,#f4f0e5);border-radius:12px}.anatomy-preview img{display:block;width:100%;height:205px;object-fit:contain}.anatomy-preview>span{position:absolute;bottom:10px;left:0;right:0;font-size:10px;color:var(--muted)}.anatomy-legend{display:flex;flex-wrap:wrap;gap:8px 14px;padding:11px 0 6px}.anatomy-legend span{display:flex;align-items:center;gap:6px;font-size:11px}.anatomy-legend i{width:10px;height:10px;border-radius:3px;flex:none}.muscle-anatomy figcaption{font-size:11px;line-height:1.8;color:var(--muted)}.anatomy-disclaimer{font-size:10px!important;color:var(--muted);line-height:1.8}#anatomy-dialog{width:min(640px,calc(100% - 32px))}#anatomy-dialog h2{font-size:24px;line-height:1.4}#anatomy-image{display:block;width:100%;height:min(48dvh,440px);object-fit:contain;border-radius:14px;background:radial-gradient(ellipse,#fffdf6,#e8eddf);padding:14px}#anatomy-image[hidden]{display:none}#anatomy-view{font-size:11px;color:var(--green)}#anatomy-source{font-size:11px;color:var(--green)}#anatomy-caption{font-size:12px}
 
 .anatomy-preview{cursor:zoom-in}
+
+/* Keep the field-note label inside the safe central area of the arch. */
+.stage-top{top:20px;left:50%;right:auto;width:max-content;max-width:calc(100% - 100px);transform:translateX(-50%);flex-direction:column;gap:5px;text-align:center}
+.status{max-width:100%;line-height:1.5}
+.view-label{font-size:9px}
+@media(max-width:600px){.stage-top{top:20px;max-width:calc(100% - 90px)}}
+
+/* A quiet, visible scroll affordance without the heavy native rail. */
+dialog{scrollbar-width:thin;scrollbar-color:#a6b7a2 transparent;scrollbar-gutter:stable}
+dialog::-webkit-scrollbar{width:6px;height:6px}
+dialog::-webkit-scrollbar-track{background:transparent;margin-block:24px}
+dialog::-webkit-scrollbar-thumb{background:#a6b7a2;border-radius:999px}
+dialog::-webkit-scrollbar-thumb:hover{background:#7c9679}
+dialog::-webkit-scrollbar-button{display:none;width:0;height:0}
+dialog::-webkit-scrollbar-corner{background:transparent}
+@media(forced-colors:active){dialog{scrollbar-color:auto}}

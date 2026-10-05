@@ -31,6 +31,9 @@ for (const level of levels) {
   assert.equal(level.education.actions.length, 2);
   if (level.id >= 3) {
     assert.equal(level.fitness, true); assert.ok(level.workTip);
+    const misconception = level.tools.find(tool => tool.id === 'keepWorking');
+    assert.ok(misconception.wrongFeedback.includes('健身误区'));
+    assert.notEqual(misconception.action, '误');
     assert.ok(level.tools.every(tool => !['adjustChair','microBreak','alternatePosture','bringCloser','useTrolley','splitLoad'].includes(tool.id)));
     for (const action of level.education.actions) {
       assert.ok(action.art && action.steps.length >= 3 && action.principle && action.caution);
@@ -69,6 +72,7 @@ for (const level of levels) {
   }
 }
 console.log('PASS: all five levels, education schema, clue gates, either order, wrong/outside/duplicate drops, reset, assets, TS syntax.');
+assert.equal(new Set(levels.slice(2).map(level => level.status)).size, 3);
 if (!process.argv.includes('--browser')) process.exit(0);
 
 (async () => {
@@ -131,6 +135,11 @@ if (!process.argv.includes('--browser')) process.exit(0);
       await page.locator('[data-level="' + (level.id - 1) + '"]').click(); await imagesReady();
       await page.locator('#learn').click();
       assert.equal(await page.locator('#science').evaluate(el => el.open), true);
+      assert.equal(await page.locator('#science').evaluate(el => getComputedStyle(el).scrollbarWidth), 'thin');
+      assert.equal(await page.locator('#science').evaluate(el => {
+        el.scrollTop = 80;
+        return el.scrollHeight > el.clientHeight && el.scrollTop > 0;
+      }), true, 'learning card remains scrollable');
       assert.equal(await page.locator('#science-muscles article').count(), level.education.muscles.length);
       assert.equal(await page.locator('#science-muscles .anatomy-preview img').count(), level.education.muscles.length);
       await page.locator('#science-muscles .anatomy-preview').first().click();
@@ -155,9 +164,18 @@ if (!process.argv.includes('--browser')) process.exit(0);
       assert.equal(await page.locator('#science-sources a').count(), level.education.sources.length);
       await page.locator('#science .primary').click();
       assert.equal(await page.locator('#score').textContent(), '0 / 2');
-      for (const width of [320, 390, 1440]) {
+      for (const width of [320, 390, 933, 1440]) {
         await page.setViewportSize({ width, height: width > 600 ? 1100 : 844 });
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, 'level ' + level.id + ' overflow ' + width);
+        await page.locator('#status').scrollIntoViewIfNeeded();
+        assert.equal(await page.locator('#status').evaluate(el => {
+          const r = el.getBoundingClientRect();
+          return [[r.left + 12,r.top + 8],[r.right - 12,r.top + 8],
+            [r.left + 12,r.bottom - 8],[r.right - 12,r.bottom - 8]].every(([x,y]) => {
+              const hit = document.elementFromPoint(x,y);
+              return hit === el || el.contains(hit);
+            });
+        }), true, 'status is not clipped at ' + width);
       }
       await page.setViewportSize({ width: 390, height: 844 });
       await page.screenshot({ path: path.join(scratch, 'level' + level.id + '-mobile.png'), fullPage: true });
@@ -175,6 +193,7 @@ if (!process.argv.includes('--browser')) process.exit(0);
       assert.equal(await page.locator('#score').textContent(), '0 / 2');
       for (const zone of level.zones) await page.locator('[data-zone="' + zone.id + '"]').click();
       await pick('keepWorking', first.zone); assert.equal(await page.locator('#score').textContent(), '0 / 2');
+      assert.equal(await page.locator('#feedback').textContent(), level.tools.find(tool => tool.id === 'keepWorking').wrongFeedback);
       // Pointer cancellation restores the tool without awarding progress.
       await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2); await page.mouse.down();
       await page.mouse.move(box.x + box.width / 2 + 30, box.y + box.height / 2 - 40, { steps: 6 });
