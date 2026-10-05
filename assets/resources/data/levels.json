@@ -86,17 +86,61 @@
         {
           "name": "胸大肌 / 胸小肌",
           "location": "胸前；胸小肌位于深层",
-          "function": "胸大肌参与手臂向前、向内运动；胸小肌连接肋骨与肩胛骨，参与肩胛位置变化。"
+          "function": "胸大肌参与手臂向前、向内运动；胸小肌连接肋骨与肩胛骨，参与肩胛位置变化。",
+          "anatomy": {
+            "art": "anatomy-pectorals",
+            "view": "前面 · 表层与深层",
+            "caption": "胸大肌在表层，胸小肌藏在更深处。图中两侧分别展示不同层次，并不是左右胸肌结构不同。",
+            "source": "https://www.ncbi.nlm.nih.gov/books/NBK545241/",
+            "legend": [
+              {
+                "name": "胸大肌",
+                "color": "#d97558"
+              },
+              {
+                "name": "胸小肌",
+                "color": "#6195ab"
+              }
+            ]
+          }
         },
         {
           "name": "菱形肌 / 中、下斜方肌",
           "location": "肩胛骨之间及上背部",
-          "function": "参与肩胛骨的位置控制，帮助上肢运动时保持协调。"
+          "function": "参与肩胛骨的位置控制，帮助上肢运动时保持协调。",
+          "anatomy": {
+            "art": "anatomy-scapular-group",
+            "view": "背面 · 分层展示",
+            "caption": "图中一侧移开斜方肌露出菱形肌，另一侧展示中、下斜方肌；它们不是同一层的肌肉。",
+            "source": "https://www.ncbi.nlm.nih.gov/books/NBK534856/",
+            "legend": [
+              {
+                "name": "中、下斜方肌",
+                "color": "#d97558"
+              },
+              {
+                "name": "菱形肌",
+                "color": "#6195ab"
+              }
+            ]
+          }
         },
         {
           "name": "前锯肌",
           "location": "胸廓侧面，延伸到肩胛骨内侧",
-          "function": "帮助肩胛贴着胸廓并向上旋转；不是只靠“夹背”就能替代它。"
+          "function": "帮助肩胛贴着胸廓并向上旋转；不是只靠“夹背”就能替代它。",
+          "anatomy": {
+            "art": "anatomy-serratus",
+            "view": "侧面 · 肋骨与肩胛",
+            "caption": "前锯肌的肌束像锯齿沿胸廓侧面排列，连接肋骨和肩胛骨内侧；不是腹部斜肌。",
+            "source": "https://www.ncbi.nlm.nih.gov/books/NBK545241/",
+            "legend": [
+              {
+                "name": "前锯肌",
+                "color": "#d97558"
+              }
+            ]
+          }
         }
       ],
       "actions": [
@@ -122,6 +166,14 @@
         {
           "title": "研究：肩胛稳定练习（2019）",
           "url": "https://pubmed.ncbi.nlm.nih.gov/30928841/"
+        },
+        {
+          "title": "解剖位置参考：胸大肌 / 胸小肌",
+          "url": "https://www.ncbi.nlm.nih.gov/books/NBK545241/"
+        },
+        {
+          "title": "解剖位置参考：菱形肌 / 中、下斜方肌",
+          "url": "https://www.ncbi.nlm.nih.gov/books/NBK534856/"
         }
       ]
     }
@@ -218,12 +270,36 @@
         {
           "name": "竖脊肌",
           "location": "脊柱两侧的背部",
-          "function": "参与躯干支撑和伸展；坐着时的负担随靠背、姿势和任务变化。"
+          "function": "参与躯干支撑和伸展；坐着时的负担随靠背、姿势和任务变化。",
+          "anatomy": {
+            "art": "anatomy-erectors",
+            "view": "背面 · 移开表层",
+            "caption": "竖脊肌是一组肌肉，沿脊柱两侧纵向分布。这里移开表层肌肉来展示位置，不是两根孤立的肌肉。",
+            "source": "https://my.clevelandclinic.org/health/body/21632-back-muscles",
+            "legend": [
+              {
+                "name": "竖脊肌群",
+                "color": "#d97558"
+              }
+            ]
+          }
         },
         {
           "name": "臀大肌",
           "location": "臀部后侧",
-          "function": "参与髋部伸展，如从坐位站起和行走；认识它不等于久坐者都存在臀肌无力。"
+          "function": "参与髋部伸展，如从坐位站起和行走；认识它不等于久坐者都存在臀肌无力。",
+          "anatomy": {
+            "art": "anatomy-glute-max",
+            "view": "背面 · 臀部",
+            "caption": "臀大肌位于臀部较表层，覆盖臀部后侧的大部分区域。这里只高亮本条目相关肌肉。",
+            "source": "https://my.clevelandclinic.org/health/body/gluteal-muscles-glutes",
+            "legend": [
+              {
+                "name": "臀大肌",
+                "color": "#d97558"
+              }
+            ]
+          }
         }
       ],
       "actions": [
@@ -249,6 +325,10 @@
         {
           "title": "Cleveland Clinic：背部肌肉",
           "url": "https://my.clevelandclinic.org/health/body/21632-back-muscles"
+        },
+        {
+          "title": "解剖位置参考：臀大肌",
+          "url": "https://my.clevelandclinic.org/health/body/gluteal-muscles-glutes"
         }
       ]
     }
@@ -347,12 +427,40 @@
         {
           "name": "上斜方肌",
           "location": "颈肩连接处及上背",
-          "function": "参与肩胛上提和上旋，和其他肌肉协作支撑抬手；并不是越“放松到没力”越好。"
+          "function": "参与肩胛上提和上旋，和其他肌肉协作支撑抬手；并不是越“放松到没力”越好。",
+          "anatomy": {
+            "art": "anatomy-upper-trap",
+            "view": "背面 · 颈肩连接处",
+            "caption": "高亮上斜方肌区域；它是整块斜方肌的上部，并不是独立的一块“肩颈肌”。",
+            "source": "https://my.clevelandclinic.org/health/body/21563-trapezius-muscle",
+            "legend": [
+              {
+                "name": "上斜方肌",
+                "color": "#d97558"
+              }
+            ]
+          }
         },
         {
           "name": "菱形肌 / 中斜方肌",
           "location": "肩胛骨之间及脊柱旁上背",
-          "function": "参与肩胛位置控制，持续工作时可能感到酸累，但感受本身不能判定紧或弱。"
+          "function": "参与肩胛位置控制，持续工作时可能感到酸累，但感受本身不能判定紧或弱。",
+          "anatomy": {
+            "art": "anatomy-rhom-mid-trap",
+            "view": "背面 · 分层展示",
+            "caption": "一侧展示中斜方肌，另一侧移开覆盖层露出菱形肌，帮助区分肩胛周围的表层与深层。",
+            "source": "https://www.ncbi.nlm.nih.gov/books/NBK534856/",
+            "legend": [
+              {
+                "name": "中斜方肌",
+                "color": "#d97558"
+              },
+              {
+                "name": "菱形肌",
+                "color": "#6195ab"
+              }
+            ]
+          }
         }
       ],
       "actions": [
@@ -398,6 +506,14 @@
         {
           "title": "研究综述：滚压与拉伸的短期效果和证据边界",
           "url": "https://pubmed.ncbi.nlm.nih.gov/38244921/"
+        },
+        {
+          "title": "解剖位置参考：上斜方肌",
+          "url": "https://my.clevelandclinic.org/health/body/21563-trapezius-muscle"
+        },
+        {
+          "title": "解剖位置参考：菱形肌 / 中斜方肌",
+          "url": "https://www.ncbi.nlm.nih.gov/books/NBK534856/"
         }
       ]
     },
@@ -498,12 +614,40 @@
         {
           "name": "腓肠肌 / 比目鱼肌",
           "location": "小腿后侧，分别较浅与较深",
-          "function": "共同参与踝关节跖屈，如踮脚与走路蹬地；直膝与屈膝会改变它们在伸展或训练中的相对参与。"
+          "function": "共同参与踝关节跖屈，如踮脚与走路蹬地；直膝与屈膝会改变它们在伸展或训练中的相对参与。",
+          "anatomy": {
+            "art": "anatomy-calf",
+            "view": "背面 · 小腿分层",
+            "caption": "左、右小图分别展示表层腓肠肌和更深的比目鱼肌，不是两条腿结构不同。跟腱不属于肌肉。",
+            "source": "https://my.clevelandclinic.org/health/body/21662-calf-muscle",
+            "legend": [
+              {
+                "name": "腓肠肌",
+                "color": "#d97558"
+              },
+              {
+                "name": "比目鱼肌",
+                "color": "#6195ab"
+              }
+            ]
+          }
         },
         {
           "name": "趾短屈肌等足底小肌肉",
           "location": "足底，参与脚趾运动",
-          "function": "帮助脚趾屈曲并参与足部控制。足底筋膜另属于结缔组织，也参与足弓支撑，不应称作肌肉。"
+          "function": "帮助脚趾屈曲并参与足部控制。足底筋膜另属于结缔组织，也参与足弓支撑，不应称作肌肉。",
+          "anatomy": {
+            "art": "anatomy-foot",
+            "view": "足底面 · 移开筋膜",
+            "caption": "移开足底筋膜后展示趾短屈肌，帮助识别足底小肌肉。筋膜是另一种结缔组织，不是图中高亮肌肉。",
+            "source": "https://www.ncbi.nlm.nih.gov/books/NBK539705/",
+            "legend": [
+              {
+                "name": "趾短屈肌",
+                "color": "#d97558"
+              }
+            ]
+          }
         }
       ],
       "actions": [
@@ -557,6 +701,10 @@
         {
           "title": "研究综述：滚压与拉伸的短期效果和证据边界",
           "url": "https://pubmed.ncbi.nlm.nih.gov/38244921/"
+        },
+        {
+          "title": "解剖位置参考：腓肠肌 / 比目鱼肌",
+          "url": "https://my.clevelandclinic.org/health/body/21662-calf-muscle"
         }
       ]
     },
@@ -657,12 +805,40 @@
         {
           "name": "臀大肌 / 腘绳肌",
           "location": "臀部后侧与大腿后侧",
-          "function": "参与髋伸展；腘绳肌还参与屈膝。髋铰链用来认识髋部运动与起身的协调。"
+          "function": "参与髋伸展；腘绳肌还参与屈膝。髋铰链用来认识髋部运动与起身的协调。",
+          "anatomy": {
+            "art": "anatomy-glute-hamstrings",
+            "view": "背面 · 臀部与大腿",
+            "caption": "臀大肌在臀部，腘绳肌群在大腿后侧；腘绳肌不是膝盖后面的一小块肌肉。",
+            "source": "https://my.clevelandclinic.org/health/body/22220-leg-muscles",
+            "legend": [
+              {
+                "name": "臀大肌",
+                "color": "#d97558"
+              },
+              {
+                "name": "腘绳肌群",
+                "color": "#6195ab"
+              }
+            ]
+          }
         },
         {
           "name": "竖脊肌",
           "location": "脊柱两侧",
-          "function": "参与躯干支撑与伸展；髋铰链练习中关注舒适稳定，不等于要把它练到越紧越好。"
+          "function": "参与躯干支撑与伸展；髋铰链练习中关注舒适稳定，不等于要把它练到越紧越好。",
+          "anatomy": {
+            "art": "anatomy-erectors",
+            "view": "背面 · 移开表层",
+            "caption": "竖脊肌沿脊柱两侧分布，图中中央浅色区域是脊柱，不是应该拿球或轴直接压的部位。",
+            "source": "https://my.clevelandclinic.org/health/body/21632-back-muscles",
+            "legend": [
+              {
+                "name": "竖脊肌群",
+                "color": "#d97558"
+              }
+            ]
+          }
         }
       ],
       "actions": [
@@ -712,6 +888,14 @@
         {
           "title": "研究综述：滚压与拉伸的短期效果和证据边界",
           "url": "https://pubmed.ncbi.nlm.nih.gov/38244921/"
+        },
+        {
+          "title": "解剖位置参考：臀大肌 / 腘绳肌",
+          "url": "https://my.clevelandclinic.org/health/body/22220-leg-muscles"
+        },
+        {
+          "title": "解剖位置参考：竖脊肌",
+          "url": "https://my.clevelandclinic.org/health/body/21632-back-muscles"
         }
       ]
     },

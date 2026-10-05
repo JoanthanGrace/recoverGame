@@ -10,6 +10,7 @@ const feedback = document.querySelector('#feedback');
 const result = document.querySelector('#result');
 const hintDialog = document.querySelector('#hint-dialog');
 const science = document.querySelector('#science');
+const anatomyDialog = document.querySelector('#anatomy-dialog');
 const collection = document.querySelector('#collection');
 const finishedLevels = new Set();
 let selected = null;
@@ -21,7 +22,7 @@ let shareGeneration = 0;
 const current = () => levels[levelIndex];
 const artPath = name => `../assets/resources/art/${name}.png`;
 const setText = (selector, value) => { document.querySelector(selector).textContent = value; };
-const isBlocked = () => !levels.length || completed.size === current().targets.length || result.open || hintDialog.open || science.open || collection.open;
+const isBlocked = () => !levels.length || completed.size === current().targets.length || result.open || hintDialog.open || science.open || anatomyDialog.open || collection.open;
 
 function say(text, kind = '') { feedback.textContent = text; feedback.className = 'feedback ' + kind; }
 function select(tool) {
@@ -121,7 +122,7 @@ function showLevel(index, scroll = true) {
   settleTimer = null;
   document.documentElement.classList.add('switching');
   levelIndex = index; completed.clear(); observed.clear(); selected = null;
-  result.close(); hintDialog.close(); science.close(); collection.close();
+  anatomyDialog.close(); result.close(); hintDialog.close(); science.close(); collection.close();
   const level = current();
   stage.classList.remove('half', 'recovered', 'shake'); stage.classList.toggle('habits', level.observeFirst);
   stage.classList.toggle('has-progress', Boolean(level.progressArt));
@@ -206,6 +207,16 @@ function showScience(level = current()) {
     const container = document.querySelector(selector); container.replaceChildren();
     rows.forEach(item => {
       const card = document.createElement('article'); const heading = document.createElement('h4'); heading.textContent = title(item); const copy = document.createElement('p'); copy.textContent = description(item); card.append(heading, copy);
+      if (item.anatomy) {
+        const figure = document.createElement('figure'); figure.className = 'muscle-anatomy';
+        const button = document.createElement('button'); button.className = 'anatomy-preview'; button.setAttribute('aria-label', '放大查看' + item.name + '解剖位置示意');
+        const img = document.createElement('img'); img.src = artPath(item.anatomy.art); img.alt = item.name + ' · ' + item.anatomy.view + '解剖位置示意';
+        const tag = document.createElement('span'); tag.textContent = item.anatomy.view + ' · 点图放大'; button.append(img, tag);
+        button.addEventListener('click', () => showAnatomy(item));
+        const legend = document.createElement('div'); legend.className = 'anatomy-legend'; renderLegend(legend, item.anatomy.legend);
+        const caption = document.createElement('figcaption'); caption.textContent = item.anatomy.caption;
+        figure.append(button, legend, caption); card.append(figure);
+      }
       if (item.art) { const img = document.createElement('img'); img.className = 'action-demo'; img.src = artPath(item.art); img.alt = item.title + '动作示意'; card.append(img); }
       if (item.steps) { const list = document.createElement('ol'); item.steps.forEach(step => { const li = document.createElement('li'); li.textContent = step; list.append(li); }); card.append(list); }
       for (const [key, label] of [['principle', '小知识'], ['caution', '注意']]) if (item[key]) { const p = document.createElement('p'); p.className = key; p.textContent = label + '：' + item[key]; card.append(p); }
@@ -219,6 +230,18 @@ function showScience(level = current()) {
     const link = document.createElement('a'); link.href = source.url; link.textContent = source.title + ' ↗'; link.target = '_blank'; link.rel = 'noopener noreferrer'; container.append(link);
   });
   science.querySelectorAll('details').forEach(detail => { detail.open = false; }); science.showModal(); science.scrollTop = 0;
+}
+function renderLegend(container, items) {
+  container.replaceChildren();
+  items.forEach(item => { const chip = document.createElement('span'); const dot = document.createElement('i'); dot.style.backgroundColor = item.color; dot.setAttribute('aria-hidden', 'true'); chip.append(dot, document.createTextNode(item.name)); container.append(chip); });
+}
+function showAnatomy(muscle) {
+  const data = muscle.anatomy;
+  setText('#anatomy-title', muscle.name); setText('#anatomy-view', data.view); setText('#anatomy-caption', data.caption);
+  const img = document.querySelector('#anatomy-image'); img.src = artPath(data.art); img.alt = muscle.name + ' · ' + data.view; img.hidden = false;
+  renderLegend(document.querySelector('#anatomy-legend'), data.legend);
+  const source = document.querySelector('#anatomy-source'); source.hidden = !/^https:\/\//.test(data.source); if (!source.hidden) source.href = data.source;
+  anatomyDialog.showModal(); anatomyDialog.scrollTop = 0;
 }
 function showCollection() {
   endDrag(true);
@@ -260,5 +283,8 @@ window.addEventListener('blur', () => endDrag(true));
     const response = await fetch('../assets/resources/data/levels.json'); if (!response.ok) throw new Error('Level load failed'); levels = await response.json(); buildNavigation();
     const requested = Number(new URL(location.href).searchParams.get('level')); const index = levels.findIndex(level => level.id === requested);
     showLevel(index >= 0 ? index : 0, false);
+    if (new URL(location.href).searchParams.get('learn') === 'muscles') {
+      showScience(); document.querySelector('#science-muscles').scrollIntoView({ block: 'start' });
+    }
   } catch { say('关卡加载失败，请通过本地服务器打开试玩页，然后刷新。', 'wrong'); }
 })();

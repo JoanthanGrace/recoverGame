@@ -255,7 +255,7 @@ export class GameRoot extends Component {
     const body = this.label(box, '', 24, INK, 540, 590, 0, 25);
     const pages: { title: string; text: string; art?: string; sources?: { title: string; url: string }[] }[] = [
       { title: '为什么会累？', text: data.summary + '\n\n' + data.cause },
-      { title: '认识这些肌肉', text: data.muscles.map(item => item.name + '\n' + item.location + '\n' + item.function).join('\n\n') },
+      ...data.muscles.map(item => ({ title: item.name, art: item.anatomy?.art, text: item.location + '\n' + item.function + (item.anatomy ? '\n\n' + item.anatomy.view + '\n' + item.anatomy.legend.map(legend => (legend.color === '#6195ab' ? '蓝色：' : '橙色：') + legend.name).join(' / ') + '\n' + item.anatomy.caption + '\n\n简化解剖位置示意，非精准医学图谱。' : '') })),
       ...data.actions.map(item => ({ title: item.title, art: item.art, text: item.description + '\n\n' + (item.steps || []).map((step, index) => (index + 1) + '. ' + step).join('\n') + (item.principle ? '\n\n小知识：' + item.principle : '') + (item.caution ? '\n\n注意：' + item.caution : '') })),
       { title: '适用边界', text: data.boundary },
     ];

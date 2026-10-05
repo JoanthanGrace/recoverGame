@@ -52,7 +52,10 @@ export interface PlayableLevel extends LevelConfig {
   fitness?: boolean; workTip?: string;
   education: {
     summary: string; cause: string; boundary: string;
-    muscles: { name: string; location: string; function: string }[];
+    muscles: { name: string; location: string; function: string; anatomy?: {
+      art: string; view: string; caption: string; source: string;
+      legend: { name: string; color: string }[];
+    } }[];
     actions: { title: string; description: string; art?: string; steps?: string[]; principle?: string; caution?: string }[];
     sources: { title: string; url: string }[];
   };

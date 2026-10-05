@@ -21,7 +21,13 @@ for (const level of levels) {
   assert.ok(['prd', 'extension'].includes(level.designSource)); assert.ok(level.knowledge);
   assert.ok(level.education.summary && level.education.cause && level.education.boundary);
   assert.ok(level.education.muscles.length >= 2);
-  for (const muscle of level.education.muscles) assert.ok(muscle.name && muscle.location && muscle.function);
+  for (const muscle of level.education.muscles) {
+    assert.ok(muscle.name && muscle.location && muscle.function);
+    assert.ok(muscle.anatomy.art && muscle.anatomy.view && muscle.anatomy.caption);
+    assert.ok(/^https:\/\//.test(muscle.anatomy.source));
+    assert.ok(muscle.anatomy.legend.length >= 1);
+    assert.ok(fs.existsSync(path.join(root, 'assets/resources/art/' + muscle.anatomy.art + '.png')));
+  }
   assert.equal(level.education.actions.length, 2);
   if (level.id >= 3) {
     assert.equal(level.fitness, true); assert.ok(level.workTip);
@@ -126,6 +132,17 @@ if (!process.argv.includes('--browser')) process.exit(0);
       await page.locator('#learn').click();
       assert.equal(await page.locator('#science').evaluate(el => el.open), true);
       assert.equal(await page.locator('#science-muscles article').count(), level.education.muscles.length);
+      assert.equal(await page.locator('#science-muscles .anatomy-preview img').count(), level.education.muscles.length);
+      await page.locator('#science-muscles .anatomy-preview').first().click();
+      assert.equal(await page.locator('#anatomy-dialog').evaluate(el => el.open), true);
+      assert.equal(await page.locator('#anatomy-title').textContent(), level.education.muscles[0].name);
+      assert.equal(await page.locator('#anatomy-legend span').count(), level.education.muscles[0].anatomy.legend.length);
+      assert.equal(await page.locator('#anatomy-source').getAttribute('href'), level.education.muscles[0].anatomy.source);
+      await imagesReady();
+      await page.screenshot({path: path.join(scratch, 'anatomy-level' + level.id + '.png')});
+      await page.keyboard.press('Escape');
+      assert.equal(await page.locator('#anatomy-dialog').evaluate(el => el.open), false);
+      assert.equal(await page.locator('#science').evaluate(el => el.open), true);
       if (level.fitness) {
         assert.equal(await page.locator('#science-actions .action-demo').count(), 2);
         assert.equal(await page.locator('#science-actions ol li').count(), 6);
