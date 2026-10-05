@@ -1,0 +1,629 @@
+[
+  {
+    "id": 1,
+    "title": "键盘侠的觉醒",
+    "patientName": "小周 / 伏案工作 8 小时",
+    "stageTip": "胸前舒适地活动，肩胛逐步练习；也别忘了改变工作姿势。",
+    "observeFirst": false,
+    "subtitle": "先松一松，再练一练。",
+    "story": "敲了一天键盘，小周的肩膀又缩起来了。\n选一件工具，拖到对应的身体区域。",
+    "room": "久坐观察室",
+    "status": "有点累，但还能救",
+    "dockTitle": "你的舒展工具箱",
+    "instruction": "把工具拖到红色或蓝色标记，也可以点选工具再点区域。",
+    "beforeArt": "patient-before",
+    "afterArt": "patient-after",
+    "beforeAlt": "小周含胸、头部前倾的卡通姿态",
+    "afterAlt": "小周舒展后站立的卡通姿态",
+    "artWidth": 178,
+    "hintTitle": "工具选对，才有帮助。",
+    "hintText": "本关用简化模型认识两种方向，并非给小周做诊断。\n筋膜球 → 胸前 → 舒适放松\n弹力带 → 后背 → 逐步练习\n两项顺序不限。现实中不要用球压骨头、颈前或疼痛处。",
+    "resultTitle": "今天，舒展一点。",
+    "resultText": "认识胸前活动与肩胛控制两个方向。\n圆肩外观不等于一定“胸紧背弱”，还要看习惯、活动能力与个人差异。",
+    "resultNote": "动画是知识反馈，真实体态不会因为两次操作立即改变。",
+    "shareTitle": "打工人康复指南：你能帮小周舒展一下吗？",
+    "tools": [
+      {
+        "id": "fasciaBall",
+        "title": "筋膜球",
+        "detail": "舒适放松示意",
+        "art": "fascia-ball",
+        "action": "松"
+      },
+      {
+        "id": "elasticBand",
+        "title": "弹力带",
+        "detail": "渐进练习示意",
+        "art": "elastic-band",
+        "action": "练"
+      }
+    ],
+    "zones": [
+      {
+        "id": "back",
+        "title": "肩胛 · 练习",
+        "detail": "菱形肌等 · 控制",
+        "color": "#6195ab",
+        "side": "back",
+        "clue": "本关后背区域需要强化。",
+        "wrong": "本关肩胛目标是主动练习，不是只做被动放松。",
+        "correct": "肩胛练习方向选对了：菱形肌、斜方肌等参与控制，不是越用力夹背越好。"
+      },
+      {
+        "id": "chest",
+        "title": "胸前 · 放松",
+        "detail": "胸大肌等 · 活动",
+        "color": "#d97558",
+        "side": "chest",
+        "clue": "本关胸前区域需要放松。",
+        "wrong": "本关胸前目标是舒适活动与放松，而不是继续加大负荷。",
+        "correct": "胸前放松方向选对了。胸小肌在深层，不等于拿球用力压胸口。"
+      }
+    ],
+    "targets": [
+      {
+        "tool": "fasciaBall",
+        "zone": "chest",
+        "score": 50,
+        "successSound": "relax"
+      },
+      {
+        "tool": "elasticBand",
+        "zone": "back",
+        "score": 50,
+        "successSound": "strengthen"
+      }
+    ],
+    "designSource": "prd",
+    "knowledge": "胸前活动、肩胛控制与工作习惯一起考虑，不能仅凭外观诊断。",
+    "progressArt": "patient-progress",
+    "progressAlt": "小周完成第一项目标后，肩膀略微打开的卡通姿态",
+    "shortTitle": "键盘侠",
+    "education": {
+      "summary": "别急着把肩膀“掰直”：让身体能自在地换姿势，比一直用力挺胸更重要。",
+      "cause": "长时间双手前伸、低头工作，会让肩颈和肩胛周围反复维持相近的位置。胸前肌肉的活动范围、肩胛控制和工作环境都可能参与其中。胸小肌长度与肩胛运动有关，但“圆肩＝胸肌紧＋背肌弱”不是人人适用的诊断公式，也不能把圆肩和结构性驼背混为一谈。",
+      "muscles": [
+        {
+          "name": "胸大肌 / 胸小肌",
+          "location": "胸前；胸小肌位于深层",
+          "function": "胸大肌参与手臂向前、向内运动；胸小肌连接肋骨与肩胛骨，参与肩胛位置变化。"
+        },
+        {
+          "name": "菱形肌 / 中、下斜方肌",
+          "location": "肩胛骨之间及上背部",
+          "function": "参与肩胛骨的位置控制，帮助上肢运动时保持协调。"
+        },
+        {
+          "name": "前锯肌",
+          "location": "胸廓侧面，延伸到肩胛骨内侧",
+          "function": "帮助肩胛贴着胸廓并向上旋转；不是只靠“夹背”就能替代它。"
+        }
+      ],
+      "actions": [
+        {
+          "title": "先调整工位",
+          "description": "把键鼠放在舒适可及处，给前臂合适支撑；在工作中换姿势、安排短休息。"
+        },
+        {
+          "title": "放松与练习都要舒适",
+          "description": "胸前做轻柔、无痛的活动；肩胛练习从轻负荷开始。游戏中的球和弹力带仅表示方向，不是按压部位或训练处方。"
+        }
+      ],
+      "boundary": "肌肉名称用于认识身体，不代表已判断你哪里紧、哪里弱。游戏不提供诊断或治疗；出现持续或加重的疼痛、麻木、明显无力，请停止诱发不适的活动并寻求专业评估。",
+      "sources": [
+        {
+          "title": "HSE：减少不舒适工作姿势",
+          "url": "https://www.hse.gov.uk/msd/uld/art/posture.htm"
+        },
+        {
+          "title": "研究：胸小肌长度与肩胛运动（2005）",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/15901124/"
+        },
+        {
+          "title": "研究：肩胛稳定练习（2019）",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/30928841/"
+        }
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "title": "久坐暂停键",
+    "patientName": "小林 / 一忙就忘了休息",
+    "stageTip": "离开座位动一动，离开屏幕看一看。",
+    "observeFirst": true,
+    "subtitle": "先看线索，再选休息方式。",
+    "story": "小林的待办还没清空，身体先按下暂停。\n点开两条线索，再选一个合适的行动。",
+    "room": "日常习惯观察室",
+    "status": "忙归忙，也要歇一歇",
+    "dockTitle": "给自己一个小休息",
+    "instruction": "先点击人物两侧的线索，再把行动拖到对应线索。",
+    "beforeArt": "break-before",
+    "afterArt": "break-after",
+    "beforeAlt": "小林坐在凳子上低头看电脑的卡通姿态",
+    "afterAlt": "小林离开座位，站起舒展的卡通姿态",
+    "artWidth": 230,
+    "hintTitle": "换个任务，不一定算休息。",
+    "hintText": "先点开两条线索，了解小林的习惯。\n一直坐着 → 起身活动\n一直盯屏 → 远眺休息\n继续工作不能完成本关的休息目标。",
+    "resultTitle": "停一停，也在前进。",
+    "resultText": "你为小林安排了两种不同的休息。\n改变姿势，也给视线换个距离。",
+    "resultNote": "这是工作习惯科普。游戏中选择行动，不代表现实中已完成休息。",
+    "shareTitle": "打工人康复指南：你会给忙碌的一天按暂停吗？",
+    "tools": [
+      {
+        "id": "walkBreak",
+        "title": "起身活动",
+        "detail": "换个姿势动一动",
+        "art": "walk-break",
+        "action": "动"
+      },
+      {
+        "id": "distanceBreak",
+        "title": "远眺休息",
+        "detail": "离开屏幕看远处",
+        "art": "distance-break",
+        "action": "看"
+      },
+      {
+        "id": "keepWorking",
+        "title": "继续工作",
+        "detail": "再开一个工作页",
+        "art": null,
+        "action": "忙"
+      }
+    ],
+    "zones": [
+      {
+        "id": "sitting",
+        "title": "一直坐着",
+        "detail": "姿势很久没变",
+        "color": "#b27c49",
+        "side": "back",
+        "clue": "小林一直坐在这里，连起身走动都忘了。",
+        "wrong": "这条线索是长时间坐着。看看哪个行动能改变坐姿？",
+        "correct": "坐姿线索完成：起身活动，让持续坐着的工作有个间歇。"
+      },
+      {
+        "id": "screen",
+        "title": "一直盯屏",
+        "detail": "视线没有离开",
+        "color": "#6195ab",
+        "side": "chest",
+        "clue": "小林从工作页切到另一个工作页，眼睛始终盯着屏幕。",
+        "wrong": "这条线索是持续盯屏。换一个工作页还在看屏幕。",
+        "correct": "视线线索完成：看向远处，让持续近距离看屏幕有个间歇。"
+      }
+    ],
+    "targets": [
+      {
+        "tool": "walkBreak",
+        "zone": "sitting",
+        "score": 50,
+        "successSound": "relax"
+      },
+      {
+        "tool": "distanceBreak",
+        "zone": "screen",
+        "score": 50,
+        "successSound": "strengthen"
+      }
+    ],
+    "designSource": "extension",
+    "knowledge": "改变坐姿，也让持续看屏幕有个间歇。",
+    "shortTitle": "暂停键",
+    "education": {
+      "summary": "坐着不是原罪，长时间没有变化才是这关要观察的习惯。",
+      "cause": "即使看上去端正，长时间保持同一个位置也会增加持续工作负担。坐姿支撑、任务安排和休息机会同样重要。一直看近处屏幕是另一条线索：换工作页面并没有让视线离开近距离任务。不能直接推断“久坐让某块肌肉一定变弱”。",
+      "muscles": [
+        {
+          "name": "竖脊肌",
+          "location": "脊柱两侧的背部",
+          "function": "参与躯干支撑和伸展；坐着时的负担随靠背、姿势和任务变化。"
+        },
+        {
+          "name": "臀大肌",
+          "location": "臀部后侧",
+          "function": "参与髋部伸展，如从坐位站起和行走；认识它不等于久坐者都存在臀肌无力。"
+        }
+      ],
+      "actions": [
+        {
+          "title": "让休息真的改变任务",
+          "description": "在条件允许时短暂起身、走动，或换成不需持续坐着的任务；不要等到明显累了才动。"
+        },
+        {
+          "title": "给视线换个距离",
+          "description": "短暂离开屏幕，看向较远处并自然眨眼；也检查屏幕位置、光线和字体是否舒适。"
+        }
+      ],
+      "boundary": "肌肉名称用于认识身体，不代表已判断你哪里紧、哪里弱。游戏不提供诊断或治疗；出现持续或加重的疼痛、麻木、明显无力，请停止诱发不适的活动并寻求专业评估。",
+      "sources": [
+        {
+          "title": "HSE：屏幕工作中的休息安排",
+          "url": "https://www.hse.gov.uk/msd/dse/work-routine.htm"
+        },
+        {
+          "title": "HSE：使用屏幕工作的简要指南",
+          "url": "https://www.hse.gov.uk/pubns/indg36.pdf"
+        },
+        {
+          "title": "Cleveland Clinic：背部肌肉",
+          "url": "https://my.clevelandclinic.org/health/body/21632-back-muscles"
+        }
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "title": "理发师的抬手日常",
+    "shortTitle": "理发师",
+    "patientName": "阿哲 / 一位接着一位剪",
+    "stageTip": "让顾客靠近合适的操作高度，也给抬起的双臂安排间歇。",
+    "observeFirst": true,
+    "subtitle": "先读懂工作，再给身体减负。",
+    "story": "顾客坐得低，阿哲越剪越往前探。\n看看工作高度和持续抬手这两条线索。",
+    "room": "理发师观察室",
+    "status": "不靠硬撑，换个办法",
+    "dockTitle": "选择更省力的工作方式",
+    "instruction": "先点开两条线索，再拖动行动；也可以点选行动后点击线索。",
+    "beforeArt": "barber-before",
+    "afterArt": "barber-after",
+    "beforeAlt": "理发师调整前的工作场景",
+    "afterAlt": "理发师改善任务安排后的示意场景",
+    "artWidth": 371,
+    "hintTitle": "先改工作方式，再谈练哪块肌肉。",
+    "hintText": "工位太低 → 调整座椅\n持续抬手 → 短歇换任务\n第三种行动不能减少本关对应的负担。",
+    "resultTitle": "工作继续，负担少一点。",
+    "resultText": "让顾客靠近合适的操作高度，也给抬起的双臂安排间歇。",
+    "resultNote": "插画是理想化工作调整示意，不代表两次选择就能改善现实症状。",
+    "shareTitle": "打工人康复指南：理发师的抬手日常",
+    "tools": [
+      {
+        "id": "adjustChair",
+        "title": "调整座椅",
+        "detail": "高度与距离适合",
+        "art": "adjust-chair",
+        "action": "调"
+      },
+      {
+        "id": "microBreak",
+        "title": "短歇换任务",
+        "detail": "让手臂放下一会",
+        "art": "micro-break",
+        "action": "歇"
+      },
+      {
+        "id": "keepWorking",
+        "title": "继续硬撑",
+        "detail": "只加速不减负",
+        "art": null,
+        "action": "忙"
+      }
+    ],
+    "zones": [
+      {
+        "id": "workHeight",
+        "title": "工位太低",
+        "detail": "身体往前探",
+        "side": "back",
+        "color": "#b27c49",
+        "clue": "顾客的座椅偏低，阿哲需要低头前探才能看清操作位置。",
+        "wrong": "短歇有帮助，但这条线索需要调整工作高度与距离。",
+        "correct": "调整座椅和站位，让操作位置更易接近，减少持续前探。"
+      },
+      {
+        "id": "heldArms",
+        "title": "持续抬手",
+        "detail": "双臂很久没放下",
+        "side": "chest",
+        "color": "#6195ab",
+        "clue": "阿哲连续操作，手臂一直举着，几乎没有改变任务。",
+        "wrong": "调整椅子并不能替代休息；连续抬手还需要间歇。",
+        "correct": "安排短休息或交替任务，让手臂暂时放下，而不是越累越硬撑。"
+      }
+    ],
+    "targets": [
+      {
+        "tool": "adjustChair",
+        "zone": "workHeight",
+        "score": 50,
+        "successSound": "relax"
+      },
+      {
+        "tool": "microBreak",
+        "zone": "heldArms",
+        "score": 50,
+        "successSound": "strengthen"
+      }
+    ],
+    "designSource": "extension",
+    "knowledge": "让顾客靠近合适的操作高度，也给抬起的双臂安排间歇。",
+    "education": {
+      "summary": "让顾客靠近合适的操作高度，也给抬起的双臂安排间歇。",
+      "cause": "手臂抬起时，肩部肌肉需要持续参与支撑；操作位置太低或太远，又可能增加颈部前探和躯干倾斜。任务持续多久、重复多少次和休息安排，都会影响负担。这里的职业场景是依据通用工效学原则设计，不是理发师疾病诊断。",
+      "muscles": [
+        {
+          "name": "三角肌",
+          "location": "肩关节外侧",
+          "function": "帮助抬起、前伸手臂；持续抬手时需要持续参与。"
+        },
+        {
+          "name": "斜方肌 / 前锯肌",
+          "location": "上背部与胸廓侧面",
+          "function": "共同参与肩胛运动与支撑，让抬手不只靠肩关节单独完成。"
+        }
+      ],
+      "actions": [
+        {
+          "title": "按任务调高度",
+          "description": "调整顾客座椅并移动自己的站位，让视线、手臂和操作位置更舒适；不要为了放低肘部而看不清。"
+        },
+        {
+          "title": "把休息放进流程",
+          "description": "在安全的操作间隙放下手臂，交替做不同任务；持续不适时不要靠加速硬撑。"
+        }
+      ],
+      "boundary": "肌肉名称用于认识身体，不代表已判断你哪里紧、哪里弱。游戏不提供诊断或治疗；出现持续或加重的疼痛、麻木、明显无力，请停止诱发不适的活动并寻求专业评估。",
+      "sources": [
+        {
+          "title": "HSE：工作姿势与工位调整",
+          "url": "https://www.hse.gov.uk/msd/uld/art/posture.htm"
+        },
+        {
+          "title": "Cleveland Clinic：三角肌的功能",
+          "url": "https://my.clevelandclinic.org/health/body/21875-deltoid-muscles"
+        }
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "title": "收银员的站立班次",
+    "shortTitle": "收银员",
+    "patientName": "小陈 / 高峰期一直站着",
+    "stageTip": "能坐能站，也能轻松够到商品；比要求一直挺直站着更实际。",
+    "observeFirst": true,
+    "subtitle": "先读懂工作，再给身体减负。",
+    "story": "站着扫完一车，又伸手去够下一件。\n找到“姿势不变”和“物品太远”的区别。",
+    "room": "收银员观察室",
+    "status": "不靠硬撑，换个办法",
+    "dockTitle": "选择更省力的工作方式",
+    "instruction": "先点开两条线索，再拖动行动；也可以点选行动后点击线索。",
+    "beforeArt": "cashier-before",
+    "afterArt": "cashier-after",
+    "beforeAlt": "收银员调整前的工作场景",
+    "afterAlt": "收银员改善任务安排后的示意场景",
+    "artWidth": 364,
+    "hintTitle": "先改工作方式，再谈练哪块肌肉。",
+    "hintText": "持续站立 → 坐站交替\n伸手太远 → 物品靠近\n第三种行动不能减少本关对应的负担。",
+    "resultTitle": "工作继续，负担少一点。",
+    "resultText": "能坐能站，也能轻松够到商品；比要求一直挺直站着更实际。",
+    "resultNote": "插画是理想化工作调整示意，不代表两次选择就能改善现实症状。",
+    "shareTitle": "打工人康复指南：收银员的站立班次",
+    "tools": [
+      {
+        "id": "alternatePosture",
+        "title": "坐站交替",
+        "detail": "换姿势有支撑",
+        "art": "alternate-posture",
+        "action": "换"
+      },
+      {
+        "id": "bringCloser",
+        "title": "物品靠近",
+        "detail": "减少伸手够取",
+        "art": "bring-closer",
+        "action": "近"
+      },
+      {
+        "id": "keepWorking",
+        "title": "站着不动",
+        "detail": "坚持同一种姿势",
+        "art": null,
+        "action": "撑"
+      }
+    ],
+    "zones": [
+      {
+        "id": "staticStanding",
+        "title": "持续站立",
+        "detail": "一班很少换姿势",
+        "side": "back",
+        "color": "#b27c49",
+        "clue": "小陈长时间站在一个位置，很少坐下或走动。",
+        "wrong": "把物品拉近不等于改变持续站立，先找能换姿势的行动。",
+        "correct": "安排有支撑的坐站交替和任务变化；不是从一直站换成一直坐。"
+      },
+      {
+        "id": "farReach",
+        "title": "伸手太远",
+        "detail": "商品不在近处",
+        "side": "chest",
+        "color": "#6195ab",
+        "clue": "待扫商品离身体偏远，小陈需要反复伸手去够。",
+        "wrong": "坐下也可能要够远处商品；这条线索要改善取物距离。",
+        "correct": "把常用物品和扫码位置安排在舒适可及的范围，减少反复远伸。"
+      }
+    ],
+    "targets": [
+      {
+        "tool": "alternatePosture",
+        "zone": "staticStanding",
+        "score": 50,
+        "successSound": "relax"
+      },
+      {
+        "tool": "bringCloser",
+        "zone": "farReach",
+        "score": 50,
+        "successSound": "strengthen"
+      }
+    ],
+    "designSource": "extension",
+    "knowledge": "能坐能站，也能轻松够到商品；比要求一直挺直站着更实际。",
+    "education": {
+      "summary": "能坐能站，也能轻松够到商品；比要求一直挺直站着更实际。",
+      "cause": "长时间固定站立和反复远距离伸手，是两种不同的工作负担。单靠“站直一点”不能解决任务布局。合理的座椅、脚部支撑、取物距离和交替任务，应一起考虑。",
+      "muscles": [
+        {
+          "name": "腓肠肌 / 比目鱼肌",
+          "location": "小腿后侧",
+          "function": "参与踝关节运动、站立支撑和走路时的蹬地。"
+        },
+        {
+          "name": "竖脊肌",
+          "location": "脊柱两侧",
+          "function": "参与躯干支撑；反复前探取物时，工作方式会影响其负担。"
+        }
+      ],
+      "actions": [
+        {
+          "title": "提供真正可用的坐站条件",
+          "description": "座椅高度要配合工作台，坐下时脚部有支撑；在允许的流程中交替坐、站和短暂走动。"
+        },
+        {
+          "title": "常用物品放近一点",
+          "description": "让商品、扫码设备及常用工具易于接近，必要时调整流程，而不是一直伸长手臂去够。"
+        }
+      ],
+      "boundary": "肌肉名称用于认识身体，不代表已判断你哪里紧、哪里弱。游戏不提供诊断或治疗；出现持续或加重的疼痛、麻木、明显无力，请停止诱发不适的活动并寻求专业评估。",
+      "sources": [
+        {
+          "title": "HSE：收银工作的肌肉骨骼负担指南",
+          "url": "https://www.hse.gov.uk/pubns/indg269.pdf"
+        },
+        {
+          "title": "Cleveland Clinic：小腿肌肉",
+          "url": "https://my.clevelandclinic.org/health/body/21662-calf-muscle"
+        }
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "title": "搬运工的省力选择",
+    "shortTitle": "搬运工",
+    "patientName": "阿杰 / 货到了，别急着全抱走",
+    "stageTip": "先用合适工具减少徒手搬运，再调整每批数量和节奏。",
+    "observeFirst": true,
+    "subtitle": "先读懂工作，再给身体减负。",
+    "story": "箱子不好抱，阿杰却想一趟搬完。\n先看清负担，再选工具和分批方案。",
+    "room": "搬运工观察室",
+    "status": "不靠硬撑，换个办法",
+    "dockTitle": "选择更省力的工作方式",
+    "instruction": "先点开两条线索，再拖动行动；也可以点选行动后点击线索。",
+    "beforeArt": "warehouse-before",
+    "afterArt": "warehouse-after",
+    "beforeAlt": "搬运工调整前的工作场景",
+    "afterAlt": "搬运工改善任务安排后的示意场景",
+    "artWidth": 313,
+    "hintTitle": "先改工作方式，再谈练哪块肌肉。",
+    "hintText": "箱子难抱 → 使用推车\n一趟太多 → 拆分负荷\n第三种行动不能减少本关对应的负担。",
+    "resultTitle": "工作继续，负担少一点。",
+    "resultText": "先用合适工具减少徒手搬运，再调整每批数量和节奏。",
+    "resultNote": "插画是理想化工作调整示意，不代表两次选择就能改善现实症状。",
+    "shareTitle": "打工人康复指南：搬运工的省力选择",
+    "tools": [
+      {
+        "id": "useTrolley",
+        "title": "使用推车",
+        "detail": "先减少徒手搬运",
+        "art": "use-trolley",
+        "action": "借"
+      },
+      {
+        "id": "splitLoad",
+        "title": "拆分负荷",
+        "detail": "少量分批安排",
+        "art": "split-load",
+        "action": "分"
+      },
+      {
+        "id": "keepWorking",
+        "title": "一次抱走",
+        "detail": "省趟数但更费力",
+        "art": null,
+        "action": "赶"
+      }
+    ],
+    "zones": [
+      {
+        "id": "bulkyLoad",
+        "title": "箱子难抱",
+        "detail": "大件离身体远",
+        "side": "back",
+        "color": "#b27c49",
+        "clue": "箱子体积大、抓握不方便，阿杰抱着走时很难靠近身体。",
+        "wrong": "只分批仍可能需要抱大件走远；先考虑合适的搬运辅助工具。",
+        "correct": "使用适合货物的推车，减少徒手抱运；推车也要检查载重和路线。"
+      },
+      {
+        "id": "heavyBatch",
+        "title": "一趟太多",
+        "detail": "想把负荷全揽下",
+        "side": "chest",
+        "color": "#6195ab",
+        "clue": "阿杰想把几份货一次搬完，单次负担超过舒适的处理能力。",
+        "wrong": "有推车也不能超载；要调整每批数量和工作节奏。",
+        "correct": "拆分每批数量，安排适合的频率与休息；不是越多趟越好。"
+      }
+    ],
+    "targets": [
+      {
+        "tool": "useTrolley",
+        "zone": "bulkyLoad",
+        "score": 50,
+        "successSound": "relax"
+      },
+      {
+        "tool": "splitLoad",
+        "zone": "heavyBatch",
+        "score": 50,
+        "successSound": "strengthen"
+      }
+    ],
+    "designSource": "extension",
+    "knowledge": "先用合适工具减少徒手搬运，再调整每批数量和节奏。",
+    "education": {
+      "summary": "先用合适工具减少徒手搬运，再调整每批数量和节奏。",
+      "cause": "负担不仅取决于重量，还和箱子大小、抓握、离身体的距离、频率以及路线有关。反复靠远处抱取或带着负荷转身，会增加任务难度。先改工具与流程，不要把安全寄托在“腰练强就能硬搬”。",
+      "muscles": [
+        {
+          "name": "竖脊肌",
+          "location": "脊柱两侧",
+          "function": "参与躯干的支撑与伸展，但不能代替合理的负荷安排。"
+        },
+        {
+          "name": "臀大肌 / 股四头肌",
+          "location": "臀部后侧与大腿前侧",
+          "function": "分别参与髋伸展和膝伸展；起身、移动货物需要多部位协调。"
+        }
+      ],
+      "actions": [
+        {
+          "title": "先考虑搬运辅助",
+          "description": "选择适合货物的推车或其他工具，检查载重、稳定性、通道及地面；过重或不易控制的货物应寻求协助。"
+        },
+        {
+          "title": "减负要同时看频率",
+          "description": "拆分数量、改善抓握和取放位置，减少不必要的重复搬运；留出休息与任务交替，不规定人人通用的安全公斤数。"
+        }
+      ],
+      "boundary": "肌肉名称用于认识身体，不代表已判断你哪里紧、哪里弱。游戏不提供诊断或治疗；出现持续或加重的疼痛、麻木、明显无力，请停止诱发不适的活动并寻求专业评估。",
+      "sources": [
+        {
+          "title": "HSE：搬举任务的控制措施",
+          "url": "https://www.hse.gov.uk/Msd/Mac/guidance01a.htm"
+        },
+        {
+          "title": "HSE：手工搬运风险管理",
+          "url": "https://www.hse.gov.uk/msd/manual-handling/index.htm"
+        },
+        {
+          "title": "Cleveland Clinic：腿部肌肉",
+          "url": "https://my.clevelandclinic.org/health/body/22220-leg-muscles"
+        }
+      ]
+    }
+  }
+]

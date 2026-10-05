@@ -1,419 +1,321 @@
 import {
-  _decorator,
-  Color,
-  Component,
-  EventTouch,
-  Graphics,
-  Label,
-  Node,
-  UITransform,
-  UIOpacity,
-  Vec2,
-  Vec3,
-  tween,
+  _decorator, AudioClip, AudioSource, BlockInputEvents, Color, Component, EventTouch, Graphics,
+  JsonAsset, Label, Layers, Node, ResolutionPolicy, resources, Sprite, SpriteFrame,
+  Texture2D, Tween, UITransform, UIOpacity, Vec2, Vec3, view, tween, sys,
 } from 'cc';
-import { level1Config } from './config/level1';
-import { i18n } from './core/I18n';
-import { ToolType, ZoneType } from './types';
+import { RecoverySession } from './core/RecoverySession';
+import { PlayableLevel, ToolConfig, ToolType, ZoneConfig, ZoneType } from './types';
 
 const { ccclass } = _decorator;
-
-type ToolRuntime = {
-  id: ToolType;
-  node: Node;
-  label: Label;
-  origin: Vec3;
-};
-
-type ZoneRuntime = {
-  id: ZoneType;
-  node: Node;
-  graphics: Graphics;
-};
+const PAPER = '#f5f1e6';
+const INK = '#253f36';
+const MUTED = '#758078';
+const GREEN = '#46775e';
+type ToolRuntime = { id: ToolType; node: Node; origin: Vec3; used: boolean };
+type ZoneRuntime = { node: Node; label: Label; opacity: UIOpacity };
 
 @ccclass('GameRoot')
 export class GameRoot extends Component {
-  private health = 0;
-  private healthFill!: Node;
-  private healthLabel!: Label;
-  private feedbackLabel!: Label;
-  private hintPanel!: Node;
-  private settlementPanel!: Node;
-
-  private draggingTool: ToolRuntime | null = null;
+  private levels: PlayableLevel[] = [];
+  private levelIndex = 0;
+  private get level() { return this.levels[this.levelIndex]; }
+  private session!: RecoverySession;
+  private root!: Node;
   private toolMap = new Map<ToolType, ToolRuntime>();
   private zoneMap = new Map<ZoneType, ZoneRuntime>();
-  private completed = new Set<string>();
+  private healthFill!: Node;
+  private healthLabel!: Label;
+  private feedback!: Label;
+  private resultFeedback!: Label;
+  private hintPanel!: Node;
+  private resultPanel!: Node;
+  private sciencePanel!: Node;
+  private before!: UIOpacity;
+  private after!: UIOpacity;
+  private progress: UIOpacity | null = null;
+  private audio!: AudioSource;
+  private clips = new Map<string, AudioClip>();
+  private muted = false;
+  private drag: { tool: ToolRuntime; touchId: number } | null = null;
+  private selected: ToolType | null = null;
   private locked = false;
+  private generation = 0;
+  private generatedFrames: SpriteFrame[] = [];
 
   start() {
-    i18n.init();
+    this.audio = this.node.addComponent(AudioSource); this.audio.volume = 0.45;
+    for (const name of ['relax', 'strengthen', 'wrong', 'complete']) {
+      resources.load('audio/' + name, AudioClip, (error, clip) => { if (this.isValid && !error) this.clips.set(name, clip); });
+    }
+    view.setDesignResolutionSize(720, 1280, ResolutionPolicy.SHOW_ALL);
+    resources.load('data/levels', JsonAsset, (error, asset) => {
+      if (!this.isValid) return;
+      if (error || !Array.isArray(asset?.json) || !asset.json.length) {
+        this.label(this.node, '关卡加载失败：请检查 resources/data/levels.json', 24, INK, 640, 100, 0, 0);
+        return;
+      }
+      this.levels = asset.json as PlayableLevel[];
+      this.showLevel(0);
+    });
+  }
+
+  private showLevel(index: number) {
+    this.disposeScene();
+    this.levelIndex = index;
+    this.session = new RecoverySession(this.level);
+    this.locked = false; this.selected = null; this.drag = null;
     this.buildScene();
   }
 
   private buildScene() {
-    this.node.removeAllChildren();
-    const root = this.createSizedNode('Root', 720, 1280);
-    this.node.addChild(root);
-
-    const topBar = this.createTopBar();
-    root.addChild(topBar);
-    topBar.setPosition(0, 530, 0);
-
-    const playArea = this.createPlayArea();
-    root.addChild(playArea);
-    playArea.setPosition(0, 80, 0);
-
-    const toolDock = this.createToolDock();
-    root.addChild(toolDock);
-    toolDock.setPosition(0, -460, 0);
-
-    this.feedbackLabel = this.createLabelNode('Feedback', '', 28, new Color(255, 255, 255, 255));
-    root.addChild(this.feedbackLabel.node);
-    this.feedbackLabel.node.setPosition(0, -240, 0);
-
-    this.hintPanel = this.createHintPanel();
-    root.addChild(this.hintPanel);
-    this.hintPanel.active = false;
-
-    this.settlementPanel = this.createSettlementPanel();
-    root.addChild(this.settlementPanel);
-    this.settlementPanel.active = false;
-
-    this.updateHealth(0);
-  }
-
-  private createTopBar(): Node {
-    const top = this.createSizedNode('TopBar', 700, 180);
-
-    const levelTitle = this.createLabelNode('LevelTitle', i18n.t('game.levelTitle'), 34, new Color(255, 255, 255, 255));
-    top.addChild(levelTitle.node);
-    levelTitle.node.setPosition(0, 48, 0);
-
-    const healthBg = this.createRectNode('HealthBg', 520, 26, new Color(60, 60, 60, 255));
-    top.addChild(healthBg);
-    healthBg.setPosition(-40, -6, 0);
-
-    const progressNode = this.createSizedNode('HealthProgress', 520, 26);
-    progressNode.setPosition(-40, -6, 0);
-    top.addChild(progressNode);
-
-    this.healthFill = this.createRectNode('BarFill', 520, 26, new Color(240, 80, 80, 255));
-    progressNode.addChild(this.healthFill);
-    const trans = this.healthFill.getComponent(UITransform)!;
-    trans.setAnchorPoint(0, 0.5);
-    this.healthFill.setPosition(-260, 0, 0);
-    this.healthFill.setScale(0, 1, 1);
-
-    this.healthLabel = this.createLabelNode('HealthLabel', `${i18n.t('ui.health')}: 0%`, 24, new Color(255, 255, 255, 255));
-    top.addChild(this.healthLabel.node);
-    this.healthLabel.node.setPosition(-40, -42, 0);
-
-    const hintBtn = this.createButtonNode('HintBtn', i18n.t('ui.hint'), 110, 56, new Color(90, 150, 255, 255));
-    top.addChild(hintBtn);
-    hintBtn.setPosition(285, 52, 0);
-    hintBtn.on(Node.EventType.TOUCH_END, () => {
-      this.hintPanel.active = !this.hintPanel.active;
+    const level = this.level;
+    this.root = this.rect(this.node, 'RecoveryRoot', 720, 1280, PAPER, 0, 0);
+    this.label(this.root, '打工人康复指南', 30, INK, 360, 50, -145, 565);
+    const soundButton = this.button(this.root, this.muted ? '音效关' : '音效开', 90, 52, '#e5ebdc', 100, 565, () => {
+      this.muted = !this.muted; this.audio.stop();
+      soundButton.getComponentInChildren(Label)!.string = this.muted ? '音效关' : '音效开';
     });
-
-    return top;
-  }
-
-  private createPlayArea(): Node {
-    const playArea = this.createSizedNode('PlayArea', 700, 760);
-
-    const patientBody = this.createRectNode('PatientBody', 260, 420, new Color(180, 180, 180, 255));
-    playArea.addChild(patientBody);
-    patientBody.setPosition(0, 0, 0);
-    const bodyLabel = this.createLabelNode('PatientLabel', level1Config.patientName, 22, new Color(30, 30, 30, 255));
-    patientBody.addChild(bodyLabel.node);
-    bodyLabel.node.setPosition(0, -190, 0);
-
-    const chestZone = this.createRectNode('ChestZone', 180, 80, new Color(230, 70, 70, 200));
-    playArea.addChild(chestZone);
-    chestZone.setPosition(0, 90, 0);
-    this.addZoneLabel(chestZone, i18n.t('ui.zone.chest'));
-
-    const chestOpacity = chestZone.addComponent(UIOpacity);
-    chestOpacity.opacity = 200;
-    tween(chestOpacity)
-      .to(0.45, { opacity: 80 })
-      .to(0.45, { opacity: 220 })
-      .union()
-      .repeatForever()
-      .start();
-
-    const backZone = this.createRectNode('BackZone', 180, 80, new Color(80, 140, 255, 170));
-    playArea.addChild(backZone);
-    backZone.setPosition(0, -20, 0);
-    this.addZoneLabel(backZone, i18n.t('ui.zone.back'));
-
-    this.zoneMap.set(ZoneType.Chest, {
-      id: ZoneType.Chest,
-      node: chestZone,
-      graphics: chestZone.getComponent(Graphics)!,
+    this.button(this.root, '怎么玩？', 135, 52, '#e5ebdc', 230, 565, () => {
+      if (this.locked || this.drag) return;
+      this.hintPanel.active = true;
     });
-    this.zoneMap.set(ZoneType.Back, {
-      id: ZoneType.Back,
-      node: backZone,
-      graphics: backZone.getComponent(Graphics)!,
+    const navWidth = 600 / this.levels.length;
+    this.levels.forEach((item, index) => {
+      this.button(this.root, '关 ' + String(item.id).padStart(2, '0'), navWidth - 12, 42, index === this.levelIndex ? '#dce7d5' : PAPER, -300 + navWidth * (index + 0.5), 505, () => this.showLevel(index));
     });
-
-    return playArea;
+    this.label(this.root, 'CASE ' + String(level.id).padStart(3, '0') + ' / ' + level.room, 19, GREEN, 620, 35, 0, 458);
+    this.label(this.root, level.title, 43, INK, 620, 65, 0, 408);
+    this.label(this.root, level.subtitle, 26, MUTED, 620, 45, 0, 360);
+    this.rect(this.root, 'ProgressTrack', 600, 10, '#dce2d5', 0, 307);
+    this.healthFill = this.rect(this.root, 'ProgressFill', 600, 10, GREEN, 0, 307);
+    this.healthLabel = this.label(this.root, '', 21, INK, 600, 35, 0, 333);
+    const stage = this.rect(this.root, 'ObservationRoom', 660, 510, '#e9eddf', 0, 30, 40);
+    this.label(stage, level.patientName + ' · 侧面示意', 19, MUTED, 580, 34, 0, -230);
+    const beforeNode = this.art(stage, level.beforeArt, level.artWidth, 400, 0, 0);
+    const afterNode = this.art(stage, level.afterArt, level.artWidth, 400, 0, 0);
+    this.before = beforeNode.addComponent(UIOpacity); this.after = afterNode.addComponent(UIOpacity); this.after.opacity = 0;
+    this.progress = null;
+    if (level.progressArt) {
+      this.progress = this.art(stage, level.progressArt, level.artWidth, 400, 0, 0).addComponent(UIOpacity); this.progress.opacity = 0;
+    }
+    for (const zone of level.zones) {
+      const left = zone.side === 'back';
+      this.addZone(stage, zone, left ? -225 : 225, level.observeFirst ? (left ? -90 : 90) : (left ? 100 : 55));
+    }
+    this.feedback = this.label(this.root, level.instruction, 22, MUTED, 630, 74, 0, -277);
+    const dock = this.rect(this.root, 'ToolDock', 660, 215, '#faf8f0', 0, -430, 26);
+    this.label(dock, level.dockTitle, 25, INK, 580, 40, 0, 76);
+    level.tools.forEach((tool, index) => this.addTool(dock, tool, level.tools.length === 3 ? (index - 1) * 210 : (index === 0 ? -165 : 165)));
+    this.button(this.root, '本关学习卡 · 肌肉与工作习惯', 600, 44, '#e5ebdc', 0, -559, () => { if (!this.locked && !this.drag) this.sciencePanel.active = true; });
+    this.label(this.root, '身体变化为游戏表达；用于科普，不用于诊断或治疗。', 17, MUTED, 650, 36, 0, -605);
+    this.hintPanel = this.makeHint(); this.resultPanel = this.makeResult(); this.sciencePanel = this.makeScience(); this.updateProgress();
   }
 
-  private createToolDock(): Node {
-    const dock = this.createRectNode('ToolDock', 700, 240, new Color(35, 35, 35, 255));
-
-    const fascia = this.createToolNode(ToolType.FasciaBall, i18n.t('ui.tool.fasciaBall'), new Color(250, 200, 70, 255));
-    dock.addChild(fascia.node);
-    fascia.node.setPosition(-140, 0, 0);
-    fascia.origin = fascia.node.getPosition().clone();
-
-    const band = this.createToolNode(ToolType.ElasticBand, i18n.t('ui.tool.elasticBand'), new Color(120, 230, 120, 255));
-    dock.addChild(band.node);
-    band.node.setPosition(140, 0, 0);
-    band.origin = band.node.getPosition().clone();
-
-    this.toolMap.set(ToolType.FasciaBall, fascia);
-    this.toolMap.set(ToolType.ElasticBand, band);
-    return dock;
+  private zoneText(zone: ZoneConfig) {
+    if (this.level.observeFirst && !this.session.isObserved(zone.id)) return (zone.side === 'back' ? '线索 A' : '线索 B') + '\n点击观察';
+    return zone.title + '\n' + (this.session.isCompleted(zone.id) ? '已完成' : zone.detail);
   }
 
-  private createToolNode(id: ToolType, text: string, color: Color): ToolRuntime {
-    const node = this.createButtonNode(`Tool-${id}`, text, 170, 170, color);
-    const label = node.getComponentInChildren(Label)!;
-    const runtime: ToolRuntime = {
-      id,
-      node,
-      label,
-      origin: Vec3.ZERO.clone(),
-    };
-
-    node.on(Node.EventType.TOUCH_START, (event: EventTouch) => this.onToolStart(runtime, event));
-    node.on(Node.EventType.TOUCH_MOVE, (event: EventTouch) => this.onToolMove(runtime, event));
-    node.on(Node.EventType.TOUCH_END, (event: EventTouch) => this.onToolEnd(runtime, event));
-    node.on(Node.EventType.TOUCH_CANCEL, (event: EventTouch) => this.onToolEnd(runtime, event));
-    return runtime;
+  private addZone(parent: Node, config: ZoneConfig, x: number, y: number) {
+    const node = this.rect(parent, 'Zone-' + config.id, 180, 100, '#fffaf0', x, y, 16);
+    const label = this.label(node, this.zoneText(config), 23, this.level.observeFirst ? MUTED : config.color, 170, 90, 0, 0);
+    const opacity = node.addComponent(UIOpacity);
+    this.zoneMap.set(config.id, { node, label, opacity });
+    node.on(Node.EventType.TOUCH_END, () => {
+      if (this.locked || this.hintPanel.active || this.sciencePanel.active || this.drag) return;
+      if (this.level.observeFirst && !this.session.isObserved(config.id)) {
+        this.session.inspect(config.id); label.string = this.zoneText(config); label.color = this.color(config.color);
+        this.selected = null; this.say(config.clue); return;
+      }
+      if (this.selected) this.applyDrop(this.selected, config.id);
+      else this.say(this.level.observeFirst ? config.clue : '先选一件工具，再点身体标记。');
+    });
+    if (!this.level.observeFirst && config.id === ZoneType.Chest) tween(opacity).to(0.8, { opacity: 160 }).to(0.8, { opacity: 255 }).union().repeatForever().start();
   }
 
-  private onToolStart(tool: ToolRuntime, _event: EventTouch) {
-    if (this.locked) {
-      return;
-    }
-    this.draggingTool = tool;
-    tool.node.setScale(1.08, 1.08, 1);
+  private addTool(parent: Node, config: ToolConfig, x: number) {
+    const compact = this.level.tools.length === 3;
+    const node = this.rect(parent, 'Tool-' + config.id, compact ? 190 : 290, 115, '#edf0e5', x, -12, 18);
+    if (config.art) this.art(node, config.art, compact ? 46 : 82, compact ? 46 : 82, compact ? 0 : -90, compact ? 27 : 0);
+    else this.label(node, '▤', 40, MUTED, 60, 48, 0, 27);
+    this.label(node, config.title, compact ? 22 : 25, INK, compact ? 175 : 170, 35, compact ? 0 : 48, compact ? -12 : 20);
+    this.label(node, config.detail, compact ? 16 : 18, MUTED, compact ? 175 : 170, 30, compact ? 0 : 48, compact ? -40 : -22);
+    const tool: ToolRuntime = { id: config.id, node, origin: node.position.clone(), used: false };
+    this.toolMap.set(config.id, tool);
+    node.on(Node.EventType.TOUCH_START, (event: EventTouch) => {
+      if (this.locked || this.drag || tool.used || this.hintPanel.active || this.sciencePanel.active) return;
+      this.selected = config.id; this.say('已选' + config.title + '，拖到或点击对应目标。');
+      this.drag = { tool, touchId: event.getID() }; node.setScale(1.05, 1.05, 1);
+    });
+    node.on(Node.EventType.TOUCH_MOVE, (event: EventTouch) => {
+      if (!this.ownsTouch(tool, event)) return;
+      const point = event.getUILocation();
+      node.setPosition(node.parent!.getComponent(UITransform)!.convertToNodeSpaceAR(new Vec3(point.x, point.y, 0)));
+    });
+    node.on(Node.EventType.TOUCH_END, (event: EventTouch) => {
+      if (!this.ownsTouch(tool, event)) return;
+      const point = event.getUILocation(); const zone = this.pickZone(point); this.returnTool(tool);
+      if (zone) this.applyDrop(config.id, zone);
+      else if (!node.getComponent(UITransform)!.getBoundingBoxToWorld().contains(point)) this.say('没有放到目标上，再试一次。');
+    });
+    node.on(Node.EventType.TOUCH_CANCEL, (event: EventTouch) => { if (this.ownsTouch(tool, event)) { this.returnTool(tool); this.selected = null; } });
   }
 
-  private onToolMove(tool: ToolRuntime, event: EventTouch) {
-    if (this.locked || this.draggingTool !== tool) {
-      return;
-    }
-    const location = event.getUILocation();
-    const parent = tool.node.parent;
-    if (!parent) {
-      return;
-    }
-    const parentTransform = parent.getComponent(UITransform);
-    if (!parentTransform) {
-      return;
-    }
-    const localPos = parentTransform.convertToNodeSpaceAR(new Vec3(location.x, location.y, 0));
-    tool.node.setPosition(localPos);
-  }
-
-  private onToolEnd(tool: ToolRuntime, event: EventTouch) {
-    if (this.locked || this.draggingTool !== tool) {
-      this.resetTool(tool);
-      return;
-    }
-
-    const location = event.getUILocation();
-    const droppedZone = this.pickZone(new Vec2(location.x, location.y));
-    if (!droppedZone) {
-      this.showFeedback(i18n.t('feedback.invalidDrop'), new Color(220, 220, 220, 255));
-      this.resetTool(tool);
-      return;
-    }
-
-    const target = level1Config.targets.find((it) => it.tool === tool.id && it.zone === droppedZone);
-    if (!target) {
-      this.showFeedback(i18n.t('feedback.wrongTool'), new Color(255, 100, 100, 255));
-      this.shakeRoot();
-      this.resetTool(tool);
-      return;
-    }
-
-    const token = `${tool.id}-${droppedZone}`;
-    if (this.completed.has(token)) {
-      this.resetTool(tool);
-      return;
-    }
-
-    this.completed.add(token);
-    if (tool.id === ToolType.FasciaBall) {
-      this.showFeedback(i18n.t('feedback.correctRelax'), new Color(120, 255, 120, 255));
-      this.finishZone(ZoneType.Chest, new Color(80, 200, 90, 220));
-    } else {
-      this.showFeedback(i18n.t('feedback.correctStrength'), new Color(120, 255, 120, 255));
-      this.finishZone(ZoneType.Back, new Color(255, 220, 80, 220));
-    }
-
-    this.updateHealth(target.score);
-    this.resetTool(tool);
-    if (this.health >= 100) {
-      this.openSettlement();
-    }
-  }
-
-  private pickZone(pos: Vec2): ZoneType | null {
-    const chest = this.zoneMap.get(ZoneType.Chest)?.node.getComponent(UITransform)?.getBoundingBoxToWorld();
-    if (chest && chest.contains(pos)) {
-      return ZoneType.Chest;
-    }
-    const back = this.zoneMap.get(ZoneType.Back)?.node.getComponent(UITransform)?.getBoundingBoxToWorld();
-    if (back && back.contains(pos)) {
-      return ZoneType.Back;
-    }
+  private ownsTouch(tool: ToolRuntime, event: EventTouch) { return !this.locked && this.drag?.tool === tool && this.drag.touchId === event.getID(); }
+  private returnTool(tool: ToolRuntime) { tool.node.setPosition(tool.origin); tool.node.setScale(1, 1, 1); this.drag = null; }
+  private pickZone(point: Vec2): ZoneType | null {
+    for (const [id, zone] of this.zoneMap) if (zone.node.getComponent(UITransform)!.getBoundingBoxToWorld().contains(point)) return id;
     return null;
   }
 
-  private finishZone(zone: ZoneType, color: Color) {
-    const target = this.zoneMap.get(zone);
-    if (!target) {
-      return;
+  private applyDrop(tool: ToolType, zone: ZoneType) {
+    const outcome = this.session.drop(tool, zone);
+    const config = this.level.zones.find(item => item.id === zone)!;
+    if (outcome === 'unobserved') { this.say('先点开这条线索，了解情况再选行动。'); return; }
+    if (outcome === 'wrong') {
+      this.playSound('wrong'); this.say(config.wrong, '#ae593f'); Tween.stopAllByTarget(this.root); this.root.setPosition(0, 0, 0);
+      tween(this.root).to(0.05, { position: new Vec3(-6, 0, 0) }).to(0.05, { position: new Vec3(6, 0, 0) }).to(0.05, { position: Vec3.ZERO.clone() }).start(); return;
     }
-    target.graphics.clear();
-    target.graphics.fillColor = color;
-    target.graphics.roundRect(-90, -40, 180, 80, 14);
-    target.graphics.fill();
-  }
-
-  private updateHealth(delta: number) {
-    this.health = Math.min(100, Math.max(0, this.health + delta));
-    this.healthFill.setScale(this.health / 100, 1, 1);
-    this.healthLabel.string = `${i18n.t('ui.health')}: ${this.health}%`;
-  }
-
-  private showFeedback(text: string, color: Color) {
-    this.feedbackLabel.string = text;
-    this.feedbackLabel.color = color;
-  }
-
-  private resetTool(tool: ToolRuntime) {
-    tool.node.setScale(1, 1, 1);
-    tween(tool.node).to(0.15, { position: tool.origin }).start();
-    this.draggingTool = null;
-  }
-
-  private openSettlement() {
-    this.locked = true;
-    this.settlementPanel.active = true;
-  }
-
-  private shakeRoot() {
-    const p = this.node.position.clone();
-    tween(this.node)
-      .to(0.04, { position: p.clone().add3f(8, 0, 0) })
-      .to(0.04, { position: p.clone().add3f(-8, 0, 0) })
-      .to(0.04, { position: p })
-      .start();
-  }
-
-  private createHintPanel(): Node {
-    const panel = this.createRectNode('HintPanel', 650, 200, new Color(20, 20, 20, 230));
-    panel.setPosition(0, 250, 0);
-    const txt = this.createLabelNode('HintText', i18n.t('hint.text'), 24, new Color(255, 255, 255, 255));
-    panel.addChild(txt.node);
-    txt.node.setPosition(0, 0, 0);
-    return panel;
-  }
-
-  private createSettlementPanel(): Node {
-    const panel = this.createRectNode('SettlementPanel', 720, 1280, new Color(10, 10, 10, 220));
-
-    const box = this.createRectNode('SettlementBox', 630, 620, new Color(42, 42, 42, 255));
-    panel.addChild(box);
-
-    const title = this.createLabelNode('SettlementTitle', i18n.t('settlement.title'), 40, new Color(130, 255, 130, 255));
-    box.addChild(title.node);
-    title.node.setPosition(0, 230, 0);
-
-    const desc = this.createLabelNode('SettlementDesc', i18n.t('settlement.desc'), 26, new Color(255, 255, 255, 255));
-    box.addChild(desc.node);
-    desc.node.setPosition(0, 130, 0);
-
-    const tip = this.createLabelNode('SettlementTip', i18n.t('settlement.tip'), 22, new Color(220, 220, 220, 255));
-    box.addChild(tip.node);
-    tip.node.setPosition(0, 40, 0);
-
-    const shareBtn = this.createButtonNode('ShareBtn', i18n.t('settlement.share'), 450, 80, new Color(65, 185, 75, 255));
-    box.addChild(shareBtn);
-    shareBtn.setPosition(0, -90, 0);
-    shareBtn.on(Node.EventType.TOUCH_END, () => this.shareToWechat());
-
-    const nextBtn = this.createButtonNode('NextBtn', i18n.t('settlement.next'), 360, 70, new Color(100, 130, 255, 255));
-    box.addChild(nextBtn);
-    nextBtn.setPosition(0, -200, 0);
-    nextBtn.on(Node.EventType.TOUCH_END, () => {
-      this.showFeedback(i18n.t('settlement.more'), new Color(255, 240, 150, 255));
-    });
-
-    return panel;
-  }
-
-  private shareToWechat() {
-    const wxApi = (globalThis as any).wx;
-    if (!wxApi || typeof wxApi.shareAppMessage !== 'function') {
-      this.showFeedback(i18n.t('feedback.shareUnavailable'), new Color(255, 170, 120, 255));
-      return;
+    if (outcome === 'completed') { this.say('这个目标已经完成了，试试另一个。'); return; }
+    if (outcome !== 'correct') return;
+    this.selected = null;
+    this.playSound(this.level.targets.find(item => item.zone === zone)!.successSound || 'strengthen');
+    const target = this.zoneMap.get(zone)!;
+    Tween.stopAllByTarget(target.opacity); target.opacity.opacity = 255;
+    target.label.string = this.zoneText(config); target.label.color = this.color(GREEN);
+    const runtime = this.toolMap.get(tool)!;
+    if (this.level.targets.filter(item => item.tool === tool).every(item => this.session.isCompleted(item.zone))) {
+      runtime.used = true; const opacity = runtime.node.getComponent(UIOpacity) || runtime.node.addComponent(UIOpacity); opacity.opacity = 120;
     }
-    wxApi.shareAppMessage({
-      title: 'I recovered the keyboard worker posture. Can you do it too?',
-      imageUrl: '',
-      query: 'from=share&level=1',
-    });
+    this.say(config.correct, GREEN); this.updateProgress();
+    if (this.session.completedCount === 1 && this.progress) {
+      Tween.stopAllByTarget(this.before); Tween.stopAllByTarget(this.progress);
+      tween(this.before).to(0.35, { opacity: 0 }).start(); tween(this.progress).to(0.35, { opacity: 255 }).start();
+    }
+    if (this.session.finished) {
+      Tween.stopAllByTarget(this.before);
+      if (this.progress) { Tween.stopAllByTarget(this.progress); tween(this.progress).to(0.65, { opacity: 0 }).start(); }
+      this.scheduleOnce(() => this.playSound('complete'), 0.45);
+      this.locked = true; this.hintPanel.active = false;
+      tween(this.before).to(0.65, { opacity: 0 }).start(); tween(this.after).to(0.65, { opacity: 255 }).start();
+      this.scheduleOnce(() => { this.resultPanel.active = true; }, 1.3);
+    }
   }
 
-  private createButtonNode(name: string, text: string, w: number, h: number, color: Color): Node {
-    const node = this.createRectNode(name, w, h, color);
-    const textNode = this.createLabelNode(`${name}-Text`, text, 24, new Color(255, 255, 255, 255));
-    node.addChild(textNode.node);
-    textNode.node.setPosition(0, 0, 0);
+  private updateProgress() {
+    const ratio = this.session.health / 100; this.healthFill.setScale(ratio, 1, 1); this.healthFill.setPosition(-300 * (1 - ratio), 307, 0);
+    this.healthLabel.string = '关卡进度  ' + this.session.health + '% · ' + this.session.completedCount + ' / ' + this.level.targets.length;
+  }
+  private say(text: string, color = MUTED) { this.feedback.string = text; this.feedback.color = this.color(color); }
+  private modal(name: string, height: number): { panel: Node; box: Node } {
+    const panel = this.rect(this.root, name, 720, 1280, '#253f36cc', 0, 0, 0); panel.addComponent(BlockInputEvents);
+    const box = this.rect(panel, name + 'Box', 630, height, PAPER, 0, 0, 28); panel.active = false; return { panel, box };
+  }
+  private makeHint(): Node {
+    const { panel, box } = this.modal('Hint', 500);
+    this.label(box, this.level.hintTitle, 32, INK, 550, 70, 0, 160);
+    this.label(box, this.level.hintText, 24, INK, 550, 230, 0, 5);
+    this.button(box, '我来试试', 500, 70, '#e5ebdc', 0, -175, () => { panel.active = false; }); return panel;
+  }
+  private makeResult(): Node {
+    const { panel, box } = this.modal('Result', 960);
+    this.label(box, this.level.resultTitle, 36, INK, 550, 65, 0, 395);
+    const w = this.level.artWidth * 0.625;
+    this.art(box, this.level.beforeArt, w, 250, -120, 215); this.art(box, this.level.afterArt, w, 250, 120, 215);
+    this.label(box, '→', 32, GREEN, 60, 60, 0, 215);
+    this.label(box, this.level.resultText, 24, INK, 560, 100, 0, 25);
+    this.label(box, this.level.resultNote, 19, MUTED, 550, 70, 0, -60);
+    this.button(box, this.levelIndex < this.levels.length - 1 ? '下一关 · ' + this.levels[this.levelIndex + 1].title : '回到第一关继续探索', 510, 70, '#dce7d5', 0, -150, () => this.showLevel((this.levelIndex + 1) % this.levels.length));
+    this.button(box, '再玩本关', 510, 65, '#e8e4d7', 0, -235, () => this.showLevel(this.levelIndex));
+    this.button(box, '分享这份舒展指南', 510, 65, '#e8e4d7', 0, -315, () => this.share());
+    this.button(box, '读一读本关学习卡', 510, 60, '#e5ebdc', 0, -390, () => { this.sciencePanel.active = true; });
+    this.resultFeedback = this.label(box, '', 17, MUTED, 550, 38, 0, -448); return panel;
+  }
+  private makeScience(): Node {
+    const { panel, box } = this.modal('Science', 1040);
+    const data = this.level.education;
+    this.label(box, this.level.shortTitle + ' · 工作与肌肉', 32, INK, 540, 65, 0, 440);
+    const heading = this.label(box, '', 27, GREEN, 540, 55, 0, 355);
+    const body = this.label(box, '', 24, INK, 540, 590, 0, 25);
+    const pages = [
+      { title: '为什么会累？', text: data.summary + '\n\n' + data.cause },
+      { title: '认识这些肌肉', text: data.muscles.map(item => item.name + '\n' + item.location + '\n' + item.function).join('\n\n') },
+      { title: '从工作方式开始', text: data.actions.map(item => item.title + '\n' + item.description).join('\n\n') + '\n\n' + data.boundary },
+      { title: '科普依据 · 继续阅读', text: '资料用于支持肌肉功能与工效学原则，不是对玩家的诊断。部分资料为英文；外部链接需平台支持。' },
+    ];
+    const links = data.sources.map((source, index) => this.button(box, source.title, 530, 75, '#e8e4d7', 0, 105 - index * 100, () => { if (/^https:\/\//.test(source.url)) sys.openURL(source.url); }));
+    let page = 0;
+    const number = this.label(box, '', 20, MUTED, 90, 45, 0, -342);
+    const render = () => { heading.string = pages[page].title; body.string = pages[page].text; body.node.setPosition(0, page === 3 ? 230 : 25, 0); body.node.getComponent(UITransform)!.setContentSize(540, page === 3 ? 160 : 590); number.string = (page + 1) + ' / ' + pages.length; links.forEach(link => { link.active = page === 3; }); };
+    this.button(box, '上一页', 190, 62, '#e5ebdc', -175, -342, () => { page = (page + pages.length - 1) % pages.length; render(); });
+    this.button(box, '下一页', 190, 62, '#e5ebdc', 175, -342, () => { page = (page + 1) % pages.length; render(); });
+    this.button(box, '回到游戏', 530, 65, '#dce7d5', 0, -440, () => { panel.active = false; });
+    render(); return panel;
+  }
+  private playSound(name: string) {
+    const clip = this.clips.get(name);
+    if (this.muted || !clip) return;
+    this.audio.stop(); this.audio.clip = clip; this.audio.play();
+  }
+  private share() {
+    const wxApi = (globalThis as unknown as { wx?: { shareAppMessage?: (options: { title: string; query: string }) => void } }).wx;
+    if (!wxApi?.shareAppMessage) { this.resultFeedback.string = '当前预览不支持微信分享；请在微信真机中验证。'; return; }
+    try { wxApi.shareAppMessage({ title: this.level.shareTitle, query: 'from=share&level=' + this.level.id }); this.resultFeedback.string = '分享面板已打开。'; }
+    catch { this.resultFeedback.string = '当前环境分享不可用，请稍后再试。'; }
+  }
+
+  private art(parent: Node, name: string, w: number, h: number, x: number, y: number): Node {
+    const node = this.sized(parent, `Art-${name}`, w, h, x, y);
+    const sprite = node.addComponent(Sprite);
+    sprite.sizeMode = Sprite.SizeMode.CUSTOM;
+    const generation = this.generation;
+    resources.load(`art/${name}`, Texture2D, (error, texture) => {
+      if (!node.isValid || generation !== this.generation || !this.isValid) return;
+      if (error) { this.label(node, '图片待导入', 18, MUTED, w, h, 0, 0); return; }
+      const frame = new SpriteFrame(); frame.texture = texture;
+      this.generatedFrames.push(frame); sprite.spriteFrame = frame;
+    });
     return node;
   }
 
-  private addZoneLabel(zoneNode: Node, text: string) {
-    const label = this.createLabelNode(`${zoneNode.name}-Label`, text, 20, new Color(255, 255, 255, 255));
-    zoneNode.addChild(label.node);
-  }
-
-  private createRectNode(name: string, width: number, height: number, color: Color): Node {
-    const node = this.createSizedNode(name, width, height);
-    const graphics = node.addComponent(Graphics);
-    graphics.fillColor = color;
-    graphics.roundRect(-width / 2, -height / 2, width, height, 14);
-    graphics.fill();
+  private button(parent: Node, text: string, w: number, h: number, color: string, x: number, y: number, action: () => void): Node {
+    const node = this.rect(parent, text, w, h, color, x, y, 16);
+    this.label(node, text, 23, INK, w - 20, h - 10, 0, 0);
+    node.on(Node.EventType.TOUCH_END, action);
     return node;
   }
 
-  private createLabelNode(name: string, text: string, fontSize: number, color: Color): Label {
-    const node = new Node(name);
-    const label = node.addComponent(Label);
-    label.string = text;
-    label.fontSize = fontSize;
-    label.lineHeight = Math.round(fontSize * 1.45);
-    label.color = color;
-    label.overflow = Label.Overflow.SHRINK;
-    const trans = node.addComponent(UITransform);
-    trans.setContentSize(620, 160);
+  private color(hex: string) { return new Color().fromHEX(hex); }
+  private sized(parent: Node, name: string, w: number, h: number, x: number, y: number): Node {
+    const node = new Node(name); node.layer = Layers.Enum.UI_2D;
+    node.addComponent(UITransform).setContentSize(w, h);
+    parent.addChild(node); node.setPosition(x, y, 0);
+    return node;
+  }
+  private rect(parent: Node, name: string, w: number, h: number, color: string, x: number, y: number, radius = 6): Node {
+    const node = this.sized(parent, name, w, h, x, y);
+    const graphics = node.addComponent(Graphics); graphics.fillColor = this.color(color);
+    graphics.roundRect(-w / 2, -h / 2, w, h, radius); graphics.fill();
+    return node;
+  }
+  private label(parent: Node, text: string, fontSize: number, color: string, w: number, h: number, x: number, y: number): Label {
+    const node = this.sized(parent, 'Text', w, h, x, y);
+    const label = node.addComponent(Label); label.string = text; label.fontSize = fontSize;
+    label.lineHeight = Math.round(fontSize * 1.45); label.color = this.color(color);
+    label.overflow = Label.Overflow.SHRINK; label.enableWrapText = true;
     return label;
   }
 
-  private createSizedNode(name: string, width: number, height: number): Node {
-    const node = new Node(name);
-    const trans = node.addComponent(UITransform);
-    trans.setContentSize(width, height);
-    return node;
+
+  private disposeScene() {
+    this.generation++; this.unscheduleAllCallbacks();
+    if (this.audio) this.audio.stop();
+    if (this.progress) Tween.stopAllByTarget(this.progress);
+    for (const zone of this.zoneMap.values()) Tween.stopAllByTarget(zone.opacity);
+    if (this.before) Tween.stopAllByTarget(this.before); if (this.after) Tween.stopAllByTarget(this.after);
+    if (this.root) { Tween.stopAllByTarget(this.root); this.root.active = false; this.root.destroy(); }
+    for (const frame of this.generatedFrames) frame.destroy();
+    this.generatedFrames = []; this.toolMap.clear(); this.zoneMap.clear();
   }
+  onDestroy() { this.disposeScene(); }
 }

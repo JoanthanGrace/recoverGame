@@ -2,19 +2,11 @@ import { LevelConfig, ToolType, ZoneType } from '../types';
 
 export const level1Config: LevelConfig = {
   id: 1,
-  title: 'Lv.1 Keyboard Worker Recovery',
-  patientName: 'Upper Crossed Syndrome',
-  stageTip: 'Relax front chest muscles and strengthen back muscles.',
+  title: '键盘侠的觉醒',
+  patientName: '小周 / 伏案工作 8 小时',
+  stageTip: '本关简化为两个科普目标：紧张区域放松，无力区域强化。',
   targets: [
-    {
-      tool: ToolType.FasciaBall,
-      zone: ZoneType.Chest,
-      score: 50,
-    },
-    {
-      tool: ToolType.ElasticBand,
-      zone: ZoneType.Back,
-      score: 50,
-    },
+    { tool: ToolType.FasciaBall, zone: ZoneType.Chest, score: 50 },
+    { tool: ToolType.ElasticBand, zone: ZoneType.Back, score: 50 },
   ],
 };

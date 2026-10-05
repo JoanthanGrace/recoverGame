@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f5f1e6">
+  <title>打工人康复指南</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game">
+    <header><div class="brand"><span class="brand-mark">休</span><div>打工人康复指南<small>THE LITTLE RECOVERY CLUB</small></div></div><button class="quiet sound-toggle" id="sound" aria-pressed="false" aria-label="关闭音效">音效开</button><button class="quiet" id="hint" aria-expanded="false">怎么玩？</button></header>
+    <nav class="level-nav" aria-label="选择关卡"></nav>
+    <section class="intro"><p class="eyebrow"><span id="case-number">CASE 001</span> <span id="room">久坐观察室</span></p><h1><span id="level-title">键盘侠的觉醒</span><span id="subtitle">先松一松，再练一练。</span></h1><p id="story"></p></section>
+    <section class="progress" aria-label="关卡进度"><div><span>关卡进度 <span id="percent">0%</span></span><strong id="score">0 / 2</strong></div><div class="track"><div id="fill"></div></div></section>
+    <section class="stage" aria-label="人物与互动目标"><div class="stage-top"><span class="status" id="status"></span><span class="view-label">侧面示意</span></div><div class="patient-wrap"><div class="halo"></div><img class="patient before" src="../assets/resources/art/patient-before.png" alt="伏案人物"><img class="patient after" src="../assets/resources/art/patient-after.png" alt="舒展人物"><img class="patient progress-art" hidden alt="完成第一项目标后的示意"><div class="ground"></div></div><div id="targets"></div><p class="patient-name"></p></section>
+    <p class="feedback" id="feedback" role="status" aria-live="polite">正在准备关卡…</p>
+    <section class="dock" aria-label="行动工具"><div class="dock-heading"><h2 id="dock-title">你的舒展工具箱</h2><span>按住拖动 / 点选</span></div><div class="tools"></div></section>
+    <button class="learn-entry" id="learn"><span>把这一关带回生活</span><b>肌肉与工作习惯 · 学习卡 ↗</b></button>
+    <button id="campaign-count" class="campaign-count">已完成 0 / 5 个场景</button>
+    <footer>身体示意与变化为游戏表达；本关用于科普，不用于诊断或治疗。</footer>
+  </main>
+  <dialog id="hint-dialog"><button class="close" data-close aria-label="关闭">×</button><p class="eyebrow">A LITTLE CLUE</p><h2 id="hint-title"></h2><p id="hint-text" class="multiline"></p><button class="primary" data-close>我来试试</button></dialog>
+  <dialog id="result"><button class="close" data-close aria-label="关闭">×</button><p class="eyebrow">CASE COMPLETE</p><h2 id="result-title"></h2><div class="result-art"><img class="before" src="../assets/resources/art/patient-before.png" alt="舒展前"><span>→</span><img class="after" src="../assets/resources/art/patient-after.png" alt="舒展后"></div><p id="result-text" class="multiline"></p><p class="result-note" id="result-note"></p><button class="primary" id="next">下一关</button><button class="secondary" id="result-learn">读一读本关学习卡</button><button class="secondary" id="replay">再玩本关</button><button class="secondary" id="share">分享这份舒展指南</button><p id="share-feedback" role="status" aria-live="polite"></p></dialog>
+  <dialog id="science" aria-labelledby="science-title"><button class="close" data-close aria-label="关闭学习卡">×</button><p class="eyebrow">TAKE IT INTO YOUR DAY</p><h2 id="science-title"></h2><p id="science-summary" class="science-lead"></p><section><h3>为什么会累？</h3><p id="science-cause"></p></section><section><h3>认识这些肌肉</h3><div id="science-muscles"></div></section><section><h3>从这两件事开始</h3><div id="science-actions"></div></section><p id="science-boundary" class="science-boundary"></p><details><summary>科普依据 · 继续阅读</summary><div id="science-sources"></div><p class="source-note">外部资料用于支持肌肉功能与工效学原则，不代表对游戏人物或玩家的诊断。部分资料为英文。</p></details><button class="primary" data-close>带着这个思路继续</button></dialog>
+  <dialog id="collection" aria-labelledby="collection-title"><button class="close" data-close aria-label="关闭总结">×</button><p class="eyebrow">YOUR LITTLE FIELD NOTES</p><h2 id="collection-title">把省力的方法带回生活</h2><p id="collection-count"></p><div id="collection-cards"></div><button class="primary" data-close>继续探索</button></dialog>
+  <script src="audio.js"></script><script src="game.js"></script>
+</body>
+</html>
