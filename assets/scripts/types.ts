@@ -60,7 +60,7 @@ export interface ZoneConfig {
   clue: string; wrong: string; correct: string;
 }
 export interface PlayableLevel extends LevelConfig {
-  fitness?: boolean; workTip?: string; chapter?: 'myths';
+  fitness?: boolean; workTip?: string; chapter?: 'myths'; visualNote?: string;
   education: {
     question?: string;
     myths?: { claim: string; verdict: boolean; explanation: string }[];

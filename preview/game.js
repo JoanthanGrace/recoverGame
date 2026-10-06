@@ -11,6 +11,7 @@ const result = document.querySelector('#result');
 const hintDialog = document.querySelector('#hint-dialog');
 const science = document.querySelector('#science');
 const anatomyDialog = document.querySelector('#anatomy-dialog');
+const sceneDetail = document.querySelector('#scene-detail');
 const collection = document.querySelector('#collection');
 const finishedLevels = new Set();
 let selected = null;
@@ -22,7 +23,7 @@ let shareGeneration = 0;
 const current = () => levels[levelIndex];
 const artPath = name => `../assets/resources/art/${name}.png`;
 const setText = (selector, value) => { document.querySelector(selector).textContent = value; };
-const isBlocked = () => !levels.length || completed.size === current().targets.length || result.open || hintDialog.open || science.open || anatomyDialog.open || collection.open;
+const isBlocked = () => !levels.length || completed.size === current().targets.length || result.open || hintDialog.open || science.open || anatomyDialog.open || sceneDetail.open || collection.open;
 
 function say(text, kind = '') { feedback.textContent = text; feedback.className = 'feedback ' + kind; }
 function select(tool) {
@@ -122,7 +123,7 @@ function showLevel(index, scroll = true) {
   settleTimer = null;
   document.documentElement.classList.add('switching');
   levelIndex = index; completed.clear(); observed.clear(); selected = null;
-  anatomyDialog.close(); result.close(); hintDialog.close(); science.close(); collection.close();
+  sceneDetail.close(); anatomyDialog.close(); result.close(); hintDialog.close(); science.close(); collection.close();
   const level = current();
   stage.classList.remove('half', 'recovered', 'shake'); stage.classList.toggle('habits', level.observeFirst);
   stage.classList.toggle('has-progress', Boolean(level.progressArt));
@@ -134,6 +135,8 @@ function showLevel(index, scroll = true) {
   document.title = `打工人康复指南 · ${level.title}`;
   setText('#case-number', `CASE ${String(level.id).padStart(3, '0')}`); setText('#room', level.room);
   setText('#level-title', level.title); setText('#subtitle', level.subtitle); setText('#story', level.story);
+  document.querySelector('#scene-observation').hidden = !level.visualNote;
+  setText('#scene-note', level.visualNote || '');
   setText('#status', level.status); setText('.patient-name', level.patientName); setText('#dock-title', level.dockTitle);
   for (const [selector, name, alt] of [['.patient.before', level.beforeArt, level.beforeAlt], ['.patient.after', level.afterArt, level.afterAlt], ['.result-art .before', level.beforeArt, level.beforeAlt], ['.result-art .after', level.afterArt, level.afterAlt]]) {
     const img = document.querySelector(selector); img.src = artPath(name); img.alt = alt;
@@ -184,6 +187,11 @@ document.querySelector('#hint').addEventListener('click', () => {
   endDrag(true); hintDialog.showModal(); document.querySelector('#hint').setAttribute('aria-expanded', 'true');
 });
 hintDialog.addEventListener('close', () => document.querySelector('#hint').setAttribute('aria-expanded', 'false'));
+document.querySelector('#scene-zoom').addEventListener('click', () => {
+  if (isBlocked() || drag || !current().visualNote) return;
+  const img = document.querySelector('#scene-detail-image'); img.src = artPath(current().beforeArt); img.alt = current().beforeAlt; img.hidden = false;
+  setText('#scene-detail-note', current().visualNote); sceneDetail.scrollTop = 0; sceneDetail.showModal();
+});
 document.querySelectorAll('[data-close]').forEach(button => button.addEventListener('click', () => button.closest('dialog').close()));
 document.querySelector('#replay').addEventListener('click', () => showLevel(levelIndex));
 document.querySelector('#next').addEventListener('click', () => {

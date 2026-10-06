@@ -95,7 +95,7 @@ export class GameRoot extends Component {
     this.healthLabel = this.label(this.root, '', 21, INK, 600, 35, 0, 333 - headerShift);
     const stageHeight = 510 - headerShift;
     const stage = this.rect(this.root, 'ObservationRoom', 660, stageHeight, '#e9eddf', 0, 30 - headerShift / 2, 40);
-    this.label(stage, level.patientName + ' · 动作示意', 19, MUTED, 580, 34, 0, -stageHeight / 2 + 25);
+    this.label(stage, level.visualNote ? '夸张教学示意 · 非诊断或美体前后对比' : level.patientName + ' · 动作示意', 19, MUTED, 580, 34, 0, -stageHeight / 2 + 25);
     const beforeNode = this.art(stage, level.beforeArt, level.artWidth, 400, 0, 0);
     const afterNode = this.art(stage, level.afterArt, level.artWidth, 400, 0, 0);
     this.before = beforeNode.addComponent(UIOpacity); this.after = afterNode.addComponent(UIOpacity); this.after.opacity = 0;

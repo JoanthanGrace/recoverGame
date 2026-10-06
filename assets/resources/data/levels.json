@@ -918,9 +918,9 @@
     "status": "肩胛要协调 · 不靠硬夹",
     "dockTitle": "把练习配到对应目标",
     "instruction": "先点两条线索，再选练习；选项含误区，学习卡还有两道判断题。",
-    "beforeArt": "photographer-before",
+    "beforeArt": "photographer-before-v2",
     "afterArt": "fitness-wall-push",
-    "beforeAlt": "摄影师小禾持相机工作的日常姿态，不表示异常诊断",
+    "beforeAlt": "夸张教学示意：翼状肩胛示例：箭头强调肩胛内侧缘翘起。蝴蝶背不等于翼状肩胛；明显突出伴疼痛、无力时应寻求专业评估。",
     "afterAlt": "靠墙推撑静态动作示意，不表示治愈",
     "artWidth": 290,
     "hintTitle": "别急着跟练，先分清目的。",
@@ -1097,7 +1097,8 @@
     },
     "fitness": true,
     "workTip": "持相机时给手臂安排休息、变化取景姿势。工作补充不替代本关的肩胛功能学习。",
-    "chapter": "myths"
+    "chapter": "myths",
+    "visualNote": "翼状肩胛示例：箭头强调肩胛内侧缘翘起。蝴蝶背不等于翼状肩胛；明显突出伴疼痛、无力时应寻求专业评估。"
   },
   {
     "id": 7,
@@ -1112,9 +1113,9 @@
     "status": "抬手需要协同 · 不强压肩",
     "dockTitle": "把练习配到对应目标",
     "instruction": "先点两条线索，再选练习；选项含误区，学习卡还有两道判断题。",
-    "beforeArt": "shop-assistant-before",
+    "beforeArt": "shop-assistant-before-v2",
     "afterArt": "fitness-shop-neck",
-    "beforeAlt": "导购阿琳抬手整理衣服的日常姿态",
+    "beforeAlt": "夸张教学示意：刻意压肩示例：向下箭头表示强行压低肩膀，而手臂正在抬起。自然肩线不是问题，不必消灭斜方肌。",
     "afterAlt": "轻柔颈侧伸展静态动作示意，不表示治愈",
     "artWidth": 290,
     "hintTitle": "别急着跟练，先分清目的。",
@@ -1308,7 +1309,8 @@
     },
     "fitness": true,
     "workTip": "整理较高衣架时穿插低位任务与休息。不在头晕、肩痛时继续抬高手臂；工作任务调整只作补充。",
-    "chapter": "myths"
+    "chapter": "myths",
+    "visualNote": "刻意压肩示例：向下箭头表示强行压低肩膀，而手臂正在抬起。自然肩线不是问题，不必消灭斜方肌。"
   },
   {
     "id": 8,
@@ -1323,9 +1325,9 @@
     "status": "认识髋伸展 · 不追求塌腰",
     "dockTitle": "把练习配到对应目标",
     "instruction": "先点两条线索，再选练习；选项含误区，学习卡还有两道判断题。",
-    "beforeArt": "stage-tech-before",
+    "beforeArt": "stage-tech-before-v2",
     "afterArt": "fitness-glute-bridge",
-    "beforeAlt": "小岚在镜前认识自然站姿，不表示骨盆或脊柱诊断",
+    "beforeAlt": "夸张教学示意：刻意塌腰摆拍示例：箭头强调顶胸、拱腰的动作。自然腰曲不是错误，练臀不需要故意把腰顶得更弯。",
     "afterAlt": "徒手臀桥静态动作示意，不表示治愈",
     "artWidth": 290,
     "hintTitle": "别急着跟练，先分清目的。",
@@ -1498,7 +1500,8 @@
     },
     "fitness": true,
     "workTip": "舞台搬举中保持物品可控、髋膝配合、需要时减负和求助。徒手练习不保证负重搬举安全。",
-    "chapter": "myths"
+    "chapter": "myths",
+    "visualNote": "刻意塌腰摆拍示例：箭头强调顶胸、拱腰的动作。自然腰曲不是错误，练臀不需要故意把腰顶得更弯。"
   },
   {
     "id": 9,
@@ -1513,9 +1516,9 @@
     "status": "练肌肉 ≠ 指定脂肪减少",
     "dockTitle": "把练习配到对应目标",
     "instruction": "先点两条线索，再选练习；选项含误区，学习卡还有两道判断题。",
-    "beforeArt": "sorter-before",
+    "beforeArt": "sorter-before-v2",
     "afterArt": "fitness-bird-dog",
-    "beforeAlt": "阿明看手机上的健身说法，没有体型优劣对比",
+    "beforeAlt": "夸张教学示意：局部减脂误区示例：圆腹与圈线只强调关注区域。体型不是健康诊断，练腹也不能承诺只减少腹部脂肪。",
     "afterAlt": "对侧鸟狗静态动作示意，不表示治愈",
     "artWidth": 290,
     "hintTitle": "别急着跟练，先分清目的。",
@@ -1692,7 +1695,8 @@
     },
     "fitness": true,
     "workTip": "分拣工作已经有一定体力负荷，休息日活动要结合恢复情况。不要为了追求瘦腰再叠加不适合自己的高负荷。",
-    "chapter": "myths"
+    "chapter": "myths",
+    "visualNote": "局部减脂误区示例：圆腹与圈线只强调关注区域。体型不是健康诊断，练腹也不能承诺只减少腹部脂肪。"
   },
   {
     "id": 10,

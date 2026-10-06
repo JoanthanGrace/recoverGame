@@ -150,6 +150,17 @@ if (!process.argv.includes('--browser')) process.exit(0);
     await page.screenshot({ path: path.join(scratch, 'level2-desktop.png'), fullPage: true });
     for (const level of levels) {
       await page.locator('[data-level="' + (level.id - 1) + '"]').click(); await imagesReady();
+      assert.equal(await page.locator('#scene-observation').isVisible(), Boolean(level.visualNote));
+      if (level.visualNote) {
+        await page.locator('#scene-zoom').click();
+        assert.equal(await page.locator('#scene-detail').evaluate(el => el.open), true);
+        assert.equal(await page.locator('#scene-detail-note').textContent(), level.visualNote);
+        await page.locator('#scene-detail-image').evaluate(img => img.decode());
+        assert.ok((await page.locator('#scene-detail-image').getAttribute('src')).includes(level.beforeArt));
+        assert.equal(await page.locator('#score').textContent(), '0 / 2');
+        await page.keyboard.press('Escape');
+        assert.equal(await page.locator('#scene-detail').evaluate(el => el.open), false);
+      }
       await page.locator('#learn').click();
       assert.equal(await page.locator('#science').evaluate(el => el.open), true);
       assert.equal(await page.locator('#science-myths .myth-card').count(), level.education.myths?.length || 0);

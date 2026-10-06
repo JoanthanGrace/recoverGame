@@ -41,3 +41,10 @@ dialog::-webkit-scrollbar-corner{background:transparent}
 #science .answered .myth-explanation{display:block}
 #science .myth-explanation.correct{color:var(--green)}
 #science .quiz-note{font-size:11px;color:var(--muted)}
+
+/* Exaggerated scene art is inspectable independently of action previews. */
+#scene-observation{text-align:center;margin:14px 0 4px}
+#scene-observation[hidden]{display:none}
+#scene-note{font-size:11px;line-height:1.8;color:var(--muted);text-align:left;margin:10px 0}
+#scene-detail-image{display:block;width:100%;height:auto;max-height:65dvh;object-fit:contain;background:radial-gradient(ellipse,#e7ecdf,transparent 70%);margin:14px 0}
+#scene-detail-note{font-size:13px;line-height:1.9}
